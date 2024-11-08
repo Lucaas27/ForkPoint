@@ -1,6 +1,6 @@
-@ForkPoint.API_HostAddress = https://localhost:7078
+@ForkPointAPI_HostAddress = https://localhost:7078
 
-GET {{ForkPoint.API_HostAddress}}/weatherforecast
+GET {{ForkPointAPI_HostAddress}}/weatherforecast
 Accept-Headers: application/json
 
 ###
