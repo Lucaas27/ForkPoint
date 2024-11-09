@@ -21,9 +21,23 @@ public class WeatherForecastController : ControllerBase
         _weatherForecastService = weatherForecastService;
     }
 
+    /// <summary>
+    /// Gets weather forecast.
+    /// </summary>
+    /// <remarks>
+    /// This method retrieves a list of weather forecasts from the weather forecast service.
+    /// The forecasts include the date, temperature in Celsius, and a summary.
+    /// </remarks>
+    /// <returns>List of forecasts</returns>
+    /// <response code="200">Returns the forecasts</response>
+    /// <response code="400">Something is wrong in the request</response>
     [HttpGet]
+    //[Produces("application/json")]
+    //[ProducesResponseType(StatusCodes.Status200OK)]
+    //[ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IEnumerable<WeatherForecast> Get()
     {
         return _weatherForecastService.Get();
     }
+
 }

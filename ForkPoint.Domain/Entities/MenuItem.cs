@@ -9,4 +9,8 @@ public class MenuItem
     public string? ImageUrl { get; set; }
     public bool IsVegetarian { get; set; } = default;
     public bool IsVegan { get; set; } = default;
+    public int RestaurantId { get; set; } // Foreign Key
+
+    // Navigation properties
+    public Restaurant Restaurant { get; set; } = new Restaurant();
 }
