@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ForkPoint.Infrastructure.Migrations
 {
-    [DbContext(typeof(RestaurantsDbContext))]
+    [DbContext(typeof(ForkPointDbContext))]
     partial class RestaurantsDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

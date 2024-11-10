@@ -1,7 +1,9 @@
-﻿namespace ForkPoint.Domain.Entities;
+﻿
+namespace ForkPoint.Domain.Entities;
 
 public class Restaurant
 {
+
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
@@ -11,6 +13,6 @@ public class Restaurant
     public string? ContactNumber { get; set; }
 
     // Navigation properties
-    public Address Address { get; set; } = new Address();
-    public ICollection<MenuItem> MenuItems { get; set; } = [];
+    public Address? Address { get; set; }
+    public required ICollection<MenuItem> MenuItems { get; set; }
 }

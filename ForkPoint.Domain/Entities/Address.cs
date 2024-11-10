@@ -4,7 +4,7 @@ public class Address
 {
     public int Id { get; set; }
     public int RestaurantId { get; set; } // Foreign Key
-    public Restaurant Restaurant { get; set; } = new Restaurant();
+    public Restaurant? Restaurant { get; set; }
     public string Street { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;
     public string? County { get; set; }

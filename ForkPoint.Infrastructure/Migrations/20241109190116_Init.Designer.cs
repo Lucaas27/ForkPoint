@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ForkPoint.Infrastructure.Migrations
 {
-    [DbContext(typeof(RestaurantsDbContext))]
+    [DbContext(typeof(ForkPointDbContext))]
     [Migration("20241109190116_Init")]
     partial class Init
     {
