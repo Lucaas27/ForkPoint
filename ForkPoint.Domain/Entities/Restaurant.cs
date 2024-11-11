@@ -13,6 +13,6 @@ public class Restaurant
     public string? ContactNumber { get; set; }
 
     // Navigation properties
-    public Address? Address { get; set; }
-    public required ICollection<MenuItem> MenuItems { get; set; }
+    public Address Address { get; set; } = default!;
+    public ICollection<MenuItem> MenuItems { get; set; } = default!;
 }

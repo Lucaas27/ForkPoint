@@ -4,9 +4,11 @@ using ForkPoint.Infrastructure.Persistence;
 namespace ForkPoint.Infrastructure.Seeders;
 internal class RestaurantSeeder(ForkPointDbContext dbContext) : ISeeder
 {
-    private IEnumerable<Restaurant> GetRestaurantList()
+    private IEnumerable<Restaurant> RestaurantList
     {
-        var restaurants = new List<Restaurant>
+        get
+        {
+            var restaurants = new List<Restaurant>
             {
                 new()
                 {
@@ -68,7 +70,8 @@ internal class RestaurantSeeder(ForkPointDbContext dbContext) : ISeeder
                     }
             };
 
-        return restaurants;
+            return restaurants;
+        }
     }
 
     public async Task Seed()
@@ -79,7 +82,7 @@ internal class RestaurantSeeder(ForkPointDbContext dbContext) : ISeeder
         {
             if (!dbContext.Restaurants.Any())
             {
-                dbContext.Restaurants.AddRange(GetRestaurantList());
+                dbContext.Restaurants.AddRange(RestaurantList);
                 await dbContext.SaveChangesAsync();
             }
         }
