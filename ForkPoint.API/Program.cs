@@ -1,4 +1,4 @@
-using ForkPoint.API.Controllers;
+using ForkPoint.Application.Extensions;
 using ForkPoint.Infrastructure.Extensions;
 using ForkPoint.Infrastructure.Seeders;
 using Microsoft.OpenApi.Models;
@@ -9,8 +9,11 @@ var config = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddControllers();
-// Extension method to add infrastructure services.
+
+//  Add services from the infrastructure services to the container.
 builder.Services.AddInfrastructure(config);
+// Add services from the application layer to the container.
+builder.Services.AddApplication();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -19,7 +22,7 @@ builder.Services.AddSwaggerGen(options =>
     {
         Version = "v1",
         Title = "ForkPoint API",
-        Description = "An ASP.NET Core Web API for managing restaurants and menus",
+        Description = "ASP.NET Core Web API for managing restaurants and menus",
         //TermsOfService = new Uri("https://example.com/terms"),
         //Contact = new OpenApiContact
         //{
@@ -37,7 +40,6 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
-builder.Services.AddScoped<IWeatherForecastService, WeatherForecastService>();
 
 var app = builder.Build();
 var scope = app.Services.CreateScope(); // Create a scope to resolve services from the container 

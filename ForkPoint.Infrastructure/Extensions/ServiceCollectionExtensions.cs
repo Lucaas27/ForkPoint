@@ -1,4 +1,6 @@
-﻿using ForkPoint.Infrastructure.Persistence;
+﻿using ForkPoint.Domain.Repositories;
+using ForkPoint.Infrastructure.Persistence;
+using ForkPoint.Infrastructure.Repositories;
 using ForkPoint.Infrastructure.Seeders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -19,5 +21,6 @@ public static class ServiceCollectionExtensions
         var connectionString = config.GetConnectionString("Default");
         services.AddDbContext<ForkPointDbContext>(options => options.UseSqlServer(connectionString));
         services.AddScoped<ISeeder, RestaurantSeeder>();
+        services.AddScoped<IRestaurantsRepository, RestaurantsRepository>();
     }
 }
