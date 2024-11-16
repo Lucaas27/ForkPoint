@@ -3,5 +3,6 @@
 namespace ForkPoint.Application.Restaurants;
 public interface IRestaurantsService
 {
-    Task<IEnumerable<Restaurant>> GetRestaurantsAsync();
+    Task<IEnumerable<Restaurant>> GetAllAsync();
+    Task<Restaurant?> GetByIdAsync(int id);
 }
