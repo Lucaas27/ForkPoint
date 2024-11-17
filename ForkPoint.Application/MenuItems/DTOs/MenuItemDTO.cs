@@ -1,5 +1,3 @@
-using ForkPoint.Domain.Entities;
-
 namespace ForkPoint.Application.MenuItems.DTOs;
 
 public record MenuItemDTO
@@ -13,21 +11,5 @@ public record MenuItemDTO
     public bool IsVegan { get; set; } = default;
     public int? KiloCalories { get; set; }
 
-    public static explicit operator MenuItemDTO?(MenuItem menuItem)
-    {
-        if (menuItem is null) return null;
-
-        return new MenuItemDTO
-        {
-            Id = menuItem.Id,
-            Name = menuItem.Name,
-            Description = menuItem.Description,
-            Price = menuItem.Price,
-            ImageUrl = menuItem.ImageUrl,
-            IsVegetarian = menuItem.IsVegetarian,
-            IsVegan = menuItem.IsVegan,
-            KiloCalories = menuItem.KiloCalories
-        };
-    }
 
 }

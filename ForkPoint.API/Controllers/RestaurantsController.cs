@@ -1,5 +1,4 @@
 ﻿using ForkPoint.Application.Restaurants;
-using ForkPoint.Application.Restaurants.DTOs;
 using ForkPoint.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
@@ -25,9 +24,8 @@ public class RestaurantsController(IRestaurantsService restaurantsService) : Con
     public async Task<IActionResult> GetAllAsync()
     {
         var restaurants = await restaurantsService.GetAllAsync();
-        var restaurantsDTO = restaurants.Select(r => (RestaurantDTO)r!).ToList() ?? new List<RestaurantDTO>();
 
-        return Ok(restaurantsDTO);
+        return Ok(restaurants);
     }
 
 
@@ -49,13 +47,6 @@ public class RestaurantsController(IRestaurantsService restaurantsService) : Con
     {
         var restaurant = await restaurantsService.GetByIdAsync(id);
 
-        if (restaurant is null)
-        {
-            return NotFound();
-        }
-
-        var restaurantDto = (RestaurantDTO)restaurant!;
-
-        return Ok(restaurantDto);
+        return restaurant is null ? NotFound() : Ok(restaurant);
     }
 }
