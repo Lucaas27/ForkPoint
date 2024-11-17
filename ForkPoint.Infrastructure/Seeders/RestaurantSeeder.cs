@@ -23,19 +23,25 @@ internal class RestaurantSeeder(ForkPointDbContext dbContext) : ISeeder
                             Street = "Street 1",
                             City = "City 1",
                             County = "State 1",
-                            PostCode = "PE22 7WE"
+                            PostCode = "PE22 7WE",
+                            Country = "UK"
                         },
                     MenuItems =
                         [
                             new MenuItem
                             {
                                 Name = "coffee",
-                                Price = 10.00m
+                                Price = 10.00m,
+                                Description = "Coffee with milk",
+                                KiloCalories = 100
+
                             },
                             new MenuItem
                             {
                                 Name = "chicken",
-                                Price = 20.00m
+                                Price = 20.00m,
+                                Description = "Fried chicken",
+                                KiloCalories = 500
                             }
                         ],
                 },
@@ -52,19 +58,24 @@ internal class RestaurantSeeder(ForkPointDbContext dbContext) : ISeeder
                         Street = "Street 2",
                         City = "City 2",
                         County = "State 2",
-                        PostCode = "PE22 7WE"
+                        PostCode = "PE22 7WE",
+                        Country = "UK"
                     },
                     MenuItems =
                         [
                             new MenuItem
                             {
-                                Name = "Item 3",
-                                Price = 30.00m
+                                Name = "Big Mac",
+                                Price = 30.00m,
+                                Description = "Big Mac with fries",
+                                KiloCalories = 300
                             },
                             new MenuItem
                             {
-                                Name = "Item 4",
-                                Price = 40.00m
+                                Name = "Ice cream",
+                                Price = 9.00m,
+                                Description = "Vanilla ice cream",
+                                KiloCalories = 200
                             }
                         ],
                     }
