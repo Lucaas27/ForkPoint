@@ -1,5 +1,4 @@
-﻿using ForkPoint.Application.Services.Restaurant;
-using ForkPoint.Application.Services.Restaurants;
+﻿using ForkPoint.Application.Services.Restaurants;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ForkPoint.Application.Extensions;

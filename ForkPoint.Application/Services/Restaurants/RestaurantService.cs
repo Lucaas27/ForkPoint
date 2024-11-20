@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using ForkPoint.Application.Models.Restaurant;
-using ForkPoint.Application.Services.Restaurant;
+using ForkPoint.Domain.Entities;
 using ForkPoint.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 
@@ -28,5 +28,15 @@ internal class RestaurantService(IRestaurantRepository restaurantsRepository,
         var restaurantDTO = mapper.Map<RestaurantDetailsModel?>(restaurant);
 
         return restaurantDTO;
+    }
+
+    public async Task<int> CreateAsync(NewRestaurantModel newRestaurant)
+    {
+        logger.LogInformation("Creating new restaurant...");
+
+        var restaurant = mapper.Map<Restaurant>(newRestaurant);
+        var id = await restaurantsRepository.CreateAsync(restaurant);
+
+        return id;
     }
 }

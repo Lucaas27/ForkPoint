@@ -1,5 +1,5 @@
 ﻿using ForkPoint.Application.Models.Restaurant;
-using ForkPoint.Application.Services.Restaurant;
+using ForkPoint.Application.Services.Restaurants;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 
@@ -21,7 +21,7 @@ public class RestaurantsController(IRestaurantService restaurantsService) : Cont
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType<IEnumerable<RestaurantModel>>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetAllAsync()
+    public async Task<IActionResult> GetAll()
     {
         var restaurants = await restaurantsService.GetAllAsync();
 
@@ -43,10 +43,24 @@ public class RestaurantsController(IRestaurantService restaurantsService) : Cont
     [ProducesResponseType<RestaurantDetailsModel>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
+    public async Task<IActionResult> GetById([FromRoute] int id)
     {
         var restaurant = await restaurantsService.GetByIdAsync(id);
 
         return restaurant is null ? NotFound() : Ok(restaurant);
     }
+
+
+    [HttpPost("new")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType<NewRestaurantModel>(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> NewRestaurant([FromBody] NewRestaurantModel newRestaurant)
+    {
+        var id = await restaurantsService.CreateAsync(newRestaurant);
+
+        return CreatedAtAction(nameof(GetById), new { id }, null);
+    }
+
 }

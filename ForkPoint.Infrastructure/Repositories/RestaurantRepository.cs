@@ -7,6 +7,14 @@ namespace ForkPoint.Infrastructure.Repositories;
 internal class RestaurantRepository(ForkPointDbContext dbContext)
     : IRestaurantRepository
 {
+    public async Task<int> CreateAsync(Restaurant entity)
+    {
+        await dbContext.Restaurants.AddAsync(entity);
+        await dbContext.SaveChangesAsync();
+
+        return entity.Id;
+    }
+
     public async Task<IEnumerable<Restaurant>> GetAllAsync()
     {
         var restaurants = await dbContext.Restaurants
