@@ -51,6 +51,14 @@ public class RestaurantsController(IRestaurantService restaurantsService) : Cont
     }
 
 
+    /// <summary>
+    /// Creates a new restaurant.
+    /// </summary>
+    /// <param name="newRestaurant">The details of the new restaurant to create.</param>
+    /// <returns>The location of the newly created restaurant.</returns>
+    /// <response code="201">Returns the location of the newly created restaurant in the header.</response>
+    /// <response code="400">If the restaurant details are invalid.</response>
+    /// <response code="500">If there is an internal server error.</response>
     [HttpPost("new")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType<NewRestaurantModel>(StatusCodes.Status201Created)]
