@@ -1,6 +1,6 @@
-namespace ForkPoint.Application.Addresses.DTOs;
+namespace ForkPoint.Application.Models.Address;
 
-public record AddressDTO
+public record AddressModel
 {
     public int Id { get; init; }
     public string Street { get; init; } = default!;

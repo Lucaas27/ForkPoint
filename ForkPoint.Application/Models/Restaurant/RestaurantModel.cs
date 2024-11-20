@@ -1,8 +1,5 @@
-﻿using ForkPoint.Application.Addresses.DTOs;
-using ForkPoint.Application.MenuItems.DTOs;
-
-namespace ForkPoint.Application.Restaurants.DTOs;
-public record RestaurantDTO
+﻿namespace ForkPoint.Application.Models.Restaurant;
+public record RestaurantModel
 {
     public int Id { get; init; }
     public string Name { get; init; } = default!;
@@ -11,7 +8,5 @@ public record RestaurantDTO
     public bool HasDelivery { get; init; } = default;
     public string? Email { get; init; }
     public string? ContactNumber { get; init; }
-    public AddressDTO Address { get; init; } = default!;
-    public ICollection<MenuItemDTO> MenuItems { get; init; } = new List<MenuItemDTO>();
 
 }

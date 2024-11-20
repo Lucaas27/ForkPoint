@@ -4,14 +4,12 @@ using ForkPoint.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace ForkPoint.Infrastructure.Repositories;
-internal class RestaurantsRepository(ForkPointDbContext dbContext)
-    : IRestaurantsRepository
+internal class RestaurantRepository(ForkPointDbContext dbContext)
+    : IRestaurantRepository
 {
     public async Task<IEnumerable<Restaurant>> GetAllAsync()
     {
         var restaurants = await dbContext.Restaurants
-            .Include(r => r.Address)
-            .Include(r => r.MenuItems)
             .ToListAsync();
 
         return restaurants;

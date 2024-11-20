@@ -1,6 +1,6 @@
-namespace ForkPoint.Application.MenuItems.DTOs;
+namespace ForkPoint.Application.Models.MenuItem;
 
-public record MenuItemDTO
+public record MenuItemModel
 {
     public int Id { get; set; }
     public string Name { get; set; } = default!;
@@ -10,6 +10,4 @@ public record MenuItemDTO
     public bool IsVegetarian { get; set; } = default;
     public bool IsVegan { get; set; } = default;
     public int? KiloCalories { get; set; }
-
-
 }

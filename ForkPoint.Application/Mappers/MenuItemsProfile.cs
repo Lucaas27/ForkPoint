@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
+using ForkPoint.Application.Models.MenuItem;
 using ForkPoint.Domain.Entities;
 
-namespace ForkPoint.Application.MenuItems.DTOs;
+namespace ForkPoint.Application.Mappers;
 public class MenuItemsProfile : Profile
 {
     public MenuItemsProfile()
     {
-        CreateMap<MenuItem, MenuItemDTO>();
+        CreateMap<MenuItem, MenuItemModel>();
     }
 }

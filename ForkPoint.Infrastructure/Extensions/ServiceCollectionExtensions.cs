@@ -21,6 +21,6 @@ public static class ServiceCollectionExtensions
         var connectionString = config.GetConnectionString("Default");
         services.AddDbContext<ForkPointDbContext>(options => options.UseSqlServer(connectionString));
         services.AddScoped<ISeeder, RestaurantSeeder>();
-        services.AddScoped<IRestaurantsRepository, RestaurantsRepository>();
+        services.AddScoped<IRestaurantRepository, RestaurantRepository>();
     }
 }

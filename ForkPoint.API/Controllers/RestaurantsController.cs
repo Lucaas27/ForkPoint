@@ -1,5 +1,5 @@
-﻿using ForkPoint.Application.Restaurants;
-using ForkPoint.Domain.Entities;
+﻿using ForkPoint.Application.Models.Restaurant;
+using ForkPoint.Application.Services.Restaurant;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 
@@ -7,7 +7,7 @@ namespace ForkPoint.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class RestaurantsController(IRestaurantsService restaurantsService) : ControllerBase
+public class RestaurantsController(IRestaurantService restaurantsService) : ControllerBase
 {
 
     // GET api/Restaurants
@@ -19,7 +19,7 @@ public class RestaurantsController(IRestaurantsService restaurantsService) : Con
     /// <response code="500">If there is an internal server error.</response>
     [HttpGet]
     [Produces(MediaTypeNames.Application.Json)]
-    [ProducesResponseType<IEnumerable<Restaurant>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<IEnumerable<RestaurantModel>>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAllAsync()
     {
@@ -40,7 +40,7 @@ public class RestaurantsController(IRestaurantsService restaurantsService) : Con
     /// <response code="500">If there is an internal server error.</response>
     [HttpGet("{id}")]
     [Produces(MediaTypeNames.Application.Json)]
-    [ProducesResponseType<Restaurant>(StatusCodes.Status200OK)]
+    [ProducesResponseType<RestaurantDetailsModel>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
