@@ -1,12 +1,13 @@
-﻿using FluentValidation;
-using ForkPoint.Application.Enums;
-using ForkPoint.Application.Models.Restaurant;
+﻿// Ignore Spelling: Validator
 
-namespace ForkPoint.Application.Validators;
-public class NewRestaurantValidator : AbstractValidator<NewRestaurantModel>
+using FluentValidation;
+using ForkPoint.Application.Enums;
+
+namespace ForkPoint.Application.Restaurants.Commands.NewRestaurant;
+public class NewRestaurantCommandValidator : AbstractValidator<NewRestaurantCommand>
 {
     private readonly string[] _categories = Enum.GetNames<RestaurantCategories>();
-    public NewRestaurantValidator()
+    public NewRestaurantCommandValidator()
     {
         RuleFor(x => x.Name)
             .Length(3, 100)
@@ -52,11 +53,5 @@ public class NewRestaurantValidator : AbstractValidator<NewRestaurantModel>
         RuleFor(x => x.Country)
             .MaximumLength(100)
             .WithMessage("Country cannot exceed 100 characters");
-    }
-
-    private string GetAvailableCategories()
-    {
-        var categories = Enum.GetNames<RestaurantCategories>();
-        return string.Join(", ", categories);
     }
 }

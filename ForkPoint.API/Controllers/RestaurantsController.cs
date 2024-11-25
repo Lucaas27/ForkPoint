@@ -1,5 +1,8 @@
 ﻿using ForkPoint.Application.Models.Restaurant;
-using ForkPoint.Application.Services.Restaurants;
+using ForkPoint.Application.Restaurants.Commands.NewRestaurant;
+using ForkPoint.Application.Restaurants.Queries.GetAllRestaurants;
+using ForkPoint.Application.Restaurants.Queries.GetRestaurantById;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 
@@ -7,7 +10,7 @@ namespace ForkPoint.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class RestaurantsController(IRestaurantService restaurantsService) : ControllerBase
+public class RestaurantsController(IMediator mediator) : ControllerBase
 {
 
     // GET api/Restaurants
@@ -23,7 +26,7 @@ public class RestaurantsController(IRestaurantService restaurantsService) : Cont
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAll()
     {
-        var restaurants = await restaurantsService.GetAllAsync();
+        var restaurants = await mediator.Send(new GetAllRestaurantsQuery());
 
         return Ok(restaurants);
     }
@@ -45,7 +48,7 @@ public class RestaurantsController(IRestaurantService restaurantsService) : Cont
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
-        var restaurant = await restaurantsService.GetByIdAsync(id);
+        var restaurant = await mediator.Send(new GetRestaurantByIdQuery(id));
 
         return restaurant is null ? NotFound() : Ok(restaurant);
     }
@@ -54,19 +57,19 @@ public class RestaurantsController(IRestaurantService restaurantsService) : Cont
     /// <summary>
     /// Creates a new restaurant.
     /// </summary>
-    /// <param name="newRestaurant">The details of the new restaurant to create.</param>
+    /// <param name="command">The details of the new restaurant to create.</param>
     /// <returns>The location of the newly created restaurant.</returns>
     /// <response code="201">Returns the location of the newly created restaurant in the header.</response>
     /// <response code="400">If the restaurant details are invalid.</response>
     /// <response code="500">If there is an internal server error.</response>
     [HttpPost("new")]
     [Produces(MediaTypeNames.Application.Json)]
-    [ProducesResponseType<NewRestaurantModel>(StatusCodes.Status201Created)]
+    [ProducesResponseType<NewRestaurantCommand>(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> NewRestaurant([FromBody] NewRestaurantModel newRestaurant)
+    public async Task<IActionResult> NewRestaurant([FromBody] NewRestaurantCommand command)
     {
-        var id = await restaurantsService.CreateAsync(newRestaurant);
+        var id = await mediator.Send(command);
 
         return CreatedAtAction(nameof(GetById), new { id }, null);
     }

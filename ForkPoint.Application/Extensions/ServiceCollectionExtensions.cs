@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
-using ForkPoint.Application.Services.Restaurants;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ForkPoint.Application.Extensions;
@@ -10,7 +9,7 @@ public static class ServiceCollectionExtensions
     {
         var applicationAssembly = typeof(ServiceCollectionExtensions).Assembly;
 
-        services.AddScoped<IRestaurantService, RestaurantService>();
+        services.AddMediatR(config => config.RegisterServicesFromAssembly(applicationAssembly));
 
         services.AddAutoMapper(applicationAssembly);
 
