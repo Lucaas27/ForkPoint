@@ -1,7 +1,6 @@
-﻿using ForkPoint.Application.Models.Restaurant;
-using ForkPoint.Application.Restaurants.Commands.NewRestaurant;
-using ForkPoint.Application.Restaurants.Queries.GetAllRestaurants;
-using ForkPoint.Application.Restaurants.Queries.GetRestaurantById;
+﻿using ForkPoint.Application.Models.Handlers.GetAll;
+using ForkPoint.Application.Models.Handlers.GetById;
+using ForkPoint.Application.Models.Handlers.NewRestaurant;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
@@ -22,13 +21,13 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     /// <response code="500">If there is an internal server error.</response>
     [HttpGet]
     [Produces(MediaTypeNames.Application.Json)]
-    [ProducesResponseType<IEnumerable<RestaurantModel>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<GetAllResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAll()
     {
-        var restaurants = await mediator.Send(new GetAllRestaurantsQuery());
+        var response = await mediator.Send(new GetAllRequest());
 
-        return Ok(restaurants);
+        return Ok(response);
     }
 
 
@@ -43,14 +42,14 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     /// <response code="500">If there is an internal server error.</response>
     [HttpGet("{id}")]
     [Produces(MediaTypeNames.Application.Json)]
-    [ProducesResponseType<RestaurantDetailsModel>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<GetByIdResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<GetByIdResponse>(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
-        var restaurant = await mediator.Send(new GetRestaurantByIdQuery(id));
+        var response = await mediator.Send(new GetByIdRequest(id));
 
-        return restaurant is null ? NotFound() : Ok(restaurant);
+        return response.Restaurant is null ? NotFound(response) : Ok(response);
     }
 
 
@@ -64,14 +63,14 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     /// <response code="500">If there is an internal server error.</response>
     [HttpPost("new")]
     [Produces(MediaTypeNames.Application.Json)]
-    [ProducesResponseType<NewRestaurantCommand>(StatusCodes.Status201Created)]
+    [ProducesResponseType<NewRestaurantResponse>(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> NewRestaurant([FromBody] NewRestaurantCommand command)
+    public async Task<IActionResult> NewRestaurant([FromBody] NewRestaurantRequest command)
     {
-        var id = await mediator.Send(command);
+        var response = await mediator.Send(command);
 
-        return CreatedAtAction(nameof(GetById), new { id }, null);
+        return CreatedAtAction(nameof(GetById), new { id = response.NewRecordId }, response);
     }
 
 }

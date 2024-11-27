@@ -1,4 +1,4 @@
-namespace ForkPoint.Application.Models.MenuItem;
+namespace ForkPoint.Application.Models.Dtos;
 
 public record MenuItemModel
 {

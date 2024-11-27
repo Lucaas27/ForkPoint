@@ -1,7 +1,7 @@
 ﻿using MediatR;
 
-namespace ForkPoint.Application.Restaurants.Commands.NewRestaurant;
-public record NewRestaurantCommand : IRequest<int>
+namespace ForkPoint.Application.Models.Handlers.NewRestaurant;
+public record NewRestaurantRequest : IRequest<NewRestaurantResponse>
 {
     public string Name { get; init; } = default!;
     public string? Description { get; init; }

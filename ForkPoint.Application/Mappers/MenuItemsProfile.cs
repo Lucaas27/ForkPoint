@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ForkPoint.Application.Models.MenuItem;
+using ForkPoint.Application.Models.Dtos;
 using ForkPoint.Domain.Entities;
 
 namespace ForkPoint.Application.Mappers;

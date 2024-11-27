@@ -1,4 +1,4 @@
-namespace ForkPoint.Application.Models.Address;
+namespace ForkPoint.Application.Models.Dtos;
 
 public record AddressModel
 {
