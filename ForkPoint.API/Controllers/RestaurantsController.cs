@@ -98,6 +98,15 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     }
 
 
+    /// <summary>
+    /// Updates a restaurant by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the restaurant to update.</param>
+    /// <param name="command">The details of the restaurant to update.</param>
+    /// <returns>No content if the update is successful.</returns>
+    /// <response code="204">Returns no content if the update is successful.</response>
+    /// <response code="404">If the restaurant is not found.</response>
+    /// <response code="500">If there is an internal server error.</response>
     [HttpPatch("{id}")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
