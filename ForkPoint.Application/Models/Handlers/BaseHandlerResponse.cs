@@ -1,5 +1,5 @@
 ﻿namespace ForkPoint.Application.Models.Handlers;
-public record HandlerResponseBase()
+public abstract record BaseHandlerResponse()
 {
     public bool IsSuccess { get; init; }
     public string? Message { get; init; }

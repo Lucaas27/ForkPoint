@@ -1,6 +1,8 @@
-﻿using ForkPoint.Application.Models.Handlers.GetAll;
+﻿using ForkPoint.Application.Models.Handlers.DeleteRestaurant;
+using ForkPoint.Application.Models.Handlers.GetAll;
 using ForkPoint.Application.Models.Handlers.GetById;
 using ForkPoint.Application.Models.Handlers.NewRestaurant;
+using ForkPoint.Application.Models.Handlers.UpdateRestaurant;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
@@ -27,7 +29,8 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     {
         var response = await mediator.Send(new GetAllRequest());
 
-        return Ok(response);
+        return response.IsSuccess ? Ok(response)
+            : StatusCode(StatusCodes.Status500InternalServerError, "There was an issue retrieving the restaurants.");
     }
 
 
@@ -43,15 +46,14 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     [HttpGet("{id}")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType<GetByIdResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<GetByIdResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         var response = await mediator.Send(new GetByIdRequest(id));
 
-        return response.Restaurant is null ? NotFound(response) : Ok(response);
+        return response.IsSuccess ? Ok(response) : NotFound(response);
     }
-
 
     /// <summary>
     /// Creates a new restaurant.
@@ -70,7 +72,43 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     {
         var response = await mediator.Send(command);
 
-        return CreatedAtAction(nameof(GetById), new { id = response.NewRecordId }, response);
+        return response.IsSuccess ? CreatedAtAction(nameof(GetById), new { id = response.NewRecordId }, response)
+            : StatusCode(StatusCodes.Status500InternalServerError, "There was an issue creating a new restaurant.");
+    }
+
+
+    /// <summary>
+    /// Deletes a restaurant by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the restaurant to delete.</param>
+    /// <returns>No content if the deletion is successful.</returns>
+    /// <response code="204">Returns no content if the deletion is successful.</response>
+    /// <response code="404">If the restaurant is not found.</response>
+    /// <response code="500">If there is an internal server error.</response>
+    [HttpDelete("{id}")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteRestaurant([FromRoute] int id)
+    {
+        var response = await mediator.Send(new DeleteRestaurantRequest(id));
+
+        return response.IsSuccess ? NoContent() : NotFound(response);
+    }
+
+
+    [HttpPatch("{id}")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> UpdateRestaurant([FromRoute] int id, [FromBody] UpdateRestaurantRequest command)
+    {
+        command = command with { Id = id };
+        var response = await mediator.Send(command);
+
+        return response.IsSuccess ? NoContent() : NotFound(response);
     }
 
 }

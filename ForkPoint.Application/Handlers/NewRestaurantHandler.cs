@@ -2,22 +2,21 @@
 using ForkPoint.Application.Models.Handlers.NewRestaurant;
 using ForkPoint.Domain.Entities;
 using ForkPoint.Domain.Repositories;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace ForkPoint.Application.Handlers;
-public class NewRestaurantHandler(ILogger<NewRestaurantHandler> logger,
+public class NewRestaurantHandler(
+    ILogger<NewRestaurantHandler> logger,
     IMapper mapper,
     IRestaurantRepository restaurantsRepository)
-    : IRequestHandler<NewRestaurantRequest, NewRestaurantResponse>
+    : BaseHandler<NewRestaurantRequest, NewRestaurantResponse>(logger, mapper, restaurantsRepository)
 {
-
-    public async Task<NewRestaurantResponse> Handle(NewRestaurantRequest request, CancellationToken cancellationToken)
+    public override async Task<NewRestaurantResponse> Handle(NewRestaurantRequest request, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Creating new restaurant...");
+        _logger.LogInformation("Creating new restaurant...");
 
-        var restaurant = mapper.Map<Restaurant>(request);
-        var id = await restaurantsRepository.CreateAsync(restaurant);
+        var restaurant = _mapper.Map<Restaurant>(request);
+        var id = await _restaurantsRepository.CreateAsync(restaurant);
 
         return new NewRestaurantResponse
         {

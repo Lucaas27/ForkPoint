@@ -10,16 +10,20 @@ internal class RestaurantRepository(ForkPointDbContext dbContext)
     public async Task<int> CreateAsync(Restaurant entity)
     {
         await dbContext.Restaurants.AddAsync(entity);
-        await dbContext.SaveChangesAsync();
+        await UpdateDb();
 
         return entity.Id;
     }
 
+    public async Task Delete(Restaurant restaurant)
+    {
+        dbContext.Restaurants.Remove(restaurant);
+        await UpdateDb();
+    }
+
     public async Task<IEnumerable<Restaurant>> GetAllAsync()
     {
-        var restaurants = await dbContext.Restaurants
-            .ToListAsync();
-
+        var restaurants = await dbContext.Restaurants.ToListAsync();
         return restaurants;
     }
 
@@ -32,4 +36,8 @@ internal class RestaurantRepository(ForkPointDbContext dbContext)
 
         return restaurant;
     }
+
+    public async Task UpdateDb() => await dbContext.SaveChangesAsync();
+
+
 }

@@ -2,26 +2,26 @@
 using ForkPoint.Application.Models.Dtos;
 using ForkPoint.Application.Models.Handlers.GetAll;
 using ForkPoint.Domain.Repositories;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace ForkPoint.Application.Handlers;
-public class GetAllHandler(ILogger<GetByIdHandler> logger,
+public class GetAllHandler(
+    ILogger<GetAllHandler> logger,
     IMapper mapper,
     IRestaurantRepository restaurantsRepository)
-    : IRequestHandler<GetAllRequest, GetAllResponse>
+    : BaseHandler<GetAllRequest, GetAllResponse>(logger, mapper, restaurantsRepository)
 {
 
-    public async Task<GetAllResponse> Handle(GetAllRequest request, CancellationToken cancellationToken)
+    public override async Task<GetAllResponse> Handle(GetAllRequest request, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Getting all restaurants...");
+        _logger.LogInformation("Getting all restaurants...");
 
-        var restaurants = await restaurantsRepository.GetAllAsync();
+        var restaurants = await _restaurantsRepository.GetAllAsync();
 
         var response = new GetAllResponse
         {
             IsSuccess = restaurants.Any(),
-            Restaurants = mapper.Map<IEnumerable<RestaurantModel>>(restaurants)
+            Restaurants = _mapper.Map<IEnumerable<RestaurantModel>>(restaurants)
         };
 
         return response;
