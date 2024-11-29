@@ -14,6 +14,7 @@ public class GetAllHandler(
 
     public override async Task<GetAllResponse> Handle(GetAllRequest request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Request: {@Request}", request);
         _logger.LogInformation("Getting all restaurants...");
 
         var restaurants = await _restaurantsRepository.GetAllAsync();

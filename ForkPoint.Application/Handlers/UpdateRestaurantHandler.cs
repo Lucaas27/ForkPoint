@@ -12,6 +12,7 @@ public class UpdateRestaurantHandler(
 {
     public override async Task<UpdateRestaurantResponse> Handle(UpdateRestaurantRequest request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Request: {@Request}", request);
         var restaurant = await _restaurantsRepository.GetByIdAsync(request.Id);
         if (restaurant is null)
         {
@@ -30,7 +31,7 @@ public class UpdateRestaurantHandler(
         return new UpdateRestaurantResponse
         {
             IsSuccess = true,
-            Message = "Restaurant updated successfully.",
+            Message = $"Restaurant id {request.Id} updated successfully.",
         };
     }
 }

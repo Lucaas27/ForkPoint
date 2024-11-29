@@ -2,6 +2,7 @@ using ForkPoint.Application.Extensions;
 using ForkPoint.Infrastructure.Extensions;
 using ForkPoint.Infrastructure.Seeders;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,12 @@ builder.Services.AddControllers();
 builder.Services.AddInfrastructure(config);
 // Add services from the application layer to the container.
 builder.Services.AddApplication();
+
+builder.Host.UseSerilog((context, config) =>
+{
+    config
+    .ReadFrom.Configuration(context.Configuration);
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -55,6 +62,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseSerilogRequestLogging();
 // Configure the HTTP request pipeline.
 app.UseHttpsRedirection();
 

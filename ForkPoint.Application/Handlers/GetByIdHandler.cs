@@ -13,7 +13,8 @@ public class GetByIdHandler(
 {
     public override async Task<GetByIdResponse> Handle(GetByIdRequest request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Getting restaurant by id: {request.Id}");
+        _logger.LogInformation("Request: {@Request}", request);
+        _logger.LogInformation("Getting restaurant by id...");
 
         var restaurant = await _restaurantsRepository.GetByIdAsync(request.Id);
 

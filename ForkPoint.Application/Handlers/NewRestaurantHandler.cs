@@ -13,6 +13,7 @@ public class NewRestaurantHandler(
 {
     public override async Task<NewRestaurantResponse> Handle(NewRestaurantRequest request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Request: {@Request}", request);
         _logger.LogInformation("Creating new restaurant...");
 
         var restaurant = _mapper.Map<Restaurant>(request);
