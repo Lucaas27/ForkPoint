@@ -1,0 +1,524 @@
+[
+  {
+    "Name": "KFC",
+    "Description": "KFC is an American fast food restaurant chain that specializes in fried chicken.",
+    "Category": "Fast Food",
+    "HasDelivery": true,
+    "Email": "kfc@gmail.com",
+    "ContactNumber": "1234567890",
+    "Address": {
+      "Street": "Street 1",
+      "City": "City 1",
+      "County": "State 1",
+      "PostCode": "PE22 7WE",
+      "Country": "UK"
+    },
+    "MenuItems": [
+      {
+        "Name": "Coffee",
+        "Price": 10.00,
+        "Description": "Coffee with milk",
+        "KiloCalories": 100
+      },
+      {
+        "Name": "Chicken",
+        "Price": 20.00,
+        "Description": "Fried chicken",
+        "KiloCalories": 300
+      }
+    ]
+  },
+  {
+    "Name": "McDonald's",
+    "Description": "McDonald's is an American fast food company.",
+    "Category": "Fast Food",
+    "HasDelivery": true,
+    "Email": "mcdonalds@gmail.com",
+    "ContactNumber": "0987654321",
+    "Address": {
+      "Street": "Street 2",
+      "City": "City 2",
+      "County": "State 2",
+      "PostCode": "PE22 7WF",
+      "Country": "UK"
+    },
+    "MenuItems": [
+      {
+        "Name": "Big Mac",
+        "Price": 30.00,
+        "Description": "Big Mac with fries",
+        "KiloCalories": 300
+      },
+      {
+        "Name": "Ice Cream",
+        "Price": 9.00,
+        "Description": "Vanilla ice cream",
+        "KiloCalories": 200
+      }
+    ]
+  },
+  {
+    "Name": "Burger King",
+    "Description": "Burger King is an American multinational chain of hamburger fast food restaurants.",
+    "Category": "Fast Food",
+    "HasDelivery": true,
+    "Email": "burgerking@gmail.com",
+    "ContactNumber": "1122334455",
+    "Address": {
+      "Street": "Street 3",
+      "City": "City 3",
+      "County": "State 3",
+      "PostCode": "PE22 7WG",
+      "Country": "UK"
+    },
+    "MenuItems": [
+      {
+        "Name": "Whopper",
+        "Price": 25.00,
+        "Description": "Whopper with cheese",
+        "KiloCalories": 350
+      },
+      {
+        "Name": "Fries",
+        "Price": 5.00,
+        "Description": "French fries",
+        "KiloCalories": 200
+      }
+    ]
+  },
+  {
+    "Name": "Subway",
+    "Description": "Subway is an American fast food restaurant franchise that primarily sells submarine sandwiches.",
+    "Category": "Fast Food",
+    "HasDelivery": true,
+    "Email": "subway@gmail.com",
+    "ContactNumber": "2233445566",
+    "Address": {
+      "Street": "Street 4",
+      "City": "City 4",
+      "County": "State 4",
+      "PostCode": "PE22 7WH",
+      "Country": "UK"
+    },
+    "MenuItems": [
+      {
+        "Name": "Sub Sandwich",
+        "Price": 15.00,
+        "Description": "Sub sandwich with ham and cheese",
+        "KiloCalories": 250
+      },
+      {
+        "Name": "Cookies",
+        "Price": 3.00,
+        "Description": "Chocolate chip cookies",
+        "KiloCalories": 150
+      }
+    ]
+  },
+  {
+    "Name": "Pizza Hut",
+    "Description": "Pizza Hut is an American multinational restaurant chain and international franchise.",
+    "Category": "Fast Food",
+    "HasDelivery": true,
+    "Email": "pizzahut@gmail.com",
+    "ContactNumber": "3344556677",
+    "Address": {
+      "Street": "Street 5",
+      "City": "City 5",
+      "County": "State 5",
+      "PostCode": "PE22 7WI",
+      "Country": "UK"
+    },
+    "MenuItems": [
+      {
+        "Name": "Pepperoni Pizza",
+        "Price": 20.00,
+        "Description": "Pepperoni pizza with extra cheese",
+        "KiloCalories": 400
+      },
+      {
+        "Name": "Garlic Bread",
+        "Price": 7.00,
+        "Description": "Garlic bread with cheese",
+        "KiloCalories": 200
+      }
+    ]
+  },
+  {
+    "Name": "Domino's Pizza",
+    "Description": "Domino's Pizza is an American multinational pizza restaurant chain.",
+    "Category": "Fast Food",
+    "HasDelivery": true,
+    "Email": "dominos@gmail.com",
+    "ContactNumber": "4455667788",
+    "Address": {
+      "Street": "Street 6",
+      "City": "City 6",
+      "County": "State 6",
+      "PostCode": "PE22 7WJ",
+      "Country": "UK"
+    },
+    "MenuItems": [
+      {
+        "Name": "Margherita Pizza",
+        "Price": 18.00,
+        "Description": "Margherita pizza with fresh tomatoes",
+        "KiloCalories": 350
+      },
+      {
+        "Name": "Chicken Wings",
+        "Price": 12.00,
+        "Description": "Spicy chicken wings",
+        "KiloCalories": 250
+      }
+    ]
+  },
+  {
+    "Name": "Taco Bell",
+    "Description": "Taco Bell is an American-based chain of fast food restaurants.",
+    "Category": "Fast Food",
+    "HasDelivery": true,
+    "Email": "tacobell@gmail.com",
+    "ContactNumber": "5566778899",
+    "Address": {
+      "Street": "Street 7",
+      "City": "City 7",
+      "County": "State 7",
+      "PostCode": "PE22 7WK",
+      "Country": "UK"
+    },
+    "MenuItems": [
+      {
+        "Name": "Taco",
+        "Price": 8.00,
+        "Description": "Beef taco with lettuce and cheese",
+        "KiloCalories": 150
+      },
+      {
+        "Name": "Burrito",
+        "Price": 10.00,
+        "Description": "Chicken burrito with beans",
+        "KiloCalories": 300
+      }
+    ]
+  },
+  {
+    "Name": "Wendy's",
+    "Description": "Wendy's is an American international fast food restaurant chain.",
+    "Category": "Fast Food",
+    "HasDelivery": true,
+    "Email": "wendys@gmail.com",
+    "ContactNumber": "6677889900",
+    "Address": {
+      "Street": "Street 8",
+      "City": "City 8",
+      "County": "State 8",
+      "PostCode": "PE22 7WL",
+      "Country": "UK"
+    },
+    "MenuItems": [
+      {
+        "Name": "Baconator",
+        "Price": 22.00,
+        "Description": "Baconator with extra bacon",
+        "KiloCalories": 450
+      },
+      {
+        "Name": "Frosty",
+        "Price": 6.00,
+        "Description": "Chocolate frosty",
+        "KiloCalories": 200
+      }
+    ]
+  },
+  {
+    "Name": "Chick-fil-A",
+    "Description": "Chick-fil-A is an American fast food restaurant chain specializing in chicken sandwiches.",
+    "Category": "Fast Food",
+    "HasDelivery": true,
+    "Email": "chickfila@gmail.com",
+    "ContactNumber": "7788990011",
+    "Address": {
+      "Street": "Street 9",
+      "City": "City 9",
+      "County": "State 9",
+      "PostCode": "PE22 7WM",
+      "Country": "UK"
+    },
+    "MenuItems": [
+      {
+        "Name": "Chicken Sandwich",
+        "Price": 15.00,
+        "Description": "Chicken sandwich with pickles",
+        "KiloCalories": 300
+      },
+      {
+        "Name": "Waffle Fries",
+        "Price": 5.00,
+        "Description": "Waffle fries with ketchup",
+        "KiloCalories": 200
+      }
+    ]
+  },
+  {
+    "Name": "Popeyes",
+    "Description": "Popeyes is an American multinational chain of fried chicken fast food restaurants.",
+    "Category": "Fast Food",
+    "HasDelivery": true,
+    "Email": "popeyes@gmail.com",
+    "ContactNumber": "8899001122",
+    "Address": {
+      "Street": "Street 10",
+      "City": "City 10",
+      "County": "State 10",
+      "PostCode": "PE22 7WN",
+      "Country": "UK"
+    },
+    "MenuItems": [
+      {
+        "Name": "Chicken Tenders",
+        "Price": 12.00,
+        "Description": "Spicy chicken tenders",
+        "KiloCalories": 250
+      },
+      {
+        "Name": "Biscuits",
+        "Price": 4.00,
+        "Description": "Buttermilk biscuits",
+        "KiloCalories": 150
+      }
+    ]
+  },
+  {
+    "Name": "Dunkin' Donuts",
+    "Description": "Dunkin' Donuts is an American multinational coffee and doughnut company.",
+    "Category": "Fast Food",
+    "HasDelivery": true,
+    "Email": "dunkindonuts@gmail.com",
+    "ContactNumber": "9900112233",
+    "Address": {
+      "Street": "Street 11",
+      "City": "City 11",
+      "County": "State 11",
+      "PostCode": "PE22 7WO",
+      "Country": "UK"
+    },
+    "MenuItems": [
+      {
+        "Name": "Glazed Donut",
+        "Price": 3.00,
+        "Description": "Glazed donut with sprinkles",
+        "KiloCalories": 200
+      },
+      {
+        "Name": "Latte",
+        "Price": 5.00,
+        "Description": "Latte with almond milk",
+        "KiloCalories": 100
+      }
+    ]
+  },
+  {
+    "Name": "Starbucks",
+    "Description": "Starbucks is an American multinational chain of coffeehouses and roastery reserves.",
+    "Category": "Cafe",
+    "HasDelivery": true,
+    "Email": "starbucks@gmail.com",
+    "ContactNumber": "0011223344",
+    "Address": {
+      "Street": "Street 12",
+      "City": "City 12",
+      "County": "State 12",
+      "PostCode": "PE22 7WP",
+      "Country": "UK"
+    },
+    "MenuItems": [
+      {
+        "Name": "Cappuccino",
+        "Price": 6.00,
+        "Description": "Cappuccino with extra foam",
+        "KiloCalories": 150
+      },
+      {
+        "Name": "Blueberry Muffin",
+        "Price": 4.00,
+        "Description": "Blueberry muffin with crumble topping",
+        "KiloCalories": 250
+      }
+    ]
+  },
+  {
+    "Name": "Panera Bread",
+    "Description": "Panera Bread is an American chain store of bakery-café fast casual restaurants.",
+    "Category": "Cafe",
+    "HasDelivery": true,
+    "Email": "panerabread@gmail.com",
+    "ContactNumber": "1122334455",
+    "Address": {
+      "Street": "Street 13",
+      "City": "City 13",
+      "County": "State 13",
+      "PostCode": "PE22 7WQ",
+      "Country": "UK"
+    },
+    "MenuItems": [
+      {
+        "Name": "Broccoli Cheddar Soup",
+        "Price": 8.00,
+        "Description": "Broccoli cheddar soup in a bread bowl",
+        "KiloCalories": 300
+      },
+      {
+        "Name": "Caesar Salad",
+        "Price": 10.00,
+        "Description": "Caesar salad with grilled chicken",
+        "KiloCalories": 200
+      }
+    ]
+  },
+  {
+    "Name": "Chipotle",
+    "Description": "Chipotle is an American chain of fast casual restaurants specializing in bowls, tacos, and Mission burritos.",
+    "Category": "Fast Food",
+    "HasDelivery": true,
+    "Email": "chipotle@gmail.com",
+    "ContactNumber": "2233445566",
+    "Address": {
+      "Street": "Street 14",
+      "City": "City 14",
+      "County": "State 14",
+      "PostCode": "PE22 7WR",
+      "Country": "UK"
+    },
+    "MenuItems": [
+      {
+        "Name": "Burrito Bowl",
+        "Price": 12.00,
+        "Description": "Burrito bowl with chicken and rice",
+        "KiloCalories": 400
+      },
+      {
+        "Name": "Chips and Guacamole",
+        "Price": 6.00,
+        "Description": "Tortilla chips with guacamole",
+        "KiloCalories": 250
+      }
+    ]
+  },
+  {
+    "Name": "Five Guys",
+    "Description": "Five Guys is an American fast casual restaurant chain focused on hamburgers, hot dogs, and French fries.",
+    "Category": "Fast Food",
+    "HasDelivery": true,
+    "Email": "fiveguys@gmail.com",
+    "ContactNumber": "3344556677",
+    "Address": {
+      "Street": "Street 15",
+      "City": "City 15",
+      "County": "State 15",
+      "PostCode": "PE22 7WS",
+      "Country": "UK"
+    },
+    "MenuItems": [
+      {
+        "Name": "Cheeseburger",
+        "Price": 15.00,
+        "Description": "Cheeseburger with all the toppings",
+        "KiloCalories": 500
+      },
+      {
+        "Name": "Milkshake",
+        "Price": 7.00,
+        "Description": "Vanilla milkshake with whipped cream",
+        "KiloCalories": 300
+      }
+    ]
+  },
+  {
+    "Name": "In-N-Out Burger",
+    "Description": "In-N-Out Burger is an American regional chain of fast food restaurants.",
+    "Category": "Fast Food",
+    "HasDelivery": true,
+    "Email": "innout@gmail.com",
+    "ContactNumber": "4455667788",
+    "Address": {
+      "Street": "Street 16",
+      "City": "City 16",
+      "County": "State 16",
+      "PostCode": "PE22 7WT",
+      "Country": "UK"
+    },
+    "MenuItems": [
+      {
+        "Name": "Double-Double",
+        "Price": 14.00,
+        "Description": "Double-double burger with cheese",
+        "KiloCalories": 450
+      },
+      {
+        "Name": "Animal Style Fries",
+        "Price": 8.00,
+        "Description": "Fries with cheese, grilled onions, and special sauce",
+        "KiloCalories": 350
+      }
+    ]
+  },
+  {
+    "Name": "Shake Shack",
+    "Description": "Shake Shack is an American fast casual restaurant chain based in New York City.",
+    "Category": "Fast Food",
+    "HasDelivery": true,
+    "Email": "shakeshack@gmail.com",
+    "ContactNumber": "5566778899",
+    "Address": {
+      "Street": "Street 17",
+      "City": "City 17",
+      "County": "State 17",
+      "PostCode": "PE22 7WU",
+      "Country": "UK"
+    },
+    "MenuItems": [
+      {
+        "Name": "ShackBurger",
+        "Price": 16.00,
+        "Description": "ShackBurger with lettuce, tomato, and ShackSauce",
+        "KiloCalories": 400
+      },
+      {
+        "Name": "Crinkle-Cut Fries",
+        "Price": 6.00,
+        "Description": "Crinkle-cut fries with cheese sauce",
+        "KiloCalories": 300
+      }
+    ]
+  },
+  {
+    "Name": "Arby's",
+    "Description": "Arby's is an American fast food sandwich restaurant chain.",
+    "Category": "Fast Food",
+    "HasDelivery": true,
+    "Email": "arbys@gmail.com",
+    "ContactNumber": "6677889900",
+    "Address": {
+      "Street": "Street 18",
+      "City": "City 18",
+      "County": "State 18",
+      "PostCode": "PE22 7WV",
+      "Country": "UK"
+    },
+    "MenuItems": [
+      {
+        "Name": "Roast Beef Sandwich",
+        "Price": 12.00,
+        "Description": "Roast beef sandwich with horsey sauce",
+        "KiloCalories": 350
+      },
+      {
+        "Name": "Curly Fries",
+        "Price": 5.00,
+        "Description": "Curly fries with Arby's sauce",
+        "KiloCalories": 250
+      }
+    ]
+  }
+]

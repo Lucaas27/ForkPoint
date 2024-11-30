@@ -9,5 +9,6 @@ public enum RestaurantCategories
     Japanese,
     Mediterranean,
     Burgers,
-    Bakery
+    Bakery,
+    Cafe
 }

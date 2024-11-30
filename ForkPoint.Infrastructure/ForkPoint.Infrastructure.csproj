@@ -18,4 +18,10 @@
 		<ProjectReference Include="..\ForkPoint.Application\ForkPoint.Application.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="Seeders\restaurants.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>
