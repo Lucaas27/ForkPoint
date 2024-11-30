@@ -1,3 +1,4 @@
+using ForkPoint.API.Middlewares;
 using ForkPoint.Application.Extensions;
 using ForkPoint.Infrastructure.Extensions;
 using ForkPoint.Infrastructure.Seeders;
@@ -10,19 +11,6 @@ var config = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddControllers();
-
-//  Add services from the infrastructure services to the container.
-builder.Services.AddInfrastructure(config);
-// Add services from the application layer to the container.
-builder.Services.AddApplication();
-
-builder.Host.UseSerilog((context, config) =>
-{
-    config
-    .ReadFrom.Configuration(context.Configuration);
-});
-
-builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -46,8 +34,19 @@ builder.Services.AddSwaggerGen(options =>
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
+builder.Services.AddScoped<ErrorHandlerMiddleware>();
+builder.Services.AddInfrastructure(config);
+builder.Services.AddApplication();
+builder.Host.UseSerilog((context, config) =>
+{
+    config
+    .ReadFrom.Configuration(context.Configuration);
+});
+builder.Services.AddEndpointsApiExplorer();
 
 
+
+// Build the app
 var app = builder.Build();
 var scope = app.Services.CreateScope(); // Create a scope to resolve services from the container 
 await scope.ServiceProvider.GetRequiredService<ISeeder>().Seed(); // Seed the database
@@ -62,12 +61,9 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseSerilogRequestLogging();
-// Configure the HTTP request pipeline.
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

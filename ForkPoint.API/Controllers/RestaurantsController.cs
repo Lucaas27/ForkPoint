@@ -1,4 +1,5 @@
-﻿using ForkPoint.Application.Models.Handlers.DeleteRestaurant;
+﻿using ForkPoint.Application.Models.Exceptions;
+using ForkPoint.Application.Models.Handlers.DeleteRestaurant;
 using ForkPoint.Application.Models.Handlers.GetAll;
 using ForkPoint.Application.Models.Handlers.GetById;
 using ForkPoint.Application.Models.Handlers.NewRestaurant;
@@ -9,6 +10,10 @@ using System.Net.Mime;
 
 namespace ForkPoint.API.Controllers;
 
+/// <summary>
+/// Controller for managing restaurant-related operations.
+/// </summary>
+/// <param name="mediator">The mediator instance for handling requests.</param>
 [Route("api/[controller]")]
 [ApiController]
 public class RestaurantsController(IMediator mediator) : ControllerBase
@@ -29,8 +34,7 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     {
         var response = await mediator.Send(new GetAllRequest());
 
-        return response.IsSuccess ? Ok(response)
-            : StatusCode(StatusCodes.Status500InternalServerError, "There was an issue retrieving the restaurants.");
+        return Ok(response);
     }
 
 
@@ -46,13 +50,13 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     [HttpGet("{id}")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<CustomException>(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<GetByIdResponse>> GetById([FromRoute] int id)
     {
         var response = await mediator.Send(new GetByIdRequest(id));
 
-        return response.IsSuccess ? Ok(response) : NotFound(response);
+        return Ok(response);
     }
 
     /// <summary>
@@ -66,14 +70,13 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     [HttpPost("new")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<CustomException>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<NewRestaurantResponse>> NewRestaurant([FromBody] NewRestaurantRequest command)
     {
         var response = await mediator.Send(command);
 
-        return response.IsSuccess ? CreatedAtAction(nameof(GetById), new { id = response.NewRecordId }, response)
-            : StatusCode(StatusCodes.Status500InternalServerError, "There was an issue creating a new restaurant.");
+        return CreatedAtAction(nameof(GetById), new { id = response.NewRecordId }, response);
     }
 
 
@@ -88,13 +91,13 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     [HttpDelete("{id}")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<CustomException>(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<DeleteRestaurantResponse>> DeleteRestaurant([FromRoute] int id)
     {
-        var response = await mediator.Send(new DeleteRestaurantRequest(id));
+        await mediator.Send(new DeleteRestaurantRequest(id));
 
-        return response.IsSuccess ? NoContent() : NotFound(response);
+        return NoContent();
     }
 
 
@@ -110,14 +113,14 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     [HttpPatch("{id}")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<CustomException>(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<UpdateRestaurantResponse>> UpdateRestaurant([FromRoute] int id, [FromBody] UpdateRestaurantRequest command)
     {
         command = command with { Id = id };
-        var response = await mediator.Send(command);
+        await mediator.Send(command);
 
-        return response.IsSuccess ? NoContent() : NotFound(response);
+        return NoContent();
     }
 
 }

@@ -5,6 +5,16 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace ForkPoint.Application.Handlers;
+
+/// <summary>
+/// BaseHandler is an abstract class that implements the IRequestHandler interface.
+/// It provides common functionality for handling requests in the application.
+/// </summary>
+/// <typeparam name="TRequest">The type of the request.</typeparam>
+/// <typeparam name="TResponse">The type of the response.</typeparam>
+/// <param name="logger">The logger instance for logging information.</param>
+/// <param name="mapper">The AutoMapper instance for object mapping.</param>
+/// <param name="restaurantsRepository">The repository instance for accessing restaurant data.</param>
 public abstract class BaseHandler<TRequest, TResponse>(
     ILogger<BaseHandler<TRequest, TResponse>> logger,
     IMapper mapper,
