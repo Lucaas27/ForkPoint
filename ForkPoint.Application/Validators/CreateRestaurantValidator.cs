@@ -2,13 +2,13 @@
 
 using FluentValidation;
 using ForkPoint.Application.Enums;
-using ForkPoint.Application.Models.Handlers.NewRestaurant;
+using ForkPoint.Application.Models.Handlers.CreateRestaurant;
 
 namespace ForkPoint.Application.Validators;
-public class NewRestaurantValidator : AbstractValidator<NewRestaurantRequest>
+public class CreateRestaurantValidator : AbstractValidator<CreateRestaurantRequest>
 {
     private readonly string[] _categories = Enum.GetNames<RestaurantCategories>();
-    public NewRestaurantValidator()
+    public CreateRestaurantValidator()
     {
         RuleFor(x => x.Name)
             .Length(3, 100)

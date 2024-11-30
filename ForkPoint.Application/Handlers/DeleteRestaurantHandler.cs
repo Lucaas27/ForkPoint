@@ -30,10 +30,10 @@ public class DeleteRestaurantHandler(
         _logger.LogInformation("Request: {@Request}", request);
         _logger.LogInformation("Deleting restaurant id...");
 
-        var restaurant = await _restaurantsRepository.GetByIdAsync(request.Id)
+        var restaurant = await _restaurantsRepository.GetRestaurantByIdAsync(request.Id)
             ?? throw new NotFoundException(nameof(Restaurant), request.Id);
 
-        await _restaurantsRepository.Delete(restaurant);
+        await _restaurantsRepository.DeleteRestaurant(restaurant);
 
         _logger.LogInformation($"Restaurant with id {request.Id} deleted.");
 

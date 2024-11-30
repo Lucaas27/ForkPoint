@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using ForkPoint.Application.Models.Dtos;
-using ForkPoint.Application.Models.Handlers.NewRestaurant;
+using ForkPoint.Application.Models.Handlers.CreateRestaurant;
 using ForkPoint.Application.Models.Handlers.UpdateRestaurant;
 using ForkPoint.Domain.Entities;
 
@@ -34,15 +34,15 @@ public class RestaurantsProfile : Profile
             .ForMember(d => d.MenuItems, opt => opt.MapFrom(src => src.MenuItems));
 
         /// <summary>
-        /// Maps the properties of a <see cref="NewRestaurantRequest"/> to a new <see cref="Restaurant"/> entity.
+        /// Maps the properties of a <see cref="CreateRestaurantRequest"/> to a new <see cref="Restaurant"/> entity.
         /// </summary>
         /// <remarks>
-        /// This mapping creates a new <see cref="Address"/> object for the <see cref="Restaurant"/> entity using the properties from the <see cref="NewRestaurantRequest"/>.
+        /// This mapping creates a new <see cref="Address"/> object for the <see cref="Restaurant"/> entity using the properties from the <see cref="CreateRestaurantRequest"/>.
         /// </remarks>
         /// <example>
-        /// If the <see cref="NewRestaurantRequest.Street"/> is "123 Main St", the <see cref="Restaurant.Address.Street"/> will be "123 Main St".
+        /// If the <see cref="CreateRestaurantRequest.Street"/> is "123 Main St", the <see cref="Restaurant.Address.Street"/> will be "123 Main St".
         /// </example>
-        CreateMap<NewRestaurantRequest, Restaurant>()
+        CreateMap<CreateRestaurantRequest, Restaurant>()
             .ForMember(d => d.Address, opt => opt.MapFrom(src => new Address
             {
                 Street = src.Street,

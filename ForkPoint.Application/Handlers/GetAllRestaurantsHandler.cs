@@ -12,11 +12,11 @@ namespace ForkPoint.Application.Handlers;
 /// <param name="logger">The logger instance.</param>
 /// <param name="mapper">The AutoMapper instance.</param>
 /// <param name="restaurantsRepository">The repository for accessing restaurant data.</param>
-public class GetAllHandler(
-    ILogger<GetAllHandler> logger,
+public class GetAllRestaurantsHandler(
+    ILogger<GetAllRestaurantsHandler> logger,
     IMapper mapper,
     IRestaurantRepository restaurantsRepository)
-    : BaseHandler<GetAllRequest, GetAllResponse>(logger, mapper, restaurantsRepository)
+    : BaseHandler<GetAllRestaurantsRequest, GetAllRestaurantsResponse>(logger, mapper, restaurantsRepository)
 {
     /// <summary>
     /// Handles the request to get all restaurants.
@@ -24,14 +24,14 @@ public class GetAllHandler(
     /// <param name="request">The request to get all restaurants.</param>
     /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
     /// <returns>A response containing all restaurants.</returns>
-    public override async Task<GetAllResponse> Handle(GetAllRequest request, CancellationToken cancellationToken)
+    public override async Task<GetAllRestaurantsResponse> Handle(GetAllRestaurantsRequest request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Request: {@Request}", request);
         _logger.LogInformation("Getting all restaurants...");
 
-        var restaurants = await _restaurantsRepository.GetAllAsync();
+        var restaurants = await _restaurantsRepository.GetAllRestaurantsAsync();
 
-        var response = new GetAllResponse
+        var response = new GetAllRestaurantsResponse
         {
             IsSuccess = restaurants.Any(),
             Restaurants = _mapper.Map<IEnumerable<RestaurantModel>>(restaurants)

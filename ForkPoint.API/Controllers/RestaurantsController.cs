@@ -1,8 +1,8 @@
 ﻿using ForkPoint.Application.Models.Exceptions;
+using ForkPoint.Application.Models.Handlers.CreateRestaurant;
 using ForkPoint.Application.Models.Handlers.DeleteRestaurant;
 using ForkPoint.Application.Models.Handlers.GetAll;
 using ForkPoint.Application.Models.Handlers.GetById;
-using ForkPoint.Application.Models.Handlers.NewRestaurant;
 using ForkPoint.Application.Models.Handlers.UpdateRestaurant;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -30,9 +30,9 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<GetAllResponse>> GetAll()
+    public async Task<ActionResult<GetAllRestaurantsResponse>> GetAllRestaurants()
     {
-        var response = await mediator.Send(new GetAllRequest());
+        var response = await mediator.Send(new GetAllRestaurantsRequest());
 
         return Ok(response);
     }
@@ -52,9 +52,9 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<CustomException>(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<GetByIdResponse>> GetById([FromRoute] int id)
+    public async Task<ActionResult<GetRestaurantByIdResponse>> GetRestaurantById([FromRoute] int id)
     {
-        var response = await mediator.Send(new GetByIdRequest(id));
+        var response = await mediator.Send(new GetRestaurantByIdRequest(id));
 
         return Ok(response);
     }
@@ -67,16 +67,16 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     /// <response code="201">Returns the location of the newly created restaurant in the header.</response>
     /// <response code="400">If the restaurant details are invalid.</response>
     /// <response code="500">If there is an internal server error.</response>
-    [HttpPost("new")]
+    [HttpPost("create")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType<CustomException>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<NewRestaurantResponse>> NewRestaurant([FromBody] NewRestaurantRequest command)
+    public async Task<ActionResult<CreateRestaurantResponse>> CreateRestaurant([FromBody] CreateRestaurantRequest command)
     {
         var response = await mediator.Send(command);
 
-        return CreatedAtAction(nameof(GetById), new { id = response.NewRecordId }, response);
+        return CreatedAtAction(nameof(GetRestaurantById), new { id = response.NewRecordId }, response);
     }
 
 

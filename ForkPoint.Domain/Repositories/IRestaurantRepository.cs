@@ -3,10 +3,10 @@
 namespace ForkPoint.Domain.Repositories;
 public interface IRestaurantRepository
 {
-    Task<IEnumerable<Restaurant>> GetAllAsync();
-    Task<Restaurant?> GetByIdAsync(int id);
-    Task<int> CreateAsync(Restaurant entity);
+    Task<IEnumerable<Restaurant>> GetAllRestaurantsAsync();
+    Task<Restaurant?> GetRestaurantByIdAsync(int id);
+    Task<int> CreateRestaurantAsync(Restaurant entity);
     Task UpdateDb();
-    Task Delete(Restaurant restaurant);
+    Task DeleteRestaurant(Restaurant restaurant);
 
 }
