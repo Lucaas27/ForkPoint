@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using ForkPoint.Application.Models.Dtos;
-using ForkPoint.Application.Models.Handlers.GetAll;
+using ForkPoint.Application.Models.Handlers.GetAllRestaurants;
 using ForkPoint.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 
@@ -29,7 +29,7 @@ public class GetAllRestaurantsHandler(
         _logger.LogInformation("Request: {@Request}", request);
         _logger.LogInformation("Getting all restaurants...");
 
-        var restaurants = await _restaurantsRepository.GetAllRestaurantsAsync();
+        var restaurants = await _restaurantsRepository!.GetAllRestaurantsAsync();
 
         var response = new GetAllRestaurantsResponse
         {

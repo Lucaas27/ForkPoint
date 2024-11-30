@@ -18,14 +18,16 @@ namespace ForkPoint.Application.Handlers;
 public abstract class BaseHandler<TRequest, TResponse>(
     ILogger<BaseHandler<TRequest, TResponse>> logger,
     IMapper mapper,
-    IRestaurantRepository restaurantsRepository)
+    IRestaurantRepository? restaurantsRepository = null,
+    IMenuRepository? menuRepository = null)
     : IRequestHandler<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
     where TResponse : BaseHandlerResponse
 {
     protected readonly ILogger<BaseHandler<TRequest, TResponse>> _logger = logger;
     protected readonly IMapper _mapper = mapper;
-    protected readonly IRestaurantRepository _restaurantsRepository = restaurantsRepository;
+    protected readonly IRestaurantRepository? _restaurantsRepository = restaurantsRepository;
+    protected readonly IMenuRepository? _menuRepository = menuRepository;
 
     public abstract Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken);
 }

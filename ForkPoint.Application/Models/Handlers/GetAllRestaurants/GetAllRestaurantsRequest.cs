@@ -1,4 +1,4 @@
 ﻿using MediatR;
 
-namespace ForkPoint.Application.Models.Handlers.GetAll;
+namespace ForkPoint.Application.Models.Handlers.GetAllRestaurants;
 public record GetAllRestaurantsRequest : IRequest<GetAllRestaurantsResponse>;

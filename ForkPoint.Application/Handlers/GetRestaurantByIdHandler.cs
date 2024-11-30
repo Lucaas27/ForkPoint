@@ -14,8 +14,8 @@ namespace ForkPoint.Application.Handlers;
 /// <param name="logger">The logger instance for logging information.</param>
 /// <param name="mapper">The mapper instance for mapping domain models to DTOs.</param>
 /// <param name="restaurantsRepository">The repository instance for accessing restaurant data.</param>
-public class GetRestaurantsByIdHandler(
-    ILogger<GetRestaurantsByIdHandler> logger,
+public class GetRestaurantByIdHandler(
+    ILogger<GetRestaurantByIdHandler> logger,
     IMapper mapper,
     IRestaurantRepository restaurantsRepository)
     : BaseHandler<GetRestaurantByIdRequest, GetRestaurantByIdResponse>(logger, mapper, restaurantsRepository)
@@ -32,7 +32,7 @@ public class GetRestaurantsByIdHandler(
         _logger.LogInformation("Request: {@Request}", request);
         _logger.LogInformation("Getting restaurant by id...");
 
-        var restaurant = await _restaurantsRepository.GetRestaurantByIdAsync(request.Id)
+        var restaurant = await _restaurantsRepository!.GetRestaurantByIdAsync(request.Id)
             ?? throw new NotFoundException(nameof(Restaurant), request.Id);
 
         var restaurantDTO = _mapper.Map<RestaurantDetailsModel>(restaurant);

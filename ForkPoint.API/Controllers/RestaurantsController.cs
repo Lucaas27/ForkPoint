@@ -1,7 +1,7 @@
 ﻿using ForkPoint.Application.Models.Exceptions;
 using ForkPoint.Application.Models.Handlers.CreateRestaurant;
 using ForkPoint.Application.Models.Handlers.DeleteRestaurant;
-using ForkPoint.Application.Models.Handlers.GetAll;
+using ForkPoint.Application.Models.Handlers.GetAllRestaurants;
 using ForkPoint.Application.Models.Handlers.GetById;
 using ForkPoint.Application.Models.Handlers.UpdateRestaurant;
 using MediatR;
