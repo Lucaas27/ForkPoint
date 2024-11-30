@@ -35,6 +35,7 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 builder.Services.AddScoped<ErrorHandlerMiddleware>();
+builder.Services.AddScoped<ElapsedTimeMiddleware>();
 builder.Services.AddInfrastructure(config);
 builder.Services.AddApplication();
 builder.Host.UseSerilog((context, config) =>
@@ -62,6 +63,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<ErrorHandlerMiddleware>();
+app.UseMiddleware<ElapsedTimeMiddleware>();
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 app.UseAuthorization();
