@@ -117,8 +117,8 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<UpdateRestaurantResponse>> UpdateRestaurant([FromRoute] int id, [FromBody] UpdateRestaurantRequest command)
     {
-        command = command with { Id = id };
-        await mediator.Send(command);
+        var request = command with { Id = id };
+        await mediator.Send(request);
 
         return NoContent();
     }

@@ -1,15 +1,18 @@
 ﻿using ForkPoint.Domain.Entities;
 using ForkPoint.Domain.Repositories;
 using ForkPoint.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 namespace ForkPoint.Infrastructure.Repositories;
 internal class MenuRepository(ForkPointDbContext dbContext)
     : IMenuRepository
 {
-    public Task<int> CreateMenuItemAsync(MenuItem entity)
+    public async Task<int> CreateMenuItemAsync(MenuItem entity)
     {
-        throw new NotImplementedException();
+        var menuItem = dbContext.MenuItems.Add(entity);
+
+        await UpdateDb();
+
+        return menuItem.Entity.Id;
     }
 
     public Task DeleteMenuItem(MenuItem menuItem)
@@ -17,20 +20,8 @@ internal class MenuRepository(ForkPointDbContext dbContext)
         throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<MenuItem>?> GetMenuAsync(int restaurantId)
+    public async Task UpdateDb()
     {
-        var menu = await dbContext.MenuItems.Where(m => m.RestaurantId == restaurantId).ToListAsync();
-
-        return menu;
-    }
-
-    public Task<MenuItem?> GetMenuItemByIdAsync(int menuItemId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task UpdateDb()
-    {
-        throw new NotImplementedException();
+        await dbContext.SaveChangesAsync();
     }
 }

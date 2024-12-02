@@ -35,12 +35,10 @@ public class GetRestaurantByIdHandler(
         var restaurant = await _restaurantsRepository!.GetRestaurantByIdAsync(request.Id)
             ?? throw new NotFoundException(nameof(Restaurant), request.Id);
 
-        var restaurantDTO = _mapper.Map<RestaurantDetailsModel>(restaurant);
-
         return new GetRestaurantByIdResponse
         {
-            IsSuccess = restaurantDTO is not null,
-            Restaurant = restaurantDTO
+            IsSuccess = true,
+            Restaurant = _mapper.Map<RestaurantDetailsModel>(restaurant)
         };
     }
 }

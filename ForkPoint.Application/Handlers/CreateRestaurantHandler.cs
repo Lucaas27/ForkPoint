@@ -30,7 +30,7 @@ public class CreateRestaurantHandler(
         _logger.LogInformation("Creating new restaurant...");
 
         var restaurant = _mapper.Map<Restaurant>(request);
-        var id = await _restaurantsRepository.CreateRestaurantAsync(restaurant);
+        var id = await _restaurantsRepository!.CreateRestaurantAsync(restaurant);
 
         return new CreateRestaurantResponse
         {
