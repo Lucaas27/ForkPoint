@@ -62,9 +62,9 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseMiddleware<ElapsedTimeMiddleware>();
 app.UseSerilogRequestLogging();
+app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

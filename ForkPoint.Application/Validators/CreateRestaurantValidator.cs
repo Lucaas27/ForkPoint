@@ -35,24 +35,27 @@ public class CreateRestaurantValidator : AbstractValidator<CreateRestaurantReque
             .Matches(@"^(\+?[1-9]\d{1,3}\s?)?(0?\d{10})$")
             .WithMessage("Invalid contact number format. Expected format: +44 7567890123 or 01234567890");
 
-        RuleFor(x => x.Street)
-            .MaximumLength(100)
-            .WithMessage("Street cannot exceed 100 characters");
+        When(x => x.Address is not null, () =>
+        {
+            RuleFor(x => x.Address!.Street)
+                .Length(5, 100)
+                .WithMessage("Street must be between 5 and 100 characters");
 
-        RuleFor(x => x.City)
-            .MaximumLength(100)
-            .WithMessage("City cannot exceed 100 characters");
+            RuleFor(x => x.Address!.City)
+                .Length(3, 50)
+                .WithMessage("City must be between 3 and 50 characters");
 
-        RuleFor(x => x.County)
-            .MaximumLength(100)
-            .WithMessage("County cannot exceed 100 characters");
+            RuleFor(x => x.Address!.County)
+                .Length(3, 50)
+                .WithMessage("County must be between 3 and 50 characters");
 
-        RuleFor(x => x.PostCode)
-            .MaximumLength(20)
-            .WithMessage("PostCode cannot exceed 20 characters");
+            RuleFor(x => x.Address!.PostCode)
+                .Length(6, 10)
+                .WithMessage("PostCode must be between 6 and 10 characters");
 
-        RuleFor(x => x.Country)
-            .MaximumLength(100)
-            .WithMessage("Country cannot exceed 100 characters");
+            RuleFor(x => x.Address!.Country)
+                .Length(2, 50)
+                .WithMessage("Country must be between 2 and 50 characters");
+        });
     }
 }

@@ -29,11 +29,11 @@ public class ErrorHandlerMiddleware(ILogger<ErrorHandlerMiddleware> logger) : IM
         }
         catch (NotFoundException notFoundEx)
         {
-            await HandleExceptionAsync(context, notFoundEx, StatusCodes.Status404NotFound, notFoundEx.Message);
+            await HandleExceptionAsync(context, StatusCodes.Status404NotFound, notFoundEx.Message);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            await HandleExceptionAsync(context, ex, StatusCodes.Status500InternalServerError, "Something went wrong. Please try again.");
+            await HandleExceptionAsync(context, StatusCodes.Status500InternalServerError, "Something went wrong. Please try again.");
         }
     }
 
@@ -44,9 +44,9 @@ public class ErrorHandlerMiddleware(ILogger<ErrorHandlerMiddleware> logger) : IM
     /// <param name="exception">The exception that was thrown.</param>
     /// <param name="statusCode">The HTTP status code to return.</param>
     /// <param name="message">The error message to return in the response.</param>
-    private async Task HandleExceptionAsync(HttpContext context, Exception exception, int statusCode, string message)
+    private async Task HandleExceptionAsync(HttpContext context, int statusCode, string message)
     {
-        logger.LogError(exception, "An error occurred: {Message}", exception.Message);
+        logger.LogError("An error occurred: {Message}", message);
         context.Response.StatusCode = statusCode;
         context.Response.ContentType = MediaTypeNames.Application.Json;
 

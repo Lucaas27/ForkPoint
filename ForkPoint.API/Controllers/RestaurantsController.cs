@@ -42,19 +42,19 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     /// <summary>
     /// Retrieves a restaurant by its ID.
     /// </summary>
-    /// <param name="id">The ID of the restaurant.</param>
+    /// <param name="restaurantId">The ID of the restaurant.</param>
     /// <returns>The restaurant with the specified ID.</returns>
     /// <response code="200">Returns the restaurant with the specified ID.</response>
     /// <response code="404">If the restaurant is not found.</response>
     /// <response code="500">If there is an internal server error.</response>
-    [HttpGet("{id}")]
+    [HttpGet("{restaurantId}")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<CustomException>(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<GetRestaurantByIdResponse>> GetRestaurantById([FromRoute] int id)
+    public async Task<ActionResult<GetRestaurantByIdResponse>> GetRestaurantById([FromRoute] int restaurantId)
     {
-        var response = await mediator.Send(new GetRestaurantByIdRequest(id));
+        var response = await mediator.Send(new GetRestaurantByIdRequest(restaurantId));
 
         return Ok(response);
     }
@@ -76,26 +76,26 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     {
         var response = await mediator.Send(command);
 
-        return CreatedAtAction(nameof(GetRestaurantById), new { id = response.NewRecordId }, response);
+        return CreatedAtAction(nameof(GetRestaurantById), new { restaurantId = response.NewRecordId }, null);
     }
 
 
     /// <summary>
     /// Deletes a restaurant by its ID.
     /// </summary>
-    /// <param name="id">The ID of the restaurant to delete.</param>
+    /// <param name="restaurantId">The ID of the restaurant to delete.</param>
     /// <returns>No content if the deletion is successful.</returns>
     /// <response code="204">Returns no content if the deletion is successful.</response>
     /// <response code="404">If the restaurant is not found.</response>
     /// <response code="500">If there is an internal server error.</response>
-    [HttpDelete("{id}")]
+    [HttpDelete("{restaurantId}")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<CustomException>(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<DeleteRestaurantResponse>> DeleteRestaurant([FromRoute] int id)
+    public async Task<ActionResult<DeleteRestaurantResponse>> DeleteRestaurant([FromRoute] int restaurantId)
     {
-        await mediator.Send(new DeleteRestaurantRequest(id));
+        await mediator.Send(new DeleteRestaurantRequest(restaurantId));
 
         return NoContent();
     }
@@ -104,20 +104,20 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     /// <summary>
     /// Updates a restaurant by its ID.
     /// </summary>
-    /// <param name="id">The ID of the restaurant to update.</param>
+    /// <param name="restaurantId">The ID of the restaurant to update.</param>
     /// <param name="command">The details of the restaurant to update.</param>
     /// <returns>No content if the update is successful.</returns>
     /// <response code="204">Returns no content if the update is successful.</response>
     /// <response code="404">If the restaurant is not found.</response>
     /// <response code="500">If there is an internal server error.</response>
-    [HttpPatch("{id}")]
+    [HttpPatch("{restaurantId}")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<CustomException>(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<UpdateRestaurantResponse>> UpdateRestaurant([FromRoute] int id, [FromBody] UpdateRestaurantRequest command)
+    public async Task<ActionResult<UpdateRestaurantResponse>> UpdateRestaurant([FromRoute] int restaurantId, [FromBody] UpdateRestaurantRequest command)
     {
-        var request = command with { Id = id };
+        var request = command with { Id = restaurantId };
         await mediator.Send(request);
 
         return NoContent();

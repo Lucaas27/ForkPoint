@@ -57,7 +57,7 @@ public class MenuItemsController(IMediator mediator) : ControllerBase
 
         var response = await mediator.Send(request);
 
-        return CreatedAtAction(nameof(GetMenuItemById), new { response.NewRecordId });
+        return CreatedAtAction(nameof(GetMenuItemById), new { restaurantId, menuItemId = response.NewRecordId }, null);
     }
 
     //// GET api/<MenuItemsController>/5

@@ -40,15 +40,15 @@ public class UpdateRestaurantValidator : AbstractValidator<UpdateRestaurantReque
 
             RuleFor(x => x.Address!.County)
                 .Length(3, 50)
-                .WithMessage("PostCode must be between 3 and 50 characters");
+                .WithMessage("County must be between 3 and 50 characters");
 
             RuleFor(x => x.Address!.PostCode)
                 .Length(6, 10)
                 .WithMessage("PostCode must be between 6 and 10 characters");
 
             RuleFor(x => x.Address!.Country)
-                .Length(3, 10)
-                .WithMessage("Country must be between 3 and 50 characters");
+                .Length(2, 50)
+                .WithMessage("Country must be between 2 and 50 characters");
         });
     }
 }

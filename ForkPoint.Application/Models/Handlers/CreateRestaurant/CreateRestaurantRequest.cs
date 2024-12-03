@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using ForkPoint.Application.Models.Dtos;
+using MediatR;
 
 namespace ForkPoint.Application.Models.Handlers.CreateRestaurant;
 public record CreateRestaurantRequest : IRequest<CreateRestaurantResponse>
@@ -10,11 +11,6 @@ public record CreateRestaurantRequest : IRequest<CreateRestaurantResponse>
 
     public string? Email { get; init; }
     public string? ContactNumber { get; init; }
+    public AddressModel? Address { get; init; }
 
-
-    public string Street { get; init; } = default!;
-    public string? City { get; init; } = default!;
-    public string? County { get; init; }
-    public string PostCode { get; init; } = default!;
-    public string? Country { get; init; } = default!;
 }

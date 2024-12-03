@@ -1,6 +1,81 @@
-@ForkPointAPI_HostAddress = https://localhost:7078
+@ForkPoint.API_HostAddress = https://localhost:7078
+@restaurantId = 1
+@testRestaurantId = 20
+@menuItemId = 42
 
-GET {{ForkPointAPI_HostAddress}}/weatherforecast
-Accept-Headers: application/json
+
+
+POST {{ForkPoint.API_HostAddress}}/api/restaurants/create
+Content-Type: application/json
+
+{
+  "name": "Test restaurant creation",
+  "description": "Restaurant for testing",
+  "category": "FastFood",
+  "hasDelivery": true,
+  "email": "test@test.com",
+  "contactNumber": "07708888296",
+  "address": {
+    "street": "1 test street",
+    "city": "Test City",
+    "county": "Test County",
+    "postCode": "M4 5RT",
+    "country": "UK"
+  }
+}
 
 ###
+
+POST {{ForkPoint.API_HostAddress}}/api/restaurant/{{testRestaurantId}}/menuitems/create
+Content-Type: application/json
+
+{
+  "name": "test menu item",
+  "description": "testing creation of a menu item",
+  "price": 10.00,
+  "isVegetarian": true,
+  "isVegan": true
+}
+
+###
+GET {{ForkPoint.API_HostAddress}}/api/restaurant/{{testRestaurantId}}/menuitems
+
+###
+
+GET {{ForkPoint.API_HostAddress}}/api/restaurant/{{testRestaurantId}}/menuitems/{{menuItemId}}
+
+
+###
+
+GET {{ForkPoint.API_HostAddress}}/api/restaurants
+
+###
+
+GET {{ForkPoint.API_HostAddress}}/api/restaurants/{{testRestaurantId}}
+
+###
+
+PATCH {{ForkPoint.API_HostAddress}}/api/restaurants/{{testRestaurantId}}
+Content-Type: application/json
+
+{
+  "name": "Test restaurant update",
+  "description": "Restaurant for testing",
+  "hasDelivery": true,
+  "email": "test@test.com",
+  "contactNumber": "07708888297",
+  "address": {
+    "street": "1 test street",
+    "city": "Test City",
+    "county": "Test County",
+    "postCode": "M4 5RT",
+    "country": "United Kingdom"
+  }
+}
+
+###
+
+DELETE {{ForkPoint.API_HostAddress}}/api/restaurants/{{testRestaurantId}}
+
+###
+
