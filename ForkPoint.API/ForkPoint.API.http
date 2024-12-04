@@ -1,5 +1,4 @@
 @ForkPoint.API_HostAddress = https://localhost:7078
-@restaurantId = 1
 @testRestaurantId = 20
 @menuItemId = 42
 
@@ -75,7 +74,14 @@ Content-Type: application/json
 
 ###
 
-DELETE {{ForkPoint.API_HostAddress}}/api/restaurants/{{testRestaurantId}}
+DELETE {{ForkPoint.API_HostAddress}}/api/restaurant/{{testRestaurantId}}/menuitems/{{menuItemId}}
 
 ###
 
+DELETE {{ForkPoint.API_HostAddress}}/api/restaurant/{{testRestaurantId}}/menuitems/{{menuItemId}}
+
+###
+
+DELETE {{ForkPoint.API_HostAddress}}/api/restaurants/{{testRestaurantId}}
+
+###

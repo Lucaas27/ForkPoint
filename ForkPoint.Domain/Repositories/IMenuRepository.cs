@@ -4,6 +4,6 @@ namespace ForkPoint.Domain.Repositories;
 public interface IMenuRepository
 {
     Task<int> CreateMenuItemAsync(MenuItem entity);
-    Task UpdateDb();
-    Task DeleteMenuItem(MenuItem menuItem);
+    Task DeleteMenuItemAsync(MenuItem entity);
+    Task DeleteAllMenuItemsAsync(IEnumerable<MenuItem> entities);
 }

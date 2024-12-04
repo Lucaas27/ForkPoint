@@ -8,19 +8,28 @@ internal class MenuRepository(ForkPointDbContext dbContext)
 {
     public async Task<int> CreateMenuItemAsync(MenuItem entity)
     {
-        var menuItem = dbContext.MenuItems.Add(entity);
+        var menuItem = await dbContext.MenuItems.AddAsync(entity);
 
         await UpdateDb();
 
         return menuItem.Entity.Id;
     }
 
-    public Task DeleteMenuItem(MenuItem menuItem)
+    public async Task DeleteMenuItemAsync(MenuItem entity)
     {
-        throw new NotImplementedException();
+        dbContext.MenuItems.Remove(entity);
+
+        await UpdateDb();
     }
 
-    public async Task UpdateDb()
+    public async Task DeleteAllMenuItemsAsync(IEnumerable<MenuItem> entities)
+    {
+        dbContext.MenuItems.RemoveRange(entities);
+
+        await UpdateDb();
+    }
+
+    private async Task UpdateDb()
     {
         await dbContext.SaveChangesAsync();
     }

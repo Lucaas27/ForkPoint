@@ -41,7 +41,6 @@ public class ErrorHandlerMiddleware(ILogger<ErrorHandlerMiddleware> logger) : IM
     /// Handles exceptions by logging the error and writing a JSON response with the error details.
     /// </summary>
     /// <param name="context">The HTTP context.</param>
-    /// <param name="exception">The exception that was thrown.</param>
     /// <param name="statusCode">The HTTP status code to return.</param>
     /// <param name="message">The error message to return in the response.</param>
     private async Task HandleExceptionAsync(HttpContext context, int statusCode, string message)
