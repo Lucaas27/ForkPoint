@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ForkPoint.Infrastructure.Migrations
 {
-    [DbContext(typeof(ForkPointDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20241130160605_ChangeNullValueInAddress")]
     partial class ChangeNullValueInAddress
     {

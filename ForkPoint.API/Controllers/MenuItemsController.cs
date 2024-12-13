@@ -10,7 +10,7 @@ using System.Net.Mime;
 
 
 namespace ForkPoint.API.Controllers;
-[Route("api/restaurant/{restaurantId}/[controller]")]
+[Route("api/restaurant/{restaurantId:int}/[controller]")]
 [ApiController]
 public class MenuItemsController(IMediator mediator) : ControllerBase
 {
@@ -43,7 +43,7 @@ public class MenuItemsController(IMediator mediator) : ControllerBase
     /// <response code="204">If the menu item is found.</response>
     /// <response code="404">If the menu item or restaurant is not found.</response>
     /// <response code="500">If there is an internal server error.</response>
-    [HttpGet("{menuItemId}")]
+    [HttpGet("{menuItemId:int}")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<CustomException>(StatusCodes.Status404NotFound)]
@@ -87,7 +87,7 @@ public class MenuItemsController(IMediator mediator) : ControllerBase
     /// <response code="204">If the menu item is successfully deleted.</response>
     /// <response code="404">If the menu item or restaurant is not found.</response>
     /// <response code="500">If there is an internal server error.</response>
-    [HttpDelete("{menuItemId}")]
+    [HttpDelete("{menuItemId:int}")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<CustomException>(StatusCodes.Status404NotFound)]

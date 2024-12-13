@@ -3,7 +3,7 @@ using ForkPoint.Infrastructure.Persistence;
 using System.Text.Json;
 
 namespace ForkPoint.Infrastructure.Seeders;
-internal class RestaurantSeeder(ForkPointDbContext dbContext) : ISeeder
+internal class RestaurantSeeder(ApplicationDbContext dbContext) : ISeeder
 {
     private static readonly string jsonFilePath = Path.Combine(AppContext.BaseDirectory, "Seeders", "restaurants.json");
     public async Task Seed()

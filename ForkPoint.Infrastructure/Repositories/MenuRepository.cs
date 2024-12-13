@@ -3,7 +3,7 @@ using ForkPoint.Domain.Repositories;
 using ForkPoint.Infrastructure.Persistence;
 
 namespace ForkPoint.Infrastructure.Repositories;
-internal class MenuRepository(ForkPointDbContext dbContext)
+internal class MenuRepository(ApplicationDbContext dbContext)
     : IMenuRepository
 {
     public async Task<int> CreateMenuItemAsync(MenuItem entity)

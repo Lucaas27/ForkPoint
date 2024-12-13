@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ForkPoint.Infrastructure.Migrations
 {
-    [DbContext(typeof(ForkPointDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20241111181016_KiloCaloriesAddedToMenuItem")]
     partial class KiloCaloriesAddedToMenuItem
     {

@@ -4,7 +4,7 @@ using ForkPoint.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace ForkPoint.Infrastructure.Repositories;
-internal class RestaurantRepository(ForkPointDbContext dbContext)
+internal class RestaurantRepository(ApplicationDbContext dbContext)
     : IRestaurantRepository
 {
     public async Task<int> CreateRestaurantAsync(Restaurant entity)
