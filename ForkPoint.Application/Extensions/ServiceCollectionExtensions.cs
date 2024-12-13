@@ -1,9 +1,12 @@
-﻿using FluentValidation;
+﻿using System.Text;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using ForkPoint.Application.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ForkPoint.Application.Extensions;
 public static class ServiceCollectionExtensions
@@ -20,16 +23,33 @@ public static class ServiceCollectionExtensions
             .AddFluentValidationAutoValidation();
 
         services.AddAuthentication(
-        // options =>
-        // {
-        //     options.DefaultAuthenticateScheme =
-        //     options.DefaultChallengeScheme =
-        //     options.DefaultForbidScheme =
-        //     options.DefaultScheme =
-        //     options.DefaultSignInScheme =
-        //     options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
-        // }
+        options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme =
+            options.DefaultForbidScheme =
+            options.DefaultScheme =
+            options.DefaultSignInScheme =
+            options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+        }
         )
+            .AddJwtBearer(options =>
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                
+                ValidIssuer = config["Jwt:Issuer"]
+                    ?? throw new ArgumentNullException(nameof(options.Authority), "Jwt:Issuer is null"),
+                ValidAudience = config["Jwt:Audience"]
+                    ?? throw new ArgumentNullException(nameof(options.Audience), "Authentication:Audience is null"),
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(config["Jwt:Key"]
+                        ?? throw new ArgumentNullException(nameof(options), "Authentication:Secret is null"))
+                )
+            })
             .AddCookie() // For temporary state during External provider authentication
             .AddGoogle(options =>
             {

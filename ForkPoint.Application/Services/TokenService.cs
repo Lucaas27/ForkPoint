@@ -28,7 +28,7 @@ public class TokenService(IConfiguration config, UserManager<User> userManager) 
         {
             new(JwtRegisteredClaimNames.Sub, user.Id),
             new(JwtRegisteredClaimNames.Email, user.Email!),
-            new(JwtRegisteredClaimNames.GivenName, user.UserName!)
+            new(JwtRegisteredClaimNames.Name, user.FullName!)
         };
 
         claims.AddRange(userClaims);

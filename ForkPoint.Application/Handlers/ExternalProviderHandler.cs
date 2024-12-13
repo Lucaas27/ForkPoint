@@ -21,7 +21,8 @@ public class ExternalProviderHandler(
 {
     public override async Task<ExternalProviderResponse> Handle(ExternalProviderRequest request, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Handling external provider request...");
+        logger.LogInformation("Handling external provider authentication request...");
+        string token;
 
         // Get Google authentication result
         var claims = await AuthenticateAndGetClaims(GoogleDefaults.AuthenticationScheme, request.HttpCxt);
@@ -34,14 +35,15 @@ public class ExternalProviderHandler(
         if (userByExternalLogin != null)
         {
             await signInManager.SignInAsync(userByExternalLogin, isPersistent: false);
-            var newToken = await tokenService.GenerateToken(userByExternalLogin);
-            return new ExternalProviderResponse { IsSuccess = true, AccessToken = newToken };
+            token = await tokenService.GenerateToken(userByExternalLogin);
+            return new ExternalProviderResponse { IsSuccess = true, AccessToken = token };
         }
 
         // Create new user if not found
         var user = new User
         {
-            UserName = claims["name"],
+            FullName = claims["name"],
+            UserName = claims["email"],
             Email = claims["email"],
             EmailConfirmed = true
         };
@@ -64,7 +66,7 @@ public class ExternalProviderHandler(
 
         // Sign in and return token
         await signInManager.SignInAsync(user, isPersistent: false);
-        var token = await tokenService.GenerateToken(user);
+        token = await tokenService.GenerateToken(user);
 
         return new ExternalProviderResponse { IsSuccess = true, AccessToken = token };
 
@@ -79,7 +81,7 @@ public class ExternalProviderHandler(
 
         var claims = authenticateResult.Principal.Claims.ToList();
         var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-        var name = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+        var name = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
         var providerKey = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
         if (string.IsNullOrEmpty(email)) throw new Exception("Email claim not found.");

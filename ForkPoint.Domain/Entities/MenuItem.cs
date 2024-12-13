@@ -2,16 +2,16 @@
 
 public class MenuItem
 {
-    public int Id { get; set; }
-    public string Name { get; set; } = default!;
-    public string Description { get; set; } = default!;
-    public decimal Price { get; set; } = default;
-    public string? ImageUrl { get; set; }
-    public bool IsVegetarian { get; set; } = default;
-    public bool IsVegan { get; set; } = default;
-    public int? KiloCalories { get; set; }
-    public int RestaurantId { get; set; } // Foreign Key
+    public int Id { get; init; }
+    public string Name { get; init; } = null!;
+    public string Description { get; init; } = null!;
+    public decimal Price { get; init; }
+    public string? ImageUrl { get; init; }
+    public bool IsVegetarian { get; init; }
+    public bool IsVegan { get; init; }
+    public int? KiloCalories { get; init; }
+    public int RestaurantId { get; init; } // Foreign Key
 
     // Navigation properties
-    public Restaurant Restaurant { get; set; } = default!;
+    public Restaurant Restaurant { get; init; } = default!;
 }

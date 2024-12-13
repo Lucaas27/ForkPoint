@@ -4,15 +4,15 @@ namespace ForkPoint.Domain.Entities;
 public class Restaurant
 {
 
-    public int Id { get; set; }
-    public string Name { get; set; } = default!;
-    public string? Description { get; set; }
-    public string Category { get; set; } = default!;
-    public bool HasDelivery { get; set; } = default;
-    public string? Email { get; set; }
-    public string? ContactNumber { get; set; }
+    public int Id { get; init; }
+    public string Name { get; init; } = null!;
+    public string? Description { get; init; }
+    public string Category { get; init; } = null!;
+    public bool HasDelivery { get; init; }
+    public string? Email { get; init; }
+    public string? ContactNumber { get; init; }
 
     // Navigation properties
-    public Address Address { get; set; } = default!;
-    public ICollection<MenuItem> MenuItems { get; set; } = default!;
+    public Address Address { get; init; } = null!;
+    public ICollection<MenuItem> MenuItems { get; init; } = null!;
 }
