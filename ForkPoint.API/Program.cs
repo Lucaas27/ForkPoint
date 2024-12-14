@@ -30,7 +30,6 @@ app.UseMiddleware<ElapsedTimeMiddleware>();
 app.UseSerilogRequestLogging();
 app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseHttpsRedirection();
-app.MapGroup("api/Identity").MapIdentityApi<User>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

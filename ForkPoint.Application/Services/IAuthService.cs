@@ -2,7 +2,7 @@
 
 namespace ForkPoint.Application.Services;
 
-public interface ITokenService
+public interface IAuthService
 {
-    Task<string> GenerateToken(User user);
+    string GenerateToken(User user);
 }

@@ -1,10 +1,7 @@
 using System.Security.Claims;
-using ForkPoint.Application.Models.Dtos;
 using ForkPoint.Application.Models.Handlers.ExternalProviderCallback;
 using ForkPoint.Application.Services;
 using ForkPoint.Domain.Entities;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -12,7 +9,7 @@ namespace ForkPoint.Application.Handlers;
 
 public class ExternalProviderHandler(
     ILogger<ExternalProviderHandler> logger,
-    ITokenService tokenService,
+    IAuthService authService,
     UserManager<User> userManager,
     SignInManager<User> signInManager
 ) : BaseHandler<ExternalProviderRequest, ExternalProviderResponse>
@@ -22,69 +19,67 @@ public class ExternalProviderHandler(
         CancellationToken cancellationToken)
     {
         logger.LogInformation("Handling external provider authentication request...");
-        string token;
-        var authenticationScheme = request.AuthenticationScheme ??
-                                   throw new ArgumentNullException(nameof(request.AuthenticationScheme),
-                                       "AuthenticationScheme is missing.");
 
-        // Get authentication result
-        var externalProviderClaims = await AuthenticateAndGetClaims(request.HttpCxt, authenticationScheme);
+        // Login with external provider
+        var user = await ExternalProviderLogin();
+
+        // Get token
+        var token = authService.GenerateToken(user);
+
+        return new ExternalProviderResponse(token) { IsSuccess = true };
+    }
+
+    private async Task<User> ExternalProviderLogin()
+    {
+        // Get external login information
+        var externalLoginInfo = await signInManager.GetExternalLoginInfoAsync();
+        if (externalLoginInfo == null) throw new Exception("Error loading external login information.");
+
+        var claims = externalLoginInfo.Principal.Claims.ToList();
+        var provider = externalLoginInfo.LoginProvider;
+        var providerKey = externalLoginInfo.ProviderKey;
 
         // First try to find user by external login
-        var externalLoginInfo = new UserLoginInfo(authenticationScheme, externalProviderClaims.ProviderKey, null);
-        var userByExternalLogin =
-            await userManager.FindByLoginAsync(externalLoginInfo.LoginProvider, externalLoginInfo.ProviderKey);
+        var user = await userManager.FindByLoginAsync(provider, providerKey);
 
-        // If user already exists, sign in and return token
-        if (userByExternalLogin != null)
+        // If user does not exist
+        if (user == null)
         {
-            await signInManager.SignInAsync(userByExternalLogin, false);
-            token = await tokenService.GenerateToken(userByExternalLogin);
-            return new ExternalProviderResponse(token) { IsSuccess = true };
+            // Create new user
+            user = new User
+            {
+                FullName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value
+                           ?? throw new ArgumentNullException(nameof(claims), "Name claim is missing."),
+                UserName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value
+                           ?? throw new ArgumentNullException(nameof(claims), "Email claim is missing."),
+                Email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value
+                        ?? throw new ArgumentNullException(nameof(claims), "Email claim is missing."),
+                EmailConfirmed = true
+            };
+
+            // Create user and external login association in the database
+            await CreateExternalUserAsync(user, provider, providerKey);
         }
 
-        // Create new user if not found
-        var user = new User
-        {
-            FullName = externalProviderClaims.Name,
-            UserName = externalProviderClaims.Email,
-            Email = externalProviderClaims.Email,
-            EmailConfirmed = true
-        };
+        // Sign in
+        await signInManager.ExternalLoginSignInAsync(provider, providerKey, false);
 
+        return user;
+    }
+
+    private async Task CreateExternalUserAsync(User user, string provider, string providerKey)
+    {
         var createResult = await userManager.CreateAsync(user);
         if (!createResult.Succeeded)
             throw new Exception(
                 $"Failed to create user: {string.Join(", ", createResult.Errors.Select(e => e.Description))}");
 
         // Create external login association
-        var addLoginResult = await userManager.AddLoginAsync(user, externalLoginInfo);
+        var addLoginResult = await userManager.AddLoginAsync(
+            user,
+            new UserLoginInfo(provider, providerKey, null));
+
         if (!addLoginResult.Succeeded)
             throw new Exception("Failed to add external login.");
-
-        // Sign in and return token
-        await signInManager.SignInAsync(user, false);
-        token = await tokenService.GenerateToken(user);
-
-        return new ExternalProviderResponse(token) { IsSuccess = true };
-    }
-
-    private async Task<ExternalProviderClaims> AuthenticateAndGetClaims(
-        HttpContext requestHttpCxt, string authenticationScheme)
-    {
-        var authenticateResult = await requestHttpCxt.AuthenticateAsync(authenticationScheme);
-
-        if (!authenticateResult.Succeeded) throw new Exception("Error authenticating with external provider.");
-
-        var claims = authenticateResult.Principal.Claims.ToList();
-
-        if (claims.Any(c => string.IsNullOrEmpty(c.Value)))
-            throw new ArgumentNullException(nameof(claims), "Claim type is missing.");
-
-        var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)!.Value;
-        var name = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)!.Value;
-        var providerKey = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
-
-        return new ExternalProviderClaims(email, name, providerKey);
     }
 }

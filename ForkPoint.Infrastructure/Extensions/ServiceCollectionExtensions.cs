@@ -3,24 +3,37 @@ using ForkPoint.Domain.Repositories;
 using ForkPoint.Infrastructure.Persistence;
 using ForkPoint.Infrastructure.Repositories;
 using ForkPoint.Infrastructure.Seeders;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ForkPoint.Infrastructure.Extensions;
-/// <summary>
-/// Extension methods for setting up infrastructure services in an <see cref="IServiceCollection" />.
-/// </summary>
+
 public static class ServiceCollectionExtensions
 {
-    /// <summary>
-    /// Adds the infrastructure services to the specified <see cref="IServiceCollection" />.
-    /// </summary>
-    /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration config)
     {
         var connectionString = config.GetConnectionString("Default");
-        services.AddIdentityApiEndpoints<User>().AddEntityFrameworkStores<ApplicationDbContext>();
+        services.AddIdentity<User, IdentityRole>(options =>
+                {
+                    // options.Password.RequireDigit = false;
+                    // options.Password.RequireLowercase = false;
+                    // options.Password.RequireNonAlphanumeric = false;
+                    // options.Password.RequireUppercase = false;
+                    // options.Password.RequiredLength = 3;
+                    // options.User.RequireUniqueEmail = true;
+                    // options.SignIn.RequireConfirmedEmail = true;
+                    // options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                    // options.Lockout.MaxFailedAccessAttempts = 5;
+                    // options.Lockout.AllowedForNewUsers = true;
+                    // options.Tokens.EmailConfirmationTokenProvider
+                    // options.Tokens.ChangeEmailTokenProvider
+                    // options.Tokens.ChangePhoneNumberTokenProvider
+                    // options.Tokens.PasswordResetTokenProvider
+                }
+            )
+            .AddEntityFrameworkStores<ApplicationDbContext>();
         services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
         services.AddScoped<ISeeder, RestaurantSeeder>();
         services.AddScoped<IRestaurantRepository, RestaurantRepository>();

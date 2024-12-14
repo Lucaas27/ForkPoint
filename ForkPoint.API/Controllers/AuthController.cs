@@ -20,12 +20,10 @@ public class AuthController(IMediator mediator) : ControllerBase
         var authenticationScheme = GoogleDefaults.AuthenticationScheme;
         var properties = new AuthenticationProperties
         {
-            RedirectUri = Url.Action(nameof(ExternalProviderCallback), "Auth",
-                new { authenticationScheme }),
+            RedirectUri = Url.Action(nameof(ExternalProviderCallback)),
             Items =
             {
-                { "LoginProvider", authenticationScheme },
-                { "ReturnUrl", "/" }
+                { "LoginProvider", authenticationScheme }
             }
         };
         return Challenge(properties, authenticationScheme);
@@ -35,11 +33,9 @@ public class AuthController(IMediator mediator) : ControllerBase
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ExternalProviderResponse>> ExternalProviderCallback(
-        [FromQuery] string authenticationScheme)
+    public async Task<ActionResult<ExternalProviderResponse>> ExternalProviderCallback()
     {
-        var requestWithCtx = new ExternalProviderRequest(HttpContext, authenticationScheme);
-        var response = await mediator.Send(requestWithCtx);
+        var response = await mediator.Send(new ExternalProviderRequest());
         return Ok(response);
     }
 }

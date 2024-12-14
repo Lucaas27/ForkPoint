@@ -1,20 +1,20 @@
 ﻿// Ignore Spelling: Middleware
 
-using ForkPoint.Application.Models.Exceptions;
-using ForkPoint.Domain.Exceptions;
 using System.Net.Mime;
 using System.Text.Json;
+using ForkPoint.Application.Models.Exceptions;
+using ForkPoint.Domain.Exceptions;
 
 namespace ForkPoint.API.Middlewares;
 
 /// <summary>
-/// Middleware to handle exceptions and provide a consistent error response format.
+///     Middleware to handle exceptions and provide a consistent error response format.
 /// </summary>
 /// <param name="logger">The logger instance to log errors.</param>
 public class ErrorHandlerMiddleware(ILogger<ErrorHandlerMiddleware> logger) : IMiddleware
 {
     /// <summary>
-    /// Invokes the next middleware in the pipeline and handles any exceptions that occur.
+    ///     Invokes the next middleware in the pipeline and handles any exceptions that occur.
     /// </summary>
     /// <param name="context">The HTTP context.</param>
     /// <param name="next">The next middleware to invoke.</param>
@@ -33,12 +33,13 @@ public class ErrorHandlerMiddleware(ILogger<ErrorHandlerMiddleware> logger) : IM
         }
         catch (Exception ex)
         {
-            await HandleExceptionAsync(context, StatusCodes.Status500InternalServerError, "Something went wrong. Please try again.", ex);
+            await HandleExceptionAsync(context, StatusCodes.Status500InternalServerError,
+                "Something went wrong. Please try again.", ex);
         }
     }
 
     /// <summary>
-    /// Handles exceptions by logging the error and writing a JSON response with the error details.
+    ///     Handles exceptions by logging the error and writing a JSON response with the error details.
     /// </summary>
     /// <param name="context">The HTTP context.</param>
     /// <param name="statusCode">The HTTP status code to return.</param>
@@ -53,9 +54,7 @@ public class ErrorHandlerMiddleware(ILogger<ErrorHandlerMiddleware> logger) : IM
         }
 
         if (statusCode != 404)
-        {
-            logger.LogError("ERROR: {Message}", ex.Message);
-        }
+            logger.LogError($"ERROR: {ex.Message}" + Environment.NewLine + $"{ex.StackTrace}");
 
         context.Response.StatusCode = statusCode;
         context.Response.ContentType = MediaTypeNames.Application.Json;
