@@ -6,25 +6,30 @@ using ForkPoint.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 
 namespace ForkPoint.Application.Handlers;
+
 public class CreateMenuItemHandler(
     ILogger<CreateMenuItemHandler> logger,
     IMapper mapper,
     IRestaurantRepository restaurantsRepository,
     IMenuRepository menuRepository)
-    : BaseHandler<CreateMenuItemRequest, CreateMenuItemResponse>(logger, mapper, restaurantsRepository)
+    : BaseHandler<CreateMenuItemRequest, CreateMenuItemResponse>
 {
-    public override async Task<CreateMenuItemResponse> Handle(CreateMenuItemRequest request, CancellationToken cancellationToken)
+    public override async Task<CreateMenuItemResponse> Handle(CreateMenuItemRequest request,
+        CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Request: {@Request}", request);
-        _logger.LogInformation("Creating new menu item for restaurant id {restaurantId}...", request.RestaurantId);
+        logger.LogInformation("Request: {@Request}", request);
+        logger.LogInformation("Creating new menu item for restaurant id {restaurantId}...", request.RestaurantId);
 
-        var restaurant = await _restaurantsRepository!.GetRestaurantByIdAsync(request.RestaurantId)
+        // Check if restaurant exists
+        _ = await restaurantsRepository.GetRestaurantByIdAsync(request.RestaurantId)
             ?? throw new NotFoundException(nameof(Restaurant), request.RestaurantId);
 
-        var menuItem = _mapper.Map<MenuItem>(request);
+        // Map request to MenuItem
+        var menuItem = mapper.Map<MenuItem>(request);
 
+        // Create new menu item
         var menuItemId = await menuRepository.CreateMenuItemAsync(menuItem);
 
-        return new CreateMenuItemResponse(menuItem.Id);
+        return new CreateMenuItemResponse(menuItemId);
     }
 }

@@ -1,7 +1,5 @@
 ﻿using ForkPoint.Application.Models.Dtos;
 
-namespace ForkPoint.Application.Models.Handlers.GetById;
-public record GetRestaurantByIdResponse : BaseHandlerResponse
-{
-    public RestaurantDetailsModel? Restaurant { get; init; }
-}
+namespace ForkPoint.Application.Models.Handlers.GetRestaurantById;
+
+public record GetRestaurantByIdResponse(RestaurantDetailsModel Restaurant) : BaseHandlerResponse;

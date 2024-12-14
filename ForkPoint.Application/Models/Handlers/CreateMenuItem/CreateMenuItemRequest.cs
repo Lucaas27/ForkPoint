@@ -6,9 +6,9 @@ public record CreateMenuItemRequest() : IRequest<CreateMenuItemResponse>
 {
     [JsonIgnore]
     public int RestaurantId { get; init; }
-    public string Name { get; init; } = default!;
-    public string Description { get; init; } = default!;
-    public decimal Price { get; init; } = default;
+    public string Name { get; init; } = null!;
+    public string Description { get; init; } = null!;
+    public decimal Price { get; init; } = 0;
     public string? ImageUrl { get; init; }
     public bool IsVegetarian { get; init; } = false;
     public bool IsVegan { get; init; } = false;

@@ -7,7 +7,7 @@ public record UpdateRestaurantRequest : IRequest<UpdateRestaurantResponse>
 {
     [JsonIgnore]
     public int Id { get; init; }
-    public string? Name { get; init; } = default!;
+    public string? Name { get; init; } = null!;
     public string? Description { get; init; }
     public bool? HasDelivery { get; init; }
     public string? Email { get; init; }

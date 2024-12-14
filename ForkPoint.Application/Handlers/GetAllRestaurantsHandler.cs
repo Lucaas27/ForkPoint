@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace ForkPoint.Application.Handlers;
 
 /// <summary>
-/// Handles the request to get all restaurants.
+///     Handles the request to get all restaurants.
 /// </summary>
 /// <param name="logger">The logger instance.</param>
 /// <param name="mapper">The AutoMapper instance.</param>
@@ -16,25 +16,26 @@ public class GetAllRestaurantsHandler(
     ILogger<GetAllRestaurantsHandler> logger,
     IMapper mapper,
     IRestaurantRepository restaurantsRepository)
-    : BaseHandler<GetAllRestaurantsRequest, GetAllRestaurantsResponse>(logger, mapper, restaurantsRepository)
+    : BaseHandler<GetAllRestaurantsRequest, GetAllRestaurantsResponse>
 {
     /// <summary>
-    /// Handles the request to get all restaurants.
+    ///     Handles the request to get all restaurants.
     /// </summary>
     /// <param name="request">The request to get all restaurants.</param>
     /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
     /// <returns>A response containing all restaurants.</returns>
-    public override async Task<GetAllRestaurantsResponse> Handle(GetAllRestaurantsRequest request, CancellationToken cancellationToken)
+    public override async Task<GetAllRestaurantsResponse> Handle(GetAllRestaurantsRequest request,
+        CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Request: {@Request}", request);
-        _logger.LogInformation("Getting all restaurants...");
+        logger.LogInformation("Request: {@Request}", request);
+        logger.LogInformation("Getting all restaurants...");
 
-        var restaurants = await _restaurantsRepository!.GetAllRestaurantsAsync();
+        var restaurants = await restaurantsRepository.GetAllRestaurantsAsync();
+        var restaurantsDto = mapper.Map<IEnumerable<RestaurantModel>>(restaurants);
 
-        var response = new GetAllRestaurantsResponse
+        var response = new GetAllRestaurantsResponse(restaurantsDto)
         {
-            IsSuccess = restaurants.Any(),
-            Restaurants = _mapper.Map<IEnumerable<RestaurantModel>>(restaurants)
+            IsSuccess = true
         };
 
         return response;

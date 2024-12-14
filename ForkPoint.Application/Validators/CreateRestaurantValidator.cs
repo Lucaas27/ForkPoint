@@ -5,9 +5,11 @@ using ForkPoint.Application.Enums;
 using ForkPoint.Application.Models.Handlers.CreateRestaurant;
 
 namespace ForkPoint.Application.Validators;
+
 public class CreateRestaurantValidator : AbstractValidator<CreateRestaurantRequest>
 {
     private readonly string[] _categories = Enum.GetNames<RestaurantCategories>();
+
     public CreateRestaurantValidator()
     {
         RuleFor(x => x.Name)
@@ -19,9 +21,10 @@ public class CreateRestaurantValidator : AbstractValidator<CreateRestaurantReque
             .WithMessage("Description cannot exceed 500 characters");
 
         RuleFor(x => x.Category)
-            .Must(category => _categories
+            .Must(category => category is not null && _categories
                 .Any(enumOption => enumOption.Equals(category.Replace(" ", ""), StringComparison.OrdinalIgnoreCase)))
-            .WithMessage($"Invalid category. Available categories: {string.Join(", ", _categories)}");
+            .WithMessage(
+                $"Invalid category. Available categories: {string.Join(", ", _categories)}");
 
         RuleFor(x => x.Email)
             .EmailAddress()

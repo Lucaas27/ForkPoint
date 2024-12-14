@@ -1,5 +1,3 @@
 ﻿namespace ForkPoint.Application.Models.Handlers.CreateRestaurant;
-public record CreateRestaurantResponse : BaseHandlerResponse
-{
-    public int NewRecordId { get; init; }
-}
+
+public record CreateRestaurantResponse(int NewRecordId) : BaseHandlerResponse;

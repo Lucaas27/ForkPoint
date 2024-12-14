@@ -40,7 +40,7 @@ public static class ServiceCollectionExtensions
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                
+                                                                                                                                    
                 ValidIssuer = config["Jwt:Issuer"]
                     ?? throw new ArgumentNullException(nameof(options.Authority), "Jwt:Issuer is null"),
                 ValidAudience = config["Jwt:Audience"]

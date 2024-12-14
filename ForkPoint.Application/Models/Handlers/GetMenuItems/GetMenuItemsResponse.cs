@@ -2,7 +2,4 @@
 
 namespace ForkPoint.Application.Models.Handlers.GetMenuItems;
 
-public record GetMenuItemsResponse : BaseHandlerResponse
-{
-    public IEnumerable<MenuItemModel> Menu { get; init; } = [];
-}
+public record GetMenuItemsResponse(IEnumerable<MenuItemModel> Menu) : BaseHandlerResponse;
