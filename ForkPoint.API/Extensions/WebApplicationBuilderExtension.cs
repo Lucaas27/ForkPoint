@@ -1,7 +1,8 @@
-﻿using ForkPoint.API.Middlewares;
+﻿using System.Reflection;
+using ForkPoint.API.Middlewares;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using System.Reflection;
 
 namespace ForkPoint.API.Extensions;
 
@@ -9,10 +10,32 @@ public static class WebApplicationBuilderExtension
 {
     public static void AddPresentation(this WebApplicationBuilder builder)
     {
+        builder.Host.UseSerilog((context, config) =>
+        {
+            config
+                .ReadFrom.Configuration(context.Configuration);
+        });
 
         builder.Services.AddControllers();
 
+        builder.Services.AddHttpLogging(logging =>
+        {
+            logging.LoggingFields = HttpLoggingFields.RequestBody |
+                                    HttpLoggingFields.ResponseBody;
+
+            logging.RequestBodyLogLimit = 4096;
+            logging.ResponseBodyLogLimit = 4096;
+            logging.CombineLogs = false;
+
+            // Add sensitive headers to be masked
+            logging.MediaTypeOptions.AddText("application/json");
+            logging.RequestHeaders.Add("Authorization");
+            logging.RequestHeaders.Add("X-Api-Key");
+        });
+
         builder.Services.AddScoped<ErrorHandlerMiddleware>();
+
+        builder.Services.AddScoped(sp => new SensitiveDataLoggingMiddleware(builder.Configuration));
 
         builder.Services.AddScoped<ElapsedTimeMiddleware>();
 
@@ -40,7 +63,7 @@ public static class WebApplicationBuilderExtension
                             Id = "authToken"
                         }
                     },
-                    Array.Empty<string>()
+                    []
                 }
             });
 
@@ -48,7 +71,7 @@ public static class WebApplicationBuilderExtension
             {
                 Version = "v1",
                 Title = "ForkPoint API",
-                Description = "ASP.NET 8 Core Web API for managing restaurants and menus",
+                Description = "ASP.NET 8 Core Web API for managing restaurants and menus"
                 //TermsOfService = new Uri("https://example.com/terms"),
                 //Contact = new OpenApiContact
                 //{
@@ -64,12 +87,6 @@ public static class WebApplicationBuilderExtension
 
             var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-        });
-
-        builder.Host.UseSerilog((context, config) =>
-        {
-            config
-            .ReadFrom.Configuration(context.Configuration);
         });
     }
 }

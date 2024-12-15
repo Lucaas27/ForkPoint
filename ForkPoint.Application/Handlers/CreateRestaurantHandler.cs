@@ -27,7 +27,6 @@ public class CreateRestaurantHandler(
     public override async Task<CreateRestaurantResponse> Handle(CreateRestaurantRequest request,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("Request: {@Request}", request);
         logger.LogInformation("Creating new restaurant...");
 
         var restaurant = mapper.Map<Restaurant>(request);

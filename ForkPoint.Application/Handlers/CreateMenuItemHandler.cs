@@ -17,7 +17,6 @@ public class CreateMenuItemHandler(
     public override async Task<CreateMenuItemResponse> Handle(CreateMenuItemRequest request,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("Request: {@Request}", request);
         logger.LogInformation("Creating new menu item for restaurant id {restaurantId}...", request.RestaurantId);
 
         // Check if restaurant exists

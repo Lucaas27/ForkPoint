@@ -22,8 +22,7 @@ public class AuthService(
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new(JwtRegisteredClaimNames.Sub, user.Id),
             new(JwtRegisteredClaimNames.Email, user.Email!),
-            new("email_verified", user.EmailConfirmed.ToString()),
-            new(JwtRegisteredClaimNames.Name, user.FullName)
+            new("email_verified", user.EmailConfirmed.ToString())
         };
 
         var tokenDescriptor = new SecurityTokenDescriptor

@@ -7,7 +7,8 @@ namespace ForkPoint.API.Middlewares;
 
 public class ElapsedTimeMiddleware(ILogger<ElapsedTimeMiddleware> logger) : IMiddleware
 {
-    private const int thresholdInSeconds = 4;
+    private const int ThresholdInSeconds = 4;
+
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         var stopwatch = Stopwatch.StartNew();
@@ -20,9 +21,8 @@ public class ElapsedTimeMiddleware(ILogger<ElapsedTimeMiddleware> logger) : IMid
         var method = context.Request.Method;
         var path = context.Request.Path;
 
-        if (elapsedSeconds > thresholdInSeconds)
-        {
-            logger.LogWarning("Request [{Method}] {Path} took {ElapsedMilliseconds} seconds", method, path, elapsedSeconds);
-        }
+        if (elapsedSeconds > ThresholdInSeconds)
+            logger.LogWarning("Request [{Method}] {Path} took {ElapsedMilliseconds} seconds", method, path,
+                elapsedSeconds);
     }
 }

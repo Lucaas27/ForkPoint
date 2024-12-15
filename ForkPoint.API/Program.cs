@@ -1,7 +1,6 @@
 using ForkPoint.API.Extensions;
 using ForkPoint.API.Middlewares;
 using ForkPoint.Application.Extensions;
-using ForkPoint.Domain.Entities;
 using ForkPoint.Infrastructure.Extensions;
 using ForkPoint.Infrastructure.Seeders;
 using Serilog;
@@ -20,17 +19,23 @@ var app = builder.Build();
 var scope = app.Services.CreateScope(); // Create a scope to resolve services from the container
 await scope.ServiceProvider.GetRequiredService<ISeeder>().Seed(); // Seed the database
 
-app.UseSwagger();
-app.UseSwaggerUI(options =>
-{
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "ForkPoint API");
-    options.RoutePrefix = string.Empty;
-});
-app.UseMiddleware<ElapsedTimeMiddleware>();
-app.UseSerilogRequestLogging();
-app.UseMiddleware<ErrorHandlerMiddleware>();
-app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
+// Add Middleware
+app.UseHttpsRedirection()
+    .UseSwagger()
+    .UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "ForkPoint API");
+        options.RoutePrefix = string.Empty;
+    })
+    .UseSerilogRequestLogging()
+    .UseMiddleware<ElapsedTimeMiddleware>()
+    .UseMiddleware<ErrorHandlerMiddleware>()
+    .UseMiddleware<SensitiveDataLoggingMiddleware>()
+    .UseHttpLogging()
+    .UseAuthentication()
+    .UseAuthorization();
+
 app.MapControllers();
+
+// Run the app
 app.Run();

@@ -27,7 +27,6 @@ public class GetAllRestaurantsHandler(
     public override async Task<GetAllRestaurantsResponse> Handle(GetAllRestaurantsRequest request,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("Request: {@Request}", request);
         logger.LogInformation("Getting all restaurants...");
 
         var restaurants = await restaurantsRepository.GetAllRestaurantsAsync();

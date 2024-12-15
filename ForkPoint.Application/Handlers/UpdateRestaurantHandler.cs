@@ -29,7 +29,6 @@ public class UpdateRestaurantHandler(
     public override async Task<UpdateRestaurantResponse> Handle(UpdateRestaurantRequest request,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("Request: {@Request}", request);
         logger.LogInformation("Updating restaurant id {@RestaurantId}...", request.Id);
         var restaurant = await restaurantRepository.GetRestaurantByIdAsync(request.Id)
                          ?? throw new NotFoundException(nameof(Restaurant), request.Id);

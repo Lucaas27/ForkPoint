@@ -30,7 +30,6 @@ public class GetRestaurantByIdHandler(
     public override async Task<GetRestaurantByIdResponse> Handle(GetRestaurantByIdRequest request,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("Request: {@Request}", request);
         logger.LogInformation("Getting restaurant by id {@RestaurantId}...", request.Id);
 
         var restaurant = await restaurantsRepository.GetRestaurantByIdAsync(request.Id)

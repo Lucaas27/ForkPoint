@@ -22,7 +22,6 @@ public class DeleteMenuItemHandler(
     public override async Task<DeleteMenuItemResponse> Handle(DeleteMenuItemRequest request,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("Request: {@Request}", request);
         logger.LogInformation("Deleting menu item {MenuItemId} from restaurant id {RestaurantId}...",
             request.MenuItemId, request.RestaurantId);
 

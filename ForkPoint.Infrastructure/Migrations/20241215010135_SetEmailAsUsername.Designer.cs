@@ -4,6 +4,7 @@ using ForkPoint.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ForkPoint.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class RestaurantsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241215010135_SetEmailAsUsername")]
+    partial class SetEmailAsUsername
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -171,6 +174,7 @@ namespace ForkPoint.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FullName")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -260,13 +264,13 @@ namespace ForkPoint.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "dafc5519-da90-4504-969b-e5d69008ed0e",
+                            Id = "e167dad5-1f2c-4943-b3ee-a7cad2ff1ea9",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "3515a813-39f0-4945-9014-4804fb69aeed",
+                            Id = "229acbad-07cc-4e67-8dd2-7b8f2be2c823",
                             Name = "User",
                             NormalizedName = "USER"
                         });

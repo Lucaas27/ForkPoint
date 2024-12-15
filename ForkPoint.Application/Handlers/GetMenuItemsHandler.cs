@@ -17,7 +17,6 @@ public class GetMenuItemsHandler(
     public override async Task<GetMenuItemsResponse> Handle(GetMenuItemsRequest request,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("Request: {@Request}", request);
         logger.LogInformation("Fetching menu for restaurant {@Restaurant}...", request.RestaurantId);
 
         var restaurant = await restaurantRepository.GetRestaurantByIdAsync(request.RestaurantId)

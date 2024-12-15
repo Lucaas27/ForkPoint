@@ -21,7 +21,6 @@ public class DeleteAllMenuItemsHandler(
     public override async Task<DeleteAllMenuItemsResponse> Handle(DeleteAllMenuItemsRequest request,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("Request: {@Request}", request);
         logger.LogInformation("Deleting all menu items for restaurant id {RestaurantId}", request.RestaurantId);
 
         var restaurant = await restaurantRepository.GetRestaurantByIdAsync(request.RestaurantId)

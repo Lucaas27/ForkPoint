@@ -74,6 +74,12 @@ public class ExternalProviderHandler(
             throw new Exception(
                 $"Failed to create user: {string.Join(", ", createResult.Errors.Select(e => e.Description))}");
 
+        var roleResult = await userManager.AddToRoleAsync(user, "User");
+
+        if (!roleResult.Succeeded)
+            throw new Exception(
+                $"Failed to assign role to user: {string.Join(", ", roleResult.Errors.Select(e => e.Description))}");
+
         // Create external login association
         var addLoginResult = await userManager.AddLoginAsync(
             user,

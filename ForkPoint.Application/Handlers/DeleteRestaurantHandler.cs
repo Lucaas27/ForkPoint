@@ -26,7 +26,6 @@ public class DeleteRestaurantHandler(
     public override async Task<DeleteRestaurantResponse> Handle(DeleteRestaurantRequest request,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("Request: {@Request}", request);
         logger.LogInformation("Deleting restaurant id {@RestaurantId}...", request.Id);
 
         var restaurant = await restaurantsRepository.GetRestaurantByIdAsync(request.Id)
