@@ -9,7 +9,7 @@ public record CreateMenuItemRequest : IRequest<CreateMenuItemResponse>
 
     public string Name { get; init; } = null!;
     public string Description { get; init; } = null!;
-    public decimal Price { get; init; } = 0;
+    public decimal Price { get; init; }
     public string? ImageUrl { get; init; }
     public bool IsVegetarian { get; init; } = false;
     public bool IsVegan { get; init; } = false;

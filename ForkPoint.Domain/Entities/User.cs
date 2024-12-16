@@ -4,7 +4,7 @@ namespace ForkPoint.Domain.Entities;
 
 public class User : IdentityUser
 {
-    public string? FullName { get; init; } = null!;
+    public string? FullName { get; init; }
 
     public override string? UserName
     {
