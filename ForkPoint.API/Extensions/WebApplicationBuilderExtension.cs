@@ -35,7 +35,7 @@ public static class WebApplicationBuilderExtension
 
         builder.Services.AddScoped<ErrorHandlerMiddleware>();
 
-        builder.Services.AddScoped(sp => new SensitiveDataLoggingMiddleware(builder.Configuration));
+        builder.Services.AddScoped(_ => new SensitiveDataLoggingMiddleware(builder.Configuration));
 
         builder.Services.AddScoped<ElapsedTimeMiddleware>();
 

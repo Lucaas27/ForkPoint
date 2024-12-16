@@ -7,7 +7,8 @@ namespace ForkPoint.Application.Handlers;
 
 public class RegisterHandler(
     ILogger<RegisterHandler> logger,
-    UserManager<User> userManager) : BaseHandler<RegisterRequest, RegisterResponse>
+    UserManager<User> userManager
+) : BaseHandler<RegisterRequest, RegisterResponse>
 {
     public override async Task<RegisterResponse> Handle(RegisterRequest request, CancellationToken cancellationToken)
     {
@@ -24,7 +25,10 @@ public class RegisterHandler(
         if (!result.Succeeded)
         {
             logger.LogError("Failed to register user with email {Email}", request.Email);
-            foreach (var error in result.Errors) logger.LogError("Error: {Error}", error.Description);
+            foreach (var error in result.Errors)
+            {
+                logger.LogError("Error: {Error}", error.Description);
+            }
 
             return new RegisterResponse
             {
@@ -39,7 +43,10 @@ public class RegisterHandler(
         if (!roleResult.Succeeded)
         {
             logger.LogError("Failed to assign role to user with email {Email}", request.Email);
-            foreach (var error in roleResult.Errors) logger.LogError("Error: {Error}", error.Description);
+            foreach (var error in roleResult.Errors)
+            {
+                logger.LogError("Error: {Error}", error.Description);
+            }
 
             return new RegisterResponse
             {

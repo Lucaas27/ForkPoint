@@ -16,7 +16,8 @@ public class ExternalProviderHandler(
 {
     public override async Task<ExternalProviderResponse> Handle(
         ExternalProviderRequest request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         logger.LogInformation("Handling external provider authentication request...");
 
@@ -33,7 +34,10 @@ public class ExternalProviderHandler(
     {
         // Get external login information
         var externalLoginInfo = await signInManager.GetExternalLoginInfoAsync();
-        if (externalLoginInfo == null) throw new Exception("Error loading external login information.");
+        if (externalLoginInfo == null)
+        {
+            throw new Exception("Error loading external login information.");
+        }
 
         var claims = externalLoginInfo.Principal.Claims.ToList();
         var provider = externalLoginInfo.LoginProvider;
@@ -71,14 +75,18 @@ public class ExternalProviderHandler(
     {
         var createResult = await userManager.CreateAsync(user);
         if (!createResult.Succeeded)
+        {
             throw new Exception(
                 $"Failed to create user: {string.Join(", ", createResult.Errors.Select(e => e.Description))}");
+        }
 
         var roleResult = await userManager.AddToRoleAsync(user, "User");
 
         if (!roleResult.Succeeded)
+        {
             throw new Exception(
                 $"Failed to assign role to user: {string.Join(", ", roleResult.Errors.Select(e => e.Description))}");
+        }
 
         // Create external login association
         var addLoginResult = await userManager.AddLoginAsync(
@@ -86,6 +94,8 @@ public class ExternalProviderHandler(
             new UserLoginInfo(provider, providerKey, null));
 
         if (!addLoginResult.Succeeded)
+        {
             throw new Exception("Failed to add external login.");
+        }
     }
 }
