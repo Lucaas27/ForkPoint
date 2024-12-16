@@ -1,11 +1,12 @@
-﻿using MediatR;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using MediatR;
 
 namespace ForkPoint.Application.Models.Handlers.CreateMenuItem;
-public record CreateMenuItemRequest() : IRequest<CreateMenuItemResponse>
+
+public record CreateMenuItemRequest : IRequest<CreateMenuItemResponse>
 {
-    [JsonIgnore]
-    public int RestaurantId { get; init; }
+    [JsonIgnore] public int RestaurantId { get; init; }
+
     public string Name { get; init; } = null!;
     public string Description { get; init; } = null!;
     public decimal Price { get; init; } = 0;

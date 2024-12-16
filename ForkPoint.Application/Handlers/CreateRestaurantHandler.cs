@@ -15,7 +15,8 @@ namespace ForkPoint.Application.Handlers;
 public class CreateRestaurantHandler(
     ILogger<CreateRestaurantHandler> logger,
     IMapper mapper,
-    IRestaurantRepository restaurantsRepository)
+    IRestaurantRepository restaurantsRepository
+)
     : BaseHandler<CreateRestaurantRequest, CreateRestaurantResponse>
 {
     /// <summary>
@@ -24,8 +25,10 @@ public class CreateRestaurantHandler(
     /// <param name="request">The request containing restaurant details.</param>
     /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
     /// <returns>A response indicating the success of the operation and the new record ID.</returns>
-    public override async Task<CreateRestaurantResponse> Handle(CreateRestaurantRequest request,
-        CancellationToken cancellationToken)
+    public override async Task<CreateRestaurantResponse> Handle(
+        CreateRestaurantRequest request,
+        CancellationToken cancellationToken
+    )
     {
         logger.LogInformation("Creating new restaurant...");
 

@@ -1,4 +1,5 @@
 ﻿namespace ForkPoint.Application.Enums;
+
 public enum RestaurantCategories
 {
     FastFood,

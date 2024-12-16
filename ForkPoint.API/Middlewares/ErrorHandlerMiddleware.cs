@@ -54,7 +54,9 @@ public class ErrorHandlerMiddleware(ILogger<ErrorHandlerMiddleware> logger) : IM
         }
 
         if (statusCode != 404)
-            logger.LogError($"ERROR: {ex.Message}" + Environment.NewLine + $"{ex.StackTrace}");
+        {
+            logger.LogError(ex, "ERROR: {Message}", ex.Message);
+        }
 
         context.Response.StatusCode = statusCode;
         context.Response.ContentType = MediaTypeNames.Application.Json;

@@ -11,11 +11,14 @@ public class CreateMenuItemHandler(
     ILogger<CreateMenuItemHandler> logger,
     IMapper mapper,
     IRestaurantRepository restaurantsRepository,
-    IMenuRepository menuRepository)
+    IMenuRepository menuRepository
+)
     : BaseHandler<CreateMenuItemRequest, CreateMenuItemResponse>
 {
-    public override async Task<CreateMenuItemResponse> Handle(CreateMenuItemRequest request,
-        CancellationToken cancellationToken)
+    public override async Task<CreateMenuItemResponse> Handle(
+        CreateMenuItemRequest request,
+        CancellationToken cancellationToken
+    )
     {
         logger.LogInformation("Creating new menu item for restaurant id {restaurantId}...", request.RestaurantId);
 

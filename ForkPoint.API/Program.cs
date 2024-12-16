@@ -30,10 +30,13 @@ app.UseHttpsRedirection()
     .UseSerilogRequestLogging()
     .UseMiddleware<ElapsedTimeMiddleware>()
     .UseMiddleware<ErrorHandlerMiddleware>()
-    .UseMiddleware<SensitiveDataLoggingMiddleware>()
-    .UseHttpLogging()
     .UseAuthentication()
     .UseAuthorization();
+
+if (builder.Environment.IsDevelopment())
+{
+    app.UseHttpLogging();
+}
 
 app.MapControllers();
 

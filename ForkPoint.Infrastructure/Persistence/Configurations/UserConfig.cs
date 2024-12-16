@@ -20,5 +20,4 @@ public class UserConfig : IEntityTypeConfiguration<User>
         builder.HasIndex(u => u.RefreshToken)
             .IsUnique();
     }
-    
 }

@@ -16,7 +16,7 @@ public static class ServiceCollectionExtensions
     {
         var applicationAssembly = typeof(ServiceCollectionExtensions).Assembly;
 
-        services.AddMediatR(config => config.RegisterServicesFromAssembly(applicationAssembly));
+        services.AddMediatR(c => c.RegisterServicesFromAssembly(applicationAssembly));
 
         services.AddAutoMapper(applicationAssembly);
 
@@ -39,13 +39,13 @@ public static class ServiceCollectionExtensions
                     ValidateIssuerSigningKey = true,
 
                     ValidIssuer = config["Jwt:Issuer"]
-                                  ?? throw new ArgumentNullException(nameof(options.Authority), "Jwt:Issuer is null"),
+                                  ?? throw new ArgumentNullException(nameof(config), "Jwt:Issuer is null"),
                     ValidAudience = config["Jwt:Audience"]
-                                    ?? throw new ArgumentNullException(nameof(options.Audience),
+                                    ?? throw new ArgumentNullException(nameof(config),
                                         "Authentication:Audience is null"),
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(config["Jwt:Key"]
-                                               ?? throw new ArgumentNullException(nameof(options),
+                                               ?? throw new ArgumentNullException(nameof(config),
                                                    "Authentication:Secret is null"))
                     )
                 })
@@ -53,10 +53,10 @@ public static class ServiceCollectionExtensions
             .AddGoogle(options =>
             {
                 options.ClientId = config["Authentication:Google:ClientId"]
-                                   ?? throw new ArgumentNullException(nameof(options.ClientId),
+                                   ?? throw new ArgumentNullException(nameof(config),
                                        "Authentication:Google:ClientId is null");
                 options.ClientSecret = config["Authentication:Google:ClientSecret"]
-                                       ?? throw new ArgumentNullException(nameof(options.ClientSecret),
+                                       ?? throw new ArgumentNullException(nameof(config),
                                            "Authentication:Google:ClientSecret is null");
 
                 // Use cookies for Google sign-in

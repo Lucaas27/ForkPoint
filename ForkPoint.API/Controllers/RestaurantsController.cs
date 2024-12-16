@@ -72,7 +72,8 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     [ProducesResponseType<CustomException>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<CreateRestaurantResponse>> CreateRestaurant(
-        [FromBody] CreateRestaurantRequest command)
+        [FromBody] CreateRestaurantRequest command
+    )
     {
         var response = await mediator.Send(command);
 
@@ -115,8 +116,10 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<CustomException>(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<UpdateRestaurantResponse>> UpdateRestaurant([FromRoute] int restaurantId,
-        [FromBody] UpdateRestaurantRequest command)
+    public async Task<ActionResult<UpdateRestaurantResponse>> UpdateRestaurant(
+        [FromRoute] int restaurantId,
+        [FromBody] UpdateRestaurantRequest command
+    )
     {
         var request = command with { Id = restaurantId };
         await mediator.Send(request);

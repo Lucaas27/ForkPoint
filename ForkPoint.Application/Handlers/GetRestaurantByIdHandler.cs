@@ -17,7 +17,8 @@ namespace ForkPoint.Application.Handlers;
 public class GetRestaurantByIdHandler(
     ILogger<GetRestaurantByIdHandler> logger,
     IMapper mapper,
-    IRestaurantRepository restaurantsRepository)
+    IRestaurantRepository restaurantsRepository
+)
     : BaseHandler<GetRestaurantByIdRequest, GetRestaurantByIdResponse>
 {
     /// <summary>
@@ -27,8 +28,10 @@ public class GetRestaurantByIdHandler(
     /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
     /// <returns>A response containing the restaurant details if found.</returns>
     /// <exception cref="NotFoundException">Thrown when the restaurant with the specified ID is not found.</exception>
-    public override async Task<GetRestaurantByIdResponse> Handle(GetRestaurantByIdRequest request,
-        CancellationToken cancellationToken)
+    public override async Task<GetRestaurantByIdResponse> Handle(
+        GetRestaurantByIdRequest request,
+        CancellationToken cancellationToken
+    )
     {
         logger.LogInformation("Getting restaurant by id {@RestaurantId}...", request.Id);
 

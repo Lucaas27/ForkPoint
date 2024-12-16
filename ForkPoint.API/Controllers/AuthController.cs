@@ -19,7 +19,9 @@ public class AuthController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<RegisterResponse>> RegisterUser([FromBody] RegisterRequest request)
     {
         var response = await mediator.Send(request);
-        return response.IsSuccess ? Ok(response) : BadRequest(response);
+        return response.IsSuccess
+            ? Ok(response)
+            : BadRequest(response);
     }
 
     [HttpPost("login")]
@@ -28,7 +30,9 @@ public class AuthController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<LoginResponse>> LoginUser([FromBody] LoginRequest request)
     {
         var response = await mediator.Send(request);
-        return response.IsSuccess ? Ok(response) : Unauthorized(response);
+        return response.IsSuccess
+            ? Ok(response)
+            : Unauthorized(response);
     }
 
 

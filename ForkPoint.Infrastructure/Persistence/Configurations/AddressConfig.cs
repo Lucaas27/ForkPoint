@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ForkPoint.Infrastructure.Persistence.Configurations;
+
 internal class AddressConfig : IEntityTypeConfiguration<Address>
 {
     public void Configure(EntityTypeBuilder<Address> builder)
@@ -16,5 +17,4 @@ internal class AddressConfig : IEntityTypeConfiguration<Address>
         builder.Property(a => a.Country).HasMaxLength(50).IsRequired(false);
         builder.Property(a => a.RestaurantId).IsRequired();
     }
-
 }

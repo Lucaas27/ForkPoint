@@ -4,6 +4,7 @@ using FluentValidation;
 using ForkPoint.Application.Models.Handlers.UpdateRestaurant;
 
 namespace ForkPoint.Application.Validators;
+
 public class UpdateRestaurantValidator : AbstractValidator<UpdateRestaurantRequest>
 {
     public UpdateRestaurantValidator()

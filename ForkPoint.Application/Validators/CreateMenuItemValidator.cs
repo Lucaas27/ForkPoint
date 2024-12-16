@@ -4,6 +4,7 @@ using FluentValidation;
 using ForkPoint.Application.Models.Handlers.CreateMenuItem;
 
 namespace ForkPoint.Application.Validators;
+
 public class CreateMenuItemValidator : AbstractValidator<CreateMenuItemRequest>
 {
     public CreateMenuItemValidator()

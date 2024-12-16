@@ -1,9 +1,7 @@
-﻿
-namespace ForkPoint.Domain.Entities;
+﻿namespace ForkPoint.Domain.Entities;
 
 public class Restaurant
 {
-
     public int Id { get; init; }
     public string Name { get; init; } = null!;
     public string? Description { get; init; }

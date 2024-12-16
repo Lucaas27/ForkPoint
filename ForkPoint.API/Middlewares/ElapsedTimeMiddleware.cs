@@ -22,7 +22,9 @@ public class ElapsedTimeMiddleware(ILogger<ElapsedTimeMiddleware> logger) : IMid
         var path = context.Request.Path;
 
         if (elapsedSeconds > ThresholdInSeconds)
+        {
             logger.LogWarning("Request [{Method}] {Path} took {ElapsedMilliseconds} seconds", method, path,
                 elapsedSeconds);
+        }
     }
 }

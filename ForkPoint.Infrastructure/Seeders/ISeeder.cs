@@ -1,5 +1,4 @@
-﻿
-namespace ForkPoint.Infrastructure.Seeders;
+﻿namespace ForkPoint.Infrastructure.Seeders;
 
 public interface ISeeder
 {

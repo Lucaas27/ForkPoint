@@ -16,7 +16,8 @@ namespace ForkPoint.Application.Handlers;
 public class UpdateRestaurantHandler(
     ILogger<UpdateRestaurantHandler> logger,
     IMapper mapper,
-    IRestaurantRepository restaurantRepository)
+    IRestaurantRepository restaurantRepository
+)
     : BaseHandler<UpdateRestaurantRequest, UpdateRestaurantResponse>
 {
     /// <summary>
@@ -26,8 +27,10 @@ public class UpdateRestaurantHandler(
     /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
     /// <returns>Response indicating the success or failure of the update operation.</returns>
     /// <exception cref="NotFoundException">Thrown when the restaurant with the specified ID is not found.</exception>
-    public override async Task<UpdateRestaurantResponse> Handle(UpdateRestaurantRequest request,
-        CancellationToken cancellationToken)
+    public override async Task<UpdateRestaurantResponse> Handle(
+        UpdateRestaurantRequest request,
+        CancellationToken cancellationToken
+    )
     {
         logger.LogInformation("Updating restaurant id {@RestaurantId}...", request.Id);
         var restaurant = await restaurantRepository.GetRestaurantByIdAsync(request.Id)

@@ -11,11 +11,14 @@ namespace ForkPoint.Application.Handlers;
 public class GetMenuItemByIdHandler(
     ILogger<GetMenuItemByIdHandler> logger,
     IMapper mapper,
-    IRestaurantRepository restaurantRepository)
+    IRestaurantRepository restaurantRepository
+)
     : BaseHandler<GetMenuItemByIdRequest, GetMenuItemByIdResponse>
 {
-    public override async Task<GetMenuItemByIdResponse> Handle(GetMenuItemByIdRequest request,
-        CancellationToken cancellationToken)
+    public override async Task<GetMenuItemByIdResponse> Handle(
+        GetMenuItemByIdRequest request,
+        CancellationToken cancellationToken
+    )
     {
         logger.LogInformation("Fetching menu item {menuId} from restaurant {restaurantId}...", request.MenuItemId,
             request.RestaurantId);

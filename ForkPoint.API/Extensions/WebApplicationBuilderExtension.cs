@@ -20,12 +20,15 @@ public static class WebApplicationBuilderExtension
 
         builder.Services.AddHttpLogging(logging =>
         {
-            logging.LoggingFields = HttpLoggingFields.RequestBody |
-                                    HttpLoggingFields.ResponseBody;
+            logging.LoggingFields = HttpLoggingFields.ResponseBody |
+                                    HttpLoggingFields.ResponseStatusCode |
+                                    HttpLoggingFields.RequestBody |
+                                    HttpLoggingFields.RequestMethod |
+                                    HttpLoggingFields.RequestPath;
 
             logging.RequestBodyLogLimit = 4096;
             logging.ResponseBodyLogLimit = 4096;
-            logging.CombineLogs = false;
+            logging.CombineLogs = true;
 
             // Add sensitive headers to be masked
             logging.MediaTypeOptions.AddText("application/json");

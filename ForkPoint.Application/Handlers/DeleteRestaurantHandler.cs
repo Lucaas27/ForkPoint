@@ -13,7 +13,8 @@ namespace ForkPoint.Application.Handlers;
 /// <param name="restaurantsRepository">The repository instance for accessing restaurant data.</param>
 public class DeleteRestaurantHandler(
     ILogger<DeleteRestaurantHandler> logger,
-    IRestaurantRepository restaurantsRepository)
+    IRestaurantRepository restaurantsRepository
+)
     : BaseHandler<DeleteRestaurantRequest, DeleteRestaurantResponse>
 {
     /// <summary>
@@ -23,8 +24,10 @@ public class DeleteRestaurantHandler(
     /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
     /// <returns>A response indicating the success of the deletion operation.</returns>
     /// <exception cref="NotFoundException">Thrown when the restaurant with the specified ID is not found.</exception>
-    public override async Task<DeleteRestaurantResponse> Handle(DeleteRestaurantRequest request,
-        CancellationToken cancellationToken)
+    public override async Task<DeleteRestaurantResponse> Handle(
+        DeleteRestaurantRequest request,
+        CancellationToken cancellationToken
+    )
     {
         logger.LogInformation("Deleting restaurant id {@RestaurantId}...", request.Id);
 

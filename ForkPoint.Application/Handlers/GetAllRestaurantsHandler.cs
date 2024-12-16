@@ -15,7 +15,8 @@ namespace ForkPoint.Application.Handlers;
 public class GetAllRestaurantsHandler(
     ILogger<GetAllRestaurantsHandler> logger,
     IMapper mapper,
-    IRestaurantRepository restaurantsRepository)
+    IRestaurantRepository restaurantsRepository
+)
     : BaseHandler<GetAllRestaurantsRequest, GetAllRestaurantsResponse>
 {
     /// <summary>
@@ -24,8 +25,10 @@ public class GetAllRestaurantsHandler(
     /// <param name="request">The request to get all restaurants.</param>
     /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
     /// <returns>A response containing all restaurants.</returns>
-    public override async Task<GetAllRestaurantsResponse> Handle(GetAllRestaurantsRequest request,
-        CancellationToken cancellationToken)
+    public override async Task<GetAllRestaurantsResponse> Handle(
+        GetAllRestaurantsRequest request,
+        CancellationToken cancellationToken
+    )
     {
         logger.LogInformation("Getting all restaurants...");
 

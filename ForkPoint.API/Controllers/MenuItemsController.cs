@@ -1,4 +1,5 @@
-﻿using ForkPoint.Application.Models.Exceptions;
+﻿using System.Net.Mime;
+using ForkPoint.Application.Models.Exceptions;
 using ForkPoint.Application.Models.Handlers.CreateMenuItem;
 using ForkPoint.Application.Models.Handlers.DeleteAllMenuItems;
 using ForkPoint.Application.Models.Handlers.DeleteMenuItem;
@@ -6,16 +7,15 @@ using ForkPoint.Application.Models.Handlers.GetMenuItemById;
 using ForkPoint.Application.Models.Handlers.GetMenuItems;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Mime;
-
 
 namespace ForkPoint.API.Controllers;
+
 [Route("api/restaurant/{restaurantId:int}/[controller]")]
 [ApiController]
 public class MenuItemsController(IMediator mediator) : ControllerBase
 {
     /// <summary>
-    /// Retrieves the menu items for a specific restaurant.
+    ///     Retrieves the menu items for a specific restaurant.
     /// </summary>
     /// <param name="restaurantId">The ID of the restaurant.</param>
     /// <returns>A list of menu items for the specified restaurant.</returns>
@@ -35,7 +35,7 @@ public class MenuItemsController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Retrieves a specific menu item by its ID for a specific restaurant.
+    ///     Retrieves a specific menu item by its ID for a specific restaurant.
     /// </summary>
     /// <param name="restaurantId">The ID of the restaurant.</param>
     /// <param name="menuItemId">The ID of the menu item.</param>
@@ -48,7 +48,10 @@ public class MenuItemsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<CustomException>(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<GetMenuItemByIdResponse>> GetMenuItemById([FromRoute] int restaurantId, [FromRoute] int menuItemId)
+    public async Task<ActionResult<GetMenuItemByIdResponse>> GetMenuItemById(
+        [FromRoute] int restaurantId,
+        [FromRoute] int menuItemId
+    )
     {
         var response = await mediator.Send(new GetMenuItemByIdRequest(restaurantId, menuItemId));
 
@@ -56,7 +59,7 @@ public class MenuItemsController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Creates a new menu item for a specific restaurant.
+    ///     Creates a new menu item for a specific restaurant.
     /// </summary>
     /// <param name="restaurantId">The ID of the restaurant.</param>
     /// <param name="command">The details of the menu item to create.</param>
@@ -69,7 +72,10 @@ public class MenuItemsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<CustomException>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<CreateMenuItemResponse>> CreateMenuItem([FromRoute] int restaurantId, [FromBody] CreateMenuItemRequest command)
+    public async Task<ActionResult<CreateMenuItemResponse>> CreateMenuItem(
+        [FromRoute] int restaurantId,
+        [FromBody] CreateMenuItemRequest command
+    )
     {
         var request = command with { RestaurantId = restaurantId };
 
@@ -79,7 +85,7 @@ public class MenuItemsController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Deletes a specific menu item by its ID for a specific restaurant.
+    ///     Deletes a specific menu item by its ID for a specific restaurant.
     /// </summary>
     /// <param name="restaurantId">The ID of the restaurant.</param>
     /// <param name="menuItemId">The ID of the menu item.</param>
@@ -92,7 +98,10 @@ public class MenuItemsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<CustomException>(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<DeleteMenuItemResponse>> DeleteMenuItem([FromRoute] int restaurantId, [FromRoute] int menuItemId)
+    public async Task<ActionResult<DeleteMenuItemResponse>> DeleteMenuItem(
+        [FromRoute] int restaurantId,
+        [FromRoute] int menuItemId
+    )
     {
         await mediator.Send(new DeleteMenuItemRequest(restaurantId, menuItemId));
 
@@ -100,7 +109,7 @@ public class MenuItemsController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Deletes all menu items for a specific restaurant.
+    ///     Deletes all menu items for a specific restaurant.
     /// </summary>
     /// <param name="restaurantId">The ID of the restaurant.</param>
     /// <returns>No content.</returns>
@@ -119,4 +128,3 @@ public class MenuItemsController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 }
-

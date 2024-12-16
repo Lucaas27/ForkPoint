@@ -4,6 +4,7 @@ using ForkPoint.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace ForkPoint.Infrastructure.Repositories;
+
 internal class RestaurantRepository(ApplicationDbContext dbContext)
     : IRestaurantRepository
 {
@@ -37,7 +38,8 @@ internal class RestaurantRepository(ApplicationDbContext dbContext)
         return restaurant;
     }
 
-    public async Task UpdateDb() => await dbContext.SaveChangesAsync();
-
-
+    public async Task UpdateDb()
+    {
+        await dbContext.SaveChangesAsync();
+    }
 }

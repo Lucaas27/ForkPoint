@@ -15,11 +15,14 @@ namespace ForkPoint.Application.Handlers;
 public class DeleteAllMenuItemsHandler(
     ILogger<DeleteAllMenuItemsHandler> logger,
     IRestaurantRepository restaurantRepository,
-    IMenuRepository menuRepository)
+    IMenuRepository menuRepository
+)
     : BaseHandler<DeleteAllMenuItemsRequest, DeleteAllMenuItemsResponse>
 {
-    public override async Task<DeleteAllMenuItemsResponse> Handle(DeleteAllMenuItemsRequest request,
-        CancellationToken cancellationToken)
+    public override async Task<DeleteAllMenuItemsResponse> Handle(
+        DeleteAllMenuItemsRequest request,
+        CancellationToken cancellationToken
+    )
     {
         logger.LogInformation("Deleting all menu items for restaurant id {RestaurantId}", request.RestaurantId);
 
