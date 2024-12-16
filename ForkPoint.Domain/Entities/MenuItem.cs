@@ -13,5 +13,5 @@ public class MenuItem
     public int RestaurantId { get; init; } // Foreign Key
 
     // Navigation properties
-    public Restaurant Restaurant { get; init; } = default!;
+    public Restaurant Restaurant { get; init; } = null!;
 }
