@@ -27,7 +27,7 @@ public class LoginHandler(
             return new LoginResponse(null)
             {
                 IsSuccess = false,
-                Message = "Invalid email or password."
+                Message = "That email and password combination didn't work. Try again."
             };
         }
 

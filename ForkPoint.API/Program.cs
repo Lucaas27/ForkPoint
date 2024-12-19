@@ -10,9 +10,9 @@ var services = builder.Services;
 var config = builder.Configuration;
 
 // Add services to the container.
-builder.AddPresentation();
 services.AddInfrastructure(config);
 services.AddApplication(config);
+builder.AddPresentation();
 
 // Build the app
 var app = builder.Build();

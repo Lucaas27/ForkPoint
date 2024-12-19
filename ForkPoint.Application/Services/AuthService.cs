@@ -28,6 +28,7 @@ public class AuthService(
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
+            NotBefore = DateTime.UtcNow,
             Expires = DateTime.UtcNow.AddMinutes(30),
             SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256),
             Issuer = config["Jwt:Issuer"],
@@ -35,8 +36,8 @@ public class AuthService(
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
-        var token = tokenHandler.CreateToken(tokenDescriptor);
+        var token = tokenHandler.CreateEncodedJwt(tokenDescriptor);
 
-        return tokenHandler.WriteToken(token);
+        return token;
     }
 }

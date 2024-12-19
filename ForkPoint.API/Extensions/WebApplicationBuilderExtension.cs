@@ -46,10 +46,10 @@ public static class WebApplicationBuilderExtension
 
         builder.Services.AddSwaggerGen(options =>
         {
-            options.AddSecurityDefinition("authToken", new OpenApiSecurityScheme
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                Type = SecuritySchemeType.ApiKey,
-                Description = "Example \"Bearer {token}\"",
+                Type = SecuritySchemeType.Http,
+                Description = "Example \"{token}\"",
                 Scheme = "Bearer",
                 BearerFormat = "JWT",
                 In = ParameterLocation.Header,
@@ -63,7 +63,7 @@ public static class WebApplicationBuilderExtension
                         Reference = new OpenApiReference
                         {
                             Type = ReferenceType.SecurityScheme,
-                            Id = "authToken"
+                            Id = "Bearer"
                         }
                     },
                     []

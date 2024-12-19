@@ -23,16 +23,21 @@ public static class ServiceCollectionExtensions
         services.AddValidatorsFromAssembly(applicationAssembly)
             .AddFluentValidationAutoValidation();
 
+        services.AddSingleton<IAuthService, AuthService>();
+
         services.AddAuthentication(
                 options =>
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
                 }
             )
             .AddJwtBearer(options =>
+            {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
+                    LogValidationExceptions = true,
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
@@ -48,7 +53,8 @@ public static class ServiceCollectionExtensions
                                                ?? throw new ArgumentNullException(nameof(config),
                                                    "Authentication:Secret is null"))
                     )
-                })
+                };
+            })
             .AddCookie() // For temporary state during External provider authentication
             .AddGoogle(options =>
             {
@@ -62,8 +68,5 @@ public static class ServiceCollectionExtensions
                 // Use cookies for Google sign-in
                 options.SignInScheme = IdentityConstants.ExternalScheme;
             });
-
-
-        services.AddSingleton<IAuthService, AuthService>();
     }
 }
