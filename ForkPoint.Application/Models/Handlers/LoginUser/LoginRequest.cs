@@ -2,4 +2,4 @@ using MediatR;
 
 namespace ForkPoint.Application.Models.Handlers.LoginUser;
 
-public record LoginRequest : IRequest<LoginResponse>;
+public record LoginRequest(string Email, string Password) : IRequest<LoginResponse>;
