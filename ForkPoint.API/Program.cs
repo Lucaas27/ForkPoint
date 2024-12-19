@@ -25,6 +25,7 @@ app.UseHttpsRedirection()
     .UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "ForkPoint API");
+        options.EnableTryItOutByDefault();
         options.RoutePrefix = string.Empty;
     })
     .UseSerilogRequestLogging()
@@ -33,7 +34,7 @@ app.UseHttpsRedirection()
     .UseAuthentication()
     .UseAuthorization();
 
-if (builder.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
     app.UseHttpLogging();
 }
