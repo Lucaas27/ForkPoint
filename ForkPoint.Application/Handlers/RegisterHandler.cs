@@ -24,17 +24,16 @@ public class RegisterHandler(
 
         if (!result.Succeeded)
         {
+            var errors = string.Join(Environment.NewLine, result.Errors.Select(e => e.Description));
             logger.LogError("Failed to register user with email {Email}", request.Email);
-            foreach (var error in result.Errors)
-            {
-                logger.LogError("Error: {Error}", error.Description);
-            }
+
+            logger.LogError("Error: {Error}", errors);
 
             return new RegisterResponse
             {
                 IsSuccess = false,
                 Message =
-                    $"Failed to register user. {string.Join(Environment.NewLine, result.Errors.Select(e => e.Description))}"
+                    $"Failed to register user. {errors}"
             };
         }
 
@@ -42,17 +41,18 @@ public class RegisterHandler(
 
         if (!roleResult.Succeeded)
         {
+            var errors = string.Join(Environment.NewLine, roleResult.Errors.Select(e => e.Description));
+
             logger.LogError("Failed to assign role to user with email {Email}", request.Email);
-            foreach (var error in roleResult.Errors)
-            {
-                logger.LogError("Error: {Error}", error.Description);
-            }
+
+            logger.LogError("Error: {Error}", errors);
+
 
             return new RegisterResponse
             {
                 IsSuccess = false,
                 Message =
-                    $"Failed to assign role to user. {string.Join(Environment.NewLine, roleResult.Errors.Select(e => e.Description))}"
+                    $"Failed to assign role to user. {errors}"
             };
         }
 

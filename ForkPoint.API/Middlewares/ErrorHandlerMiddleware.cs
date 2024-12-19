@@ -56,6 +56,7 @@ public class ErrorHandlerMiddleware(ILogger<ErrorHandlerMiddleware> logger) : IM
         if (statusCode != 404)
         {
             logger.LogError(ex, "ERROR: {Message}", ex.Message);
+            logger.LogError(ex, "{StackTrace}", ex.StackTrace);
         }
 
         context.Response.StatusCode = statusCode;
