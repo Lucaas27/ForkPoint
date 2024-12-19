@@ -23,7 +23,7 @@ public class GetMenuItemsHandler(
         logger.LogInformation("Fetching menu for restaurant {@Restaurant}...", request.RestaurantId);
 
         var restaurant = await restaurantRepository.GetRestaurantByIdAsync(request.RestaurantId)
-                         ?? throw new NotFoundException(nameof(MenuItem), request.RestaurantId);
+                         ?? throw new NotFoundException(nameof(MenuItem), request.RestaurantId.ToString());
 
         var menuItemDto = mapper.Map<IEnumerable<MenuItemModel>>(restaurant.MenuItems);
 

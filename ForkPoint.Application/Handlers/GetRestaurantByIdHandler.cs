@@ -36,7 +36,7 @@ public class GetRestaurantByIdHandler(
         logger.LogInformation("Getting restaurant by id {@RestaurantId}...", request.Id);
 
         var restaurant = await restaurantsRepository.GetRestaurantByIdAsync(request.Id)
-                         ?? throw new NotFoundException(nameof(Restaurant), request.Id);
+                         ?? throw new NotFoundException(nameof(Restaurant), request.Id.ToString());
 
         var restaurantDto = mapper.Map<RestaurantDetailsModel>(restaurant);
 

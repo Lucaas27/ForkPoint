@@ -27,7 +27,7 @@ public class DeleteAllMenuItemsHandler(
         logger.LogInformation("Deleting all menu items for restaurant id {RestaurantId}", request.RestaurantId);
 
         var restaurant = await restaurantRepository.GetRestaurantByIdAsync(request.RestaurantId)
-                         ?? throw new NotFoundException(nameof(Restaurant), request.RestaurantId);
+                         ?? throw new NotFoundException(nameof(Restaurant), request.RestaurantId.ToString());
 
         await menuRepository.DeleteAllMenuItemsAsync(restaurant.MenuItems);
 

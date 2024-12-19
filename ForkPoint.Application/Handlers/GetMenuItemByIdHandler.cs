@@ -24,10 +24,10 @@ public class GetMenuItemByIdHandler(
             request.RestaurantId);
 
         var restaurant = await restaurantRepository.GetRestaurantByIdAsync(request.RestaurantId)
-                         ?? throw new NotFoundException(nameof(Restaurant), request.RestaurantId);
+                         ?? throw new NotFoundException(nameof(Restaurant), request.RestaurantId.ToString());
 
         var menuItem = restaurant.MenuItems.FirstOrDefault(m => m.Id == request.MenuItemId)
-                       ?? throw new NotFoundException(nameof(MenuItem), request.MenuItemId);
+                       ?? throw new NotFoundException(nameof(MenuItem), request.MenuItemId.ToString());
 
         var menuItemDto = mapper.Map<MenuItemModel>(menuItem);
 

@@ -34,7 +34,7 @@ public class UpdateRestaurantHandler(
     {
         logger.LogInformation("Updating restaurant id {@RestaurantId}...", request.Id);
         var restaurant = await restaurantRepository.GetRestaurantByIdAsync(request.Id)
-                         ?? throw new NotFoundException(nameof(Restaurant), request.Id);
+                         ?? throw new NotFoundException(nameof(Restaurant), request.Id.ToString());
 
         // Map the request data to the domain model
         mapper.Map(request, restaurant);

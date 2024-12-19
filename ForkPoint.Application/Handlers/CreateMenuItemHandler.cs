@@ -24,7 +24,7 @@ public class CreateMenuItemHandler(
 
         // Check if restaurant exists
         _ = await restaurantsRepository.GetRestaurantByIdAsync(request.RestaurantId)
-            ?? throw new NotFoundException(nameof(Restaurant), request.RestaurantId);
+            ?? throw new NotFoundException(nameof(Restaurant), request.RestaurantId.ToString());
 
         // Map request to MenuItem
         var menuItem = mapper.Map<MenuItem>(request);

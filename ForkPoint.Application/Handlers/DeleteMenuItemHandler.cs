@@ -28,10 +28,10 @@ public class DeleteMenuItemHandler(
             request.MenuItemId, request.RestaurantId);
 
         var restaurant = await restaurantsRepository.GetRestaurantByIdAsync(request.RestaurantId)
-                         ?? throw new NotFoundException(nameof(Restaurant), request.RestaurantId);
+                         ?? throw new NotFoundException(nameof(Restaurant), request.RestaurantId.ToString());
 
         var menuItem = restaurant.MenuItems.FirstOrDefault(i => i.Id == request.MenuItemId)
-                       ?? throw new NotFoundException(nameof(MenuItem), request.MenuItemId);
+                       ?? throw new NotFoundException(nameof(MenuItem), request.MenuItemId.ToString());
 
         await menuRepository.DeleteMenuItemAsync(menuItem);
 
