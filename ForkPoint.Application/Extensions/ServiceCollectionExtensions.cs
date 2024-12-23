@@ -23,7 +23,7 @@ public static class ServiceCollectionExtensions
         services.AddValidatorsFromAssembly(applicationAssembly)
             .AddFluentValidationAutoValidation();
 
-        services.AddSingleton<IAuthService, AuthService>();
+        services.AddScoped<IAuthService, AuthService>();
 
         services.AddAuthentication(
                 options =>
@@ -37,6 +37,7 @@ public static class ServiceCollectionExtensions
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
+                    // ClockSkew = TimeSpan.Zero,
                     LogValidationExceptions = true,
                     ValidateIssuer = true,
                     ValidateAudience = true,

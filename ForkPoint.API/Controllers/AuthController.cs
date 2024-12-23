@@ -1,6 +1,7 @@
 using System.Net.Mime;
 using ForkPoint.Application.Models.Handlers.ExternalProviderCallback;
 using ForkPoint.Application.Models.Handlers.LoginUser;
+using ForkPoint.Application.Models.Handlers.RefreshToken;
 using ForkPoint.Application.Models.Handlers.RegisterUser;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
@@ -62,5 +63,17 @@ public class AuthController(IMediator mediator) : ControllerBase
     {
         var response = await mediator.Send(new ExternalProviderRequest());
         return Ok(response);
+    }
+
+    [HttpPost("refreshToken")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<LoginResponse>> RefreshToken(RefreshTokenRequest request)
+    {
+        var response = await mediator.Send(request);
+        return response.IsSuccess
+            ? Ok(response)
+            : BadRequest(response);
     }
 }

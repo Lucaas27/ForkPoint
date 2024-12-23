@@ -12,6 +12,6 @@ public class User : IdentityUser
         set => base.UserName = value ?? Email;
     }
 
-    public string? RefreshToken { get; init; }
-    public DateTime RefreshTokenExpiryTime { get; init; } = new(1900, 1, 1);
+    public string? RefreshToken { get; set; }
+    public DateTime RefreshTokenExpiryTime { get; set; } = new(1900, 1, 1);
 }

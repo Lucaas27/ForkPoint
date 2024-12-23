@@ -4,6 +4,8 @@ using ForkPoint.Application.Models.Handlers.CreateRestaurant;
 using ForkPoint.Application.Models.Handlers.UpdateRestaurant;
 using ForkPoint.Domain.Entities;
 
+// ReSharper disable NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
+
 namespace ForkPoint.Application.Mappers;
 
 public class RestaurantsProfile : Profile

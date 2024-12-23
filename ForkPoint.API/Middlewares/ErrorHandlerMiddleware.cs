@@ -4,6 +4,7 @@ using System.Net.Mime;
 using System.Text.Json;
 using ForkPoint.Application.Models.Exceptions;
 using ForkPoint.Domain.Exceptions;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ForkPoint.API.Middlewares;
 
@@ -30,6 +31,10 @@ public class ErrorHandlerMiddleware(ILogger<ErrorHandlerMiddleware> logger) : IM
         catch (NotFoundException notFoundEx)
         {
             await HandleExceptionAsync(context, StatusCodes.Status404NotFound, notFoundEx.Message, notFoundEx);
+        }
+        catch (SecurityTokenExpiredException ex)
+        {
+            await HandleExceptionAsync(context, StatusCodes.Status400BadRequest, ex.Message, ex);
         }
         catch (Exception ex)
         {

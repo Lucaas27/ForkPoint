@@ -1,3 +1,5 @@
+using System.IdentityModel.Tokens.Jwt;
+using ForkPoint.Application.Constants;
 using ForkPoint.Application.Models.Handlers.LoginUser;
 using ForkPoint.Application.Services;
 using ForkPoint.Domain.Entities;
@@ -24,16 +26,22 @@ public class LoginHandler(
         if (!result.Succeeded)
         {
             logger.LogError("Failed to login user with email {Email}", request.Email);
-            return new LoginResponse(null)
+            return new LoginResponse
             {
                 IsSuccess = false,
                 Message = "That email and password combination didn't work. Try again."
             };
         }
 
-        var token = authService.GenerateToken(user);
+        var token = await authService.GenerateToken(user);
+        var expiry = new JwtSecurityTokenHandler().ReadJwtToken(token).ValidTo;
+        var refreshToken = authService.GenerateRefreshToken();
 
-        return new LoginResponse(token)
+        user.RefreshToken = refreshToken;
+        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddHours(AuthConstants.RefreshTokenExpirationInHours);
+        await userManager.UpdateAsync(user);
+
+        return new LoginResponse(token, refreshToken, expiry)
         {
             IsSuccess = true
         };
