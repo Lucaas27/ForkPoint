@@ -1,4 +1,5 @@
 using System.Net.Mime;
+using ForkPoint.Application.Models.Handlers.EmailConfirmation;
 using ForkPoint.Application.Models.Handlers.ExternalProviderCallback;
 using ForkPoint.Application.Models.Handlers.LoginUser;
 using ForkPoint.Application.Models.Handlers.RefreshToken;
@@ -37,6 +38,18 @@ public class AuthController(IMediator mediator) : ControllerBase
     }
 
 
+    [HttpPost("confirmEmail")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<ConfirmEmailResponse>> ConfirmEmail([FromBody] ConfirmEmailRequest request)
+    {
+        var response = await mediator.Send(request);
+        return response.IsSuccess
+            ? Ok(response)
+            : BadRequest(response);
+    }
+
+
     [HttpGet("google")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -69,7 +82,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<LoginResponse>> RefreshToken(RefreshTokenRequest request)
+    public async Task<ActionResult<LoginResponse>> RefreshToken([FromBody] RefreshTokenRequest request)
     {
         var response = await mediator.Send(request);
         return response.IsSuccess

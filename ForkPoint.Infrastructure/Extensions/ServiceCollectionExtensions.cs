@@ -20,23 +20,12 @@ public static class ServiceCollectionExtensions
                     options.User.RequireUniqueEmail = true;
                     options.User.AllowedUserNameCharacters =
                         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-                    // options.Password.RequireDigit = false;
-                    // options.Password.RequireLowercase = false;
-                    // options.Password.RequireNonAlphanumeric = false;
-                    // options.Password.RequireUppercase = false;
-                    // options.Password.RequiredLength = 3;
-                    // options.User.RequireUniqueEmail = true;
-                    // options.SignIn.RequireConfirmedEmail = true;
-                    // options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-                    // options.Lockout.MaxFailedAccessAttempts = 5;
-                    // options.Lockout.AllowedForNewUsers = true;
-                    // options.Tokens.EmailConfirmationTokenProvider
-                    // options.Tokens.ChangeEmailTokenProvider
-                    // options.Tokens.ChangePhoneNumberTokenProvider
-                    // options.Tokens.PasswordResetTokenProvider
+                    options.SignIn.RequireConfirmedEmail = true;
+                    options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
                 }
             )
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
         services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
         services.AddScoped<ISeeder, RestaurantSeeder>();
         services.AddScoped<IRestaurantRepository, RestaurantRepository>();

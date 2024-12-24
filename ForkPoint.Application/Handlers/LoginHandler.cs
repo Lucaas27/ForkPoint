@@ -21,15 +21,25 @@ public class LoginHandler(
         var user = await userManager.FindByEmailAsync(request.Email) ??
                    throw new NotFoundException(nameof(User), request.Email);
 
-        var result = await signInManager.CheckPasswordSignInAsync(user, request.Password, false);
-
-        if (!result.Succeeded)
+        if (!user.EmailConfirmed)
         {
             logger.LogError("Failed to login user with email {Email}", request.Email);
             return new LoginResponse
             {
                 IsSuccess = false,
-                Message = "That email and password combination didn't work. Try again."
+                Message = "Please confirm your email address first."
+            };
+        }
+
+        var result = await signInManager.CheckPasswordSignInAsync(user, request.Password, false);
+
+        if (!result.Succeeded)
+        {
+            logger.LogError("Failed to login user with email {Email}. Wrong Password", request.Email);
+            return new LoginResponse
+            {
+                IsSuccess = false,
+                Message = "That email and password combination is not correct. Try again."
             };
         }
 

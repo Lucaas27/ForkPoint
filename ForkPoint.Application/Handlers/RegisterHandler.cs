@@ -1,4 +1,5 @@
 using ForkPoint.Application.Models.Handlers.RegisterUser;
+using ForkPoint.Application.Services;
 using ForkPoint.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -7,7 +8,8 @@ namespace ForkPoint.Application.Handlers;
 
 public class RegisterHandler(
     ILogger<RegisterHandler> logger,
-    UserManager<User> userManager
+    UserManager<User> userManager,
+    IEmailService emailService
 ) : BaseHandler<RegisterRequest, RegisterResponse>
 {
     public override async Task<RegisterResponse> Handle(RegisterRequest request, CancellationToken cancellationToken)
@@ -56,12 +58,19 @@ public class RegisterHandler(
             };
         }
 
+        // Require email confirmation
+        var emailToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
+
+        // Send confirmation email
+        // await emailService.SendEmailConfirmationEmail(user.Email, emailToken);
+
         logger.LogInformation("User with email {Email} registered successfully", request.Email);
 
         return new RegisterResponse
         {
             IsSuccess = true,
-            Message = $"User registered successfully - {request.Email}"
+            Message =
+                $"User registered successfully. Please confirm your account in the email sent to {request.Email}. {emailToken}"
         };
     }
 }
