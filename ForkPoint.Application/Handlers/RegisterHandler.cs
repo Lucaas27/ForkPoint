@@ -22,6 +22,13 @@ public class RegisterHandler(
             Email = request.Email
         };
 
+        // Require email confirmation
+        var emailToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
+
+        // Send confirmation email
+        await emailService.SendEmailAsync(request.Email, "Welcome to ForkPoint!",
+            $"Please confirm your account by entering the code in the application: {emailToken}");
+
         var result = await userManager.CreateAsync(user, request.Password);
 
         if (!result.Succeeded)
@@ -58,11 +65,6 @@ public class RegisterHandler(
             };
         }
 
-        // Require email confirmation
-        var emailToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
-
-        // Send confirmation email
-        // await emailService.SendEmailConfirmationEmail(user.Email, emailToken);
 
         logger.LogInformation("User with email {Email} registered successfully", request.Email);
 

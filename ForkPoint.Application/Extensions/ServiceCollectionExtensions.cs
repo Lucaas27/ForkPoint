@@ -25,6 +25,8 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IAuthService, AuthService>();
 
+        services.AddScoped<IEmailService, EmailService>();
+
         services.AddAuthentication(
                 options =>
                 {
