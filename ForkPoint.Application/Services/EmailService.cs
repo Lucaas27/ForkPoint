@@ -1,40 +1,62 @@
-using System.Net;
-using System.Net.Mail;
+using ForkPoint.Application.Models.Emails;
+using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using MimeKit;
+using MimeKit.Text;
 
 namespace ForkPoint.Application.Services;
 
-public class EmailService(ILogger<EmailService> logger, IConfiguration configuration) : IEmailService
+public class EmailService(
+    ILogger<EmailService> logger,
+    IConfiguration configuration,
+    Func<string, EmailTemplateParameters?, IEmailTemplate> emailTemplateFactory
+) : IEmailService
 {
-    public async Task SendEmailAsync(string receptor, string subject, string message)
+    private readonly string _from = configuration["EmailConfig:From"] ??
+                                    throw new ArgumentNullException(nameof(configuration), "EmailConfig:From");
+
+    private readonly string _password = configuration["EmailConfig:Password"] ??
+                                        throw new ArgumentNullException(nameof(configuration), "EmailConfig:Password");
+
+    private readonly int _port = int.TryParse(configuration["EmailConfig:Port"], out var p)
+        ? p
+        : throw new ArgumentNullException(nameof(configuration), "EmailConfig:Port");
+
+    private readonly string _smtpServer = configuration["EmailConfig:Server"] ??
+                                          throw new ArgumentNullException(nameof(configuration), "EmailConfig:Server");
+
+
+    public async Task SendEmailAsync(string to, string templateKey, EmailTemplateParameters? parameters = null)
     {
-        logger.LogInformation("Sending email to {Receptor}...", receptor);
+        ArgumentException.ThrowIfNullOrEmpty(to, nameof(to));
+        ArgumentException.ThrowIfNullOrEmpty(templateKey, nameof(templateKey));
 
-        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12
-                                               | SecurityProtocolType.Tls11
-                                               | SecurityProtocolType.Tls;
+        logger.LogInformation("Sending {EmailType} to {Receptor}...", templateKey, to);
 
-        var sender = configuration["EmailConfig:From"] ??
-                     throw new ArgumentNullException(nameof(configuration), "EmailConfig:From");
+        var template = emailTemplateFactory(templateKey, parameters);
 
-        var smtpServer = configuration["EmailConfig:Server"] ??
-                         throw new ArgumentNullException(nameof(configuration), "EmailConfig:Server");
+        var email = CreateEmail(to, template.Subject, template.Content);
 
-        var port = int.TryParse(configuration["EmailConfig:Port"], out var p)
-            ? p
-            : throw new ArgumentNullException(nameof(configuration), "EmailConfig:Port");
+        using var client = new SmtpClient();
+        await client.ConnectAsync(_smtpServer, _port, true);
+        await client.AuthenticateAsync(_from, _password);
+        await client.SendAsync(email);
+    }
 
-        var password = configuration["EmailConfig:Password"] ??
-                       throw new ArgumentNullException(nameof(configuration), "EmailConfig:Password");
+    private MimeMessage CreateEmail(string to, string subject, string content)
+    {
+        var fromAddress = new MailboxAddress("ForkPoint", _from);
+        var toAddress = MailboxAddress.Parse(to);
+        var email = new MimeMessage
+        {
+            From = { fromAddress },
+            ReplyTo = { fromAddress },
+            To = { toAddress },
+            Subject = subject,
+            Body = new TextPart(TextFormat.Html) { Text = content }
+        };
 
-        var client = new SmtpClient(smtpServer, port);
-        client.UseDefaultCredentials = false;
-        client.Credentials = new NetworkCredential(sender, password);
-        client.EnableSsl = true;
-
-        var mail = new MailMessage(sender, receptor, subject, message);
-
-        await client.SendMailAsync(mail);
+        return email;
     }
 }

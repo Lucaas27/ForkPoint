@@ -1,3 +1,4 @@
+using ForkPoint.Application.Models.Emails;
 using ForkPoint.Application.Models.Handlers.RegisterUser;
 using ForkPoint.Application.Services;
 using ForkPoint.Domain.Entities;
@@ -26,8 +27,11 @@ public class RegisterHandler(
         var emailToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
 
         // Send confirmation email
-        await emailService.SendEmailAsync(request.Email, "Welcome to ForkPoint!",
-            $"Please confirm your account by entering the code in the application: {emailToken}");
+        await emailService.SendEmailAsync(request.Email, "EmailConfirmationRequest", new EmailTemplateParameters
+        {
+            Token = emailToken,
+            UserEmail = request.Email
+        });
 
         var result = await userManager.CreateAsync(user, request.Password);
 
@@ -72,7 +76,7 @@ public class RegisterHandler(
         {
             IsSuccess = true,
             Message =
-                $"User registered successfully. Please confirm your account in the email sent to {request.Email}. {emailToken}"
+                $"User registered successfully. Please confirm your account in the email sent to {request.Email}. Token: {emailToken}"
         };
     }
 }

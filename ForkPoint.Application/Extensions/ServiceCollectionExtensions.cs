@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using ForkPoint.Application.Models.Emails;
 using ForkPoint.Application.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -26,6 +27,19 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAuthService, AuthService>();
 
         services.AddScoped<IEmailService, EmailService>();
+
+        services.AddScoped<Func<string, EmailTemplateParameters?, IEmailTemplate>>(serviceProvider =>
+            (key, templateParameters) =>
+            {
+                var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+
+                return key switch
+                {
+                    "EmailConfirmationRequest" => new EmailConfirmationRequestTemplate(
+                        configuration["BaseUrl"], templateParameters?.Token!, templateParameters?.UserEmail!),
+                    _ => throw new NotSupportedException($"Email template {key} is not supported")
+                };
+            });
 
         services.AddAuthentication(
                 options =>

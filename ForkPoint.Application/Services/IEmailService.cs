@@ -1,6 +1,8 @@
+using ForkPoint.Application.Models.Emails;
+
 namespace ForkPoint.Application.Services;
 
 public interface IEmailService
 {
-    Task SendEmailAsync(string receptor, string subject, string message);
+    Task SendEmailAsync(string to, string templateKey, EmailTemplateParameters? parameters);
 }
