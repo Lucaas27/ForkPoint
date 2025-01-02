@@ -38,10 +38,10 @@ public class AuthController(IMediator mediator) : ControllerBase
     }
 
 
-    [HttpPost("confirmEmail")]
+    [HttpGet("confirmEmail")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<ConfirmEmailResponse>> ConfirmEmail([FromBody] ConfirmEmailRequest request)
+    public async Task<ActionResult<ConfirmEmailResponse>> ConfirmEmail([FromQuery] ConfirmEmailRequest request)
     {
         var response = await mediator.Send(request);
         return response.IsSuccess

@@ -15,7 +15,8 @@ public class ConfirmEmailHandler(
         CancellationToken cancellationToken
     )
     {
-        logger.LogInformation("Confirming email for user with email {Email}...", request.Email);
+        logger.LogInformation("Attempting to confirm email with token {Token} for user {Email}", request.Token,
+            request.Email);
 
         var user = await userManager.FindByEmailAsync(request.Email);
 
@@ -29,7 +30,8 @@ public class ConfirmEmailHandler(
             };
         }
 
-        var result = await userManager.ConfirmEmailAsync(user, request.TokenEmail);
+
+        var result = await userManager.ConfirmEmailAsync(user, request.Token);
 
         if (!result.Succeeded)
         {
@@ -43,7 +45,7 @@ public class ConfirmEmailHandler(
             };
         }
 
-        logger.LogInformation("Email confirmed for user with email {Email}", request.Email);
+        logger.LogInformation("Email confirmed for user {Email}", request.Email);
 
         return new ConfirmEmailResponse
         {

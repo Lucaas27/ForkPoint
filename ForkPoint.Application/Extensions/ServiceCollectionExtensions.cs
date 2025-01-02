@@ -64,11 +64,11 @@ public static class ServiceCollectionExtensions
                                   ?? throw new ArgumentNullException(nameof(config), "Jwt:Issuer is null"),
                     ValidAudience = config["Jwt:Audience"]
                                     ?? throw new ArgumentNullException(nameof(config),
-                                        "Authentication:Audience is null"),
+                                        "Jwt:Audience is null"),
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(config["Jwt:Key"]
                                                ?? throw new ArgumentNullException(nameof(config),
-                                                   "Authentication:Secret is null"))
+                                                   "Jwt:Key is null"))
                     )
                 };
             })

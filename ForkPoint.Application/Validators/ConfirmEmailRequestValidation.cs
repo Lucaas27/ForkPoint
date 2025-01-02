@@ -7,7 +7,7 @@ public class ConfirmEmailRequestValidation : AbstractValidator<ConfirmEmailReque
 {
     public ConfirmEmailRequestValidation()
     {
-        RuleFor(x => x.TokenEmail)
+        RuleFor(x => x.Token)
             .NotEmpty()
             .WithMessage("TokenEmail is required");
 

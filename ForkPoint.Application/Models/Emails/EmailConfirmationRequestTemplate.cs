@@ -17,10 +17,8 @@ public record EmailConfirmationRequestTemplate : IEmailTemplate
 
     public string Content => $"""
                               <div style='text-align: left;'>
-                                  <h3>Confirm your email</h3>
-                                  <p>Click the link below to confirm your email:</p>
+                                  <p>Click the link below to confirm your email or enter the code <i>{_token}</i> in the browser:</p>
                                   <a href='{_baseUrl}/api/auth/confirmEmail?email={Uri.EscapeDataString(_email!)}&token={Uri.EscapeDataString(_token!)}'>Confirm email</a>
                               </div>
-                                  
                               """;
 }

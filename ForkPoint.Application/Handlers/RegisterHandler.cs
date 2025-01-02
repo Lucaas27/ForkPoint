@@ -17,58 +17,28 @@ public class RegisterHandler(
     {
         logger.LogInformation("Registering user with email {Email}...", request.Email);
 
-        var user = new User
+        var user = new User { UserName = request.Email, Email = request.Email };
+        var result = await userManager.CreateAsync(user, request.Password);
+
+        if (!result.Succeeded)
         {
-            UserName = request.Email,
-            Email = request.Email
-        };
+            return LogAndReturnError("Failed to register user", request.Email, result.Errors);
+        }
 
-        // Require email confirmation
+        var roleResult = await userManager.AddToRoleAsync(user, "User");
+        if (!roleResult.Succeeded)
+        {
+            return LogAndReturnError("Failed to assign role to user", request.Email, roleResult.Errors);
+        }
+
         var emailToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
+        logger.LogInformation("Email confirmation token generated");
 
-        // Send confirmation email
         await emailService.SendEmailAsync(request.Email, "EmailConfirmationRequest", new EmailTemplateParameters
         {
             Token = emailToken,
             UserEmail = request.Email
         });
-
-        var result = await userManager.CreateAsync(user, request.Password);
-
-        if (!result.Succeeded)
-        {
-            var errors = string.Join(Environment.NewLine, result.Errors.Select(e => e.Description));
-            logger.LogError("Failed to register user with email {Email}", request.Email);
-
-            logger.LogError("Error: {Error}", errors);
-
-            return new RegisterResponse
-            {
-                IsSuccess = false,
-                Message =
-                    $"Failed to register user. {errors}"
-            };
-        }
-
-        var roleResult = await userManager.AddToRoleAsync(user, "User");
-
-        if (!roleResult.Succeeded)
-        {
-            var errors = string.Join(Environment.NewLine, roleResult.Errors.Select(e => e.Description));
-
-            logger.LogError("Failed to assign role to user with email {Email}", request.Email);
-
-            logger.LogError("Error: {Error}", errors);
-
-
-            return new RegisterResponse
-            {
-                IsSuccess = false,
-                Message =
-                    $"Failed to assign role to user. {errors}"
-            };
-        }
-
 
         logger.LogInformation("User with email {Email} registered successfully", request.Email);
 
@@ -77,6 +47,18 @@ public class RegisterHandler(
             IsSuccess = true,
             Message =
                 $"User registered successfully. Please confirm your account in the email sent to {request.Email}. Token: {emailToken}"
+        };
+    }
+
+    private RegisterResponse LogAndReturnError(string message, string email, IEnumerable<IdentityError> errors)
+    {
+        var errorMessages = string.Join(Environment.NewLine, errors.Select(e => e.Description));
+        logger.LogError("{Message} with email {Email}. Error: {Error}", message, email, errorMessages);
+
+        return new RegisterResponse
+        {
+            IsSuccess = false,
+            Message = $"{message}. {errorMessages}"
         };
     }
 }
