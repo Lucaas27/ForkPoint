@@ -1,4 +1,5 @@
-﻿using ForkPoint.Domain.Entities;
+﻿using ForkPoint.Application.Extensions;
+using ForkPoint.Domain.Entities;
 using ForkPoint.Domain.Repositories;
 using ForkPoint.Infrastructure.Persistence;
 using ForkPoint.Infrastructure.Repositories;
@@ -20,10 +21,16 @@ public static class ServiceCollectionExtensions
                     options.User.RequireUniqueEmail = true;
                     options.SignIn.RequireConfirmedEmail = true;
                     options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
+                    options.Tokens.PasswordResetTokenProvider = "PasswordResetTokenProvider";
                 }
             )
             .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
+            .AddDefaultTokenProviders()
+            .AddTokenProvider<CustomPasswordResetTokenProvider<User>>("PasswordResetTokenProvider");
+
+        // Set the lifespan of the reset password token to be 10 min
+        services.Configure<CustomPasswordResetTokenProviderOptions>(o => o.TokenLifespan = TimeSpan.FromMinutes(10));
+
         services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
         services.AddScoped<ISeeder, RestaurantSeeder>();
         services.AddScoped<IRestaurantRepository, RestaurantRepository>();

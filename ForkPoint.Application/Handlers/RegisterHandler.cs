@@ -3,6 +3,8 @@ using ForkPoint.Application.Models.Handlers.RegisterUser;
 using ForkPoint.Application.Services;
 using ForkPoint.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace ForkPoint.Application.Handlers;
@@ -10,7 +12,8 @@ namespace ForkPoint.Application.Handlers;
 public class RegisterHandler(
     ILogger<RegisterHandler> logger,
     UserManager<User> userManager,
-    IEmailService emailService
+    IEmailService emailService,
+    IConfiguration configuration
 ) : BaseHandler<RegisterRequest, RegisterResponse>
 {
     public override async Task<RegisterResponse> Handle(RegisterRequest request, CancellationToken cancellationToken)
@@ -34,8 +37,18 @@ public class RegisterHandler(
         var emailToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
         logger.LogInformation("Email confirmation token generated");
 
+        var uri =
+            $"{configuration["ClientURI"]}/auth/confirmEmail";
+
+        var callback = QueryHelpers.AddQueryString(uri, new Dictionary<string, string>
+        {
+            { "token", emailToken },
+            { "email", request.Email }
+        }!);
+
         await emailService.SendEmailAsync(request.Email, "EmailConfirmationRequest", new EmailTemplateParameters
         {
+            Callback = callback,
             Token = emailToken,
             UserEmail = request.Email
         });

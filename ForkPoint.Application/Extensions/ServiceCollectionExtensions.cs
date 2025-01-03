@@ -28,15 +28,15 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IEmailService, EmailService>();
 
-        services.AddScoped<Func<string, EmailTemplateParameters?, IEmailTemplate>>(serviceProvider =>
+        services.AddScoped<Func<string, EmailTemplateParameters?, IEmailTemplate>>(_ =>
             (key, templateParameters) =>
             {
-                var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-
                 return key switch
                 {
-                    "EmailConfirmationRequest" => new EmailConfirmationRequestTemplate(
-                        configuration["BaseUrl"], templateParameters?.Token!, templateParameters?.UserEmail!),
+                    "EmailConfirmationRequest" => new EmailConfirmationRequestTemplate(templateParameters?.Callback,
+                        templateParameters?.Token!),
+                    "EmailPasswordReset" => new EmailPasswordResetRequestTemplate(templateParameters?.Token!,
+                        templateParameters?.Callback!),
                     _ => throw new NotSupportedException($"Email template {key} is not supported")
                 };
             });

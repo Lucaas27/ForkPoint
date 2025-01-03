@@ -1,6 +1,7 @@
 using System.Net.Mime;
 using ForkPoint.Application.Models.Handlers.EmailConfirmation;
 using ForkPoint.Application.Models.Handlers.ExternalProviderCallback;
+using ForkPoint.Application.Models.Handlers.ForgotPassword;
 using ForkPoint.Application.Models.Handlers.LoginUser;
 using ForkPoint.Application.Models.Handlers.RefreshToken;
 using ForkPoint.Application.Models.Handlers.RegisterUser;
@@ -83,6 +84,18 @@ public class AuthController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<LoginResponse>> RefreshToken([FromBody] RefreshTokenRequest request)
+    {
+        var response = await mediator.Send(request);
+        return response.IsSuccess
+            ? Ok(response)
+            : BadRequest(response);
+    }
+
+    [HttpPost("forgotPassword")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<ForgotPasswordResponse>> ForgotPassword([FromBody] ForgotPasswordRequest request)
     {
         var response = await mediator.Send(request);
         return response.IsSuccess
