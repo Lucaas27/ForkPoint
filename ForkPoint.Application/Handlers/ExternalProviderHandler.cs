@@ -1,6 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using ForkPoint.Application.Constants;
 using ForkPoint.Application.Models.Handlers.ExternalProviderCallback;
 using ForkPoint.Application.Services;
 using ForkPoint.Domain.Entities;
@@ -27,18 +26,13 @@ public class ExternalProviderHandler(
         var user = await ExternalProviderLogin();
 
         // Get token
-        var token = await authService.GenerateToken(user);
+        var token = await authService.GenerateAccessToken(user);
 
         // Get token expiry
         var expiry = new JwtSecurityTokenHandler().ReadJwtToken(token).ValidTo;
 
         // Get refresh token
-        var refreshToken = authService.GenerateRefreshToken();
-
-        // Update user with refresh token
-        user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddHours(AuthConstants.RefreshTokenExpirationInHours);
-        await userManager.UpdateAsync(user);
+        var refreshToken = await authService.GenerateRefreshToken(user);
 
         return new ExternalProviderResponse(token, refreshToken, expiry) { IsSuccess = true };
     }

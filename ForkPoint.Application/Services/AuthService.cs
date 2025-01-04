@@ -1,8 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
-using ForkPoint.Application.Constants;
 using ForkPoint.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -16,16 +14,6 @@ public class AuthService(
     UserManager<User> userManager
 ) : IAuthService
 {
-    public string GenerateRefreshToken()
-    {
-        var randomNumber = new byte[64];
-        using var randomNumberGenerator = RandomNumberGenerator.Create();
-
-        randomNumberGenerator.GetBytes(randomNumber);
-
-        return Convert.ToBase64String(randomNumber);
-    }
-
     public ClaimsPrincipal? GetPrincipalFromToken(string token)
     {
         var jwtKey = config["Jwt:Key"] ?? throw new ArgumentNullException(nameof(config), "Jwt:Key is null");
@@ -60,7 +48,7 @@ public class AuthService(
         return principal;
     }
 
-    public async Task<string> GenerateToken(User user)
+    public async Task<string> GenerateAccessToken(User user)
     {
         var jwtKey = config["Jwt:Key"] ?? throw new ArgumentNullException(nameof(config), "Jwt:Key is null");
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
@@ -81,15 +69,29 @@ public class AuthService(
         {
             Subject = new ClaimsIdentity(claims),
             NotBefore = DateTime.UtcNow,
-            Expires = DateTime.UtcNow.AddMinutes(AuthConstants.AccessTokenExpirationInMinutes),
+            Expires = DateTime.UtcNow.AddMinutes(config.GetValue<int>("Jwt:AccessTokenExpirationInMinutes")),
             SigningCredentials = credentials,
-            Issuer = config["Jwt:Issuer"],
-            Audience = config["Jwt:Audience"]
+            Issuer = config.GetValue<string>("Jwt:Issuer"),
+            Audience = config.GetValue<string>("Jwt:Audience")
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateEncodedJwt(tokenDescriptor);
 
         return token;
+    }
+
+    public async Task<string> GenerateRefreshToken(User user)
+    {
+        await userManager.RemoveAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken");
+        var refreshToken = await userManager.GenerateUserTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken");
+        await userManager.SetAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken", refreshToken);
+
+        return refreshToken;
+    }
+
+    public async Task<bool> ValidateRefreshToken(User user, string token)
+    {
+        return await userManager.VerifyUserTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken", token);
     }
 }

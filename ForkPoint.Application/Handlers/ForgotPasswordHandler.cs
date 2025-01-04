@@ -39,6 +39,8 @@ public class ForgotPasswordHandler(
             { "email", request.Email }
         }!);
 
+        logger.LogInformation("Token: {token}", passwordToken);
+
         await emailService.SendEmailAsync(request.Email, "EmailPasswordReset", new EmailTemplateParameters
         {
             Callback = callback,

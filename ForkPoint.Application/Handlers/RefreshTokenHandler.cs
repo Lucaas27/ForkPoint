@@ -1,6 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using ForkPoint.Application.Constants;
 using ForkPoint.Application.Models.Handlers.RefreshToken;
 using ForkPoint.Application.Services;
 using ForkPoint.Domain.Entities;
@@ -39,7 +38,16 @@ public class RefreshTokenHandler(
 
         var user = await userManager.FindByEmailAsync(userEmail);
 
-        if (user is null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiryTime < DateTime.UtcNow)
+        if (user is null)
+        {
+            return new RefreshTokenResponse
+            {
+                IsSuccess = false,
+                Message = "Invalid user"
+            };
+        }
+
+        if (!await authService.ValidateRefreshToken(user, request.RefreshToken))
         {
             return new RefreshTokenResponse
             {
@@ -48,13 +56,11 @@ public class RefreshTokenHandler(
             };
         }
 
-        var token = await authService.GenerateToken(user);
+        var token = await authService.GenerateAccessToken(user);
         var expiry = new JwtSecurityTokenHandler().ReadJwtToken(token).ValidTo;
-        var refreshToken = authService.GenerateRefreshToken();
+        // Get new refresh token
+        var refreshToken = await authService.GenerateRefreshToken(user);
 
-        user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddHours(AuthConstants.RefreshTokenExpirationInHours);
-        await userManager.UpdateAsync(user);
 
         return new RefreshTokenResponse(token, refreshToken, expiry) { IsSuccess = true, Message = "Token refreshed" };
     }

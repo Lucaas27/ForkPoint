@@ -21,18 +21,22 @@ public static class ServiceCollectionExtensions
                     options.User.RequireUniqueEmail = true;
                     options.SignIn.RequireConfirmedEmail = true;
                     options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
-                    options.Tokens.PasswordResetTokenProvider = "PasswordResetTokenProvider";
+                    options.Tokens.PasswordResetTokenProvider = "CustomPasswordTokenProvider";
                 }
             )
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders()
-            .AddTokenProvider<CustomPasswordResetTokenProvider<User>>("PasswordResetTokenProvider");
+            .AddCustomPasswordTokenProvider()
+            .AddCustomRefreshTokenProvider();
 
-        // Set the lifespan of the reset password token to be 10 min
-        services.Configure<CustomPasswordResetTokenProviderOptions>(o => o.TokenLifespan = TimeSpan.FromMinutes(10));
-
-        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
-        services.AddScoped<ISeeder, RestaurantSeeder>();
+        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString, sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                5,
+                TimeSpan.FromSeconds(30),
+                null);
+        }));
+        services.AddScoped<ISeeder, ApplicationSeeder>();
         services.AddScoped<IRestaurantRepository, RestaurantRepository>();
         services.AddScoped<IMenuRepository, MenuRepository>();
     }

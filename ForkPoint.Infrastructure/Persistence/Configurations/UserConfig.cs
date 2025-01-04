@@ -10,14 +10,5 @@ public class UserConfig : IEntityTypeConfiguration<User>
     {
         builder.Property(u => u.FullName)
             .HasMaxLength(100);
-
-        builder.Property(u => u.RefreshToken)
-            .HasMaxLength(2000);
-
-        builder.Property(u => u.RefreshTokenExpiryTime)
-            .HasColumnType("datetime");
-
-        builder.HasIndex(u => u.RefreshToken)
-            .IsUnique();
     }
 }

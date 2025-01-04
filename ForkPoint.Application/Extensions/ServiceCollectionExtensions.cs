@@ -53,7 +53,7 @@ public static class ServiceCollectionExtensions
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    // ClockSkew = TimeSpan.Zero,
+                    ClockSkew = TimeSpan.Zero,
                     LogValidationExceptions = true,
                     ValidateIssuer = true,
                     ValidateAudience = true,

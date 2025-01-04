@@ -11,20 +11,18 @@ public record EmailPasswordResetRequestTemplate : IEmailTemplate
         _callback = callback ?? throw new ArgumentNullException(nameof(callback));
     }
 
-    public string Subject => "Here's your code";
+    public string Subject => "ForkPoint password reset";
 
     public string Content => $"""
                               <div style='text-align: center; background-color: white'>
                                   <div style='text-align: left;'>
                                       <h3>Reset your password</h3>
-                                      <p>We’ve received a request to reset your password for your ForkPoint account. 
-                                      If you made this request, please use this code to choose a new password: </p>
+                                      <p>We received a request to reset the password for your account, which uses this email address. 
+                                         If you made this request, just click the link below to securely reset your password:
+                                        </p>
+                                      <p>{_callback}</p>
                                       
-                                      <h3>{_token}</h3>
-                                      
-                                      <p>For security purposes, this unique code will expire in ten minutes.</p>
-                                      
-                                      <a href='{_callback}'>Reset Password</a>
+                                      <p>For security purposes, this link will expire in ten minutes.</p>
                                   </div>
                               </div>
                               """;

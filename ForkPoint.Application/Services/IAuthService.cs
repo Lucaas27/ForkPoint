@@ -6,6 +6,7 @@ namespace ForkPoint.Application.Services;
 public interface IAuthService
 {
     public ClaimsPrincipal? GetPrincipalFromToken(string token);
-    Task<string> GenerateToken(User user);
-    string GenerateRefreshToken();
+    Task<string> GenerateAccessToken(User user);
+    Task<string> GenerateRefreshToken(User user);
+    Task<bool> ValidateRefreshToken(User user, string token);
 }

@@ -1,5 +1,4 @@
 using FluentValidation;
-using ForkPoint.Application.Constants;
 using ForkPoint.Application.Models.Handlers.RefreshToken;
 
 namespace ForkPoint.Application.Validators;
@@ -10,12 +9,10 @@ public class RefreshTokenRequestValidator : AbstractValidator<RefreshTokenReques
     {
         RuleFor(x => x.AccessToken)
             .NotEmpty()
-            .WithMessage("Access token is required")
-            .MinimumLength(AuthConstants.AccessTokenMinLength);
+            .WithMessage("Access token is required");
 
         RuleFor(x => x.RefreshToken)
             .NotEmpty()
-            .WithMessage("Refresh token is required")
-            .MinimumLength(AuthConstants.RefreshTokenMinLength);
+            .WithMessage("Refresh token is required");
     }
 }

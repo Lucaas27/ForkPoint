@@ -1,5 +1,4 @@
 using System.IdentityModel.Tokens.Jwt;
-using ForkPoint.Application.Constants;
 using ForkPoint.Application.Models.Handlers.LoginUser;
 using ForkPoint.Application.Services;
 using ForkPoint.Domain.Entities;
@@ -43,13 +42,9 @@ public class LoginHandler(
             };
         }
 
-        var token = await authService.GenerateToken(user);
+        var token = await authService.GenerateAccessToken(user);
         var expiry = new JwtSecurityTokenHandler().ReadJwtToken(token).ValidTo;
-        var refreshToken = authService.GenerateRefreshToken();
-
-        user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddHours(AuthConstants.RefreshTokenExpirationInHours);
-        await userManager.UpdateAsync(user);
+        var refreshToken = await authService.GenerateRefreshToken(user);
 
         return new LoginResponse(token, refreshToken, expiry)
         {

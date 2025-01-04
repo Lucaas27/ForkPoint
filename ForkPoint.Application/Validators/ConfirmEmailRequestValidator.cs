@@ -3,9 +3,9 @@ using ForkPoint.Application.Models.Handlers.EmailConfirmation;
 
 namespace ForkPoint.Application.Validators;
 
-public class ConfirmEmailRequestValidation : AbstractValidator<ConfirmEmailRequest>
+public class ConfirmEmailRequestValidator : AbstractValidator<ConfirmEmailRequest>
 {
-    public ConfirmEmailRequestValidation()
+    public ConfirmEmailRequestValidator()
     {
         RuleFor(x => x.Token)
             .NotEmpty()
