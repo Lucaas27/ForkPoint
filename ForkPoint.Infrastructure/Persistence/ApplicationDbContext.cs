@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ForkPoint.Infrastructure.Persistence;
 
 internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-    : IdentityDbContext<User>(options)
+    : IdentityDbContext<User, IdentityRole<int>, int>(options)
 {
     internal DbSet<Restaurant> Restaurants { get; set; } = null!;
     internal DbSet<MenuItem> MenuItems { get; set; } = null!;
@@ -18,12 +18,12 @@ internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> optio
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
 
-        List<IdentityRole> roles =
+        List<IdentityRole<int>> roles =
         [
-            new() { Name = "Admin", NormalizedName = "ADMIN" },
-            new() { Name = "User", NormalizedName = "USER" }
+            new() { Id = 1, Name = "Admin", NormalizedName = "ADMIN", ConcurrencyStamp = Guid.NewGuid().ToString() },
+            new() { Id = 2, Name = "User", NormalizedName = "USER", ConcurrencyStamp = Guid.NewGuid().ToString() }
         ];
 
-        modelBuilder.Entity<IdentityRole>().HasData(roles);
+        modelBuilder.Entity<IdentityRole<int>>().HasData(roles);
     }
 }

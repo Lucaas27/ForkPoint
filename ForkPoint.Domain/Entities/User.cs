@@ -2,7 +2,7 @@
 
 namespace ForkPoint.Domain.Entities;
 
-public class User : IdentityUser
+public class User : IdentityUser<int>
 {
     public string? FullName { get; init; }
 

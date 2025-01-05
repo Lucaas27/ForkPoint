@@ -16,7 +16,7 @@ public static class ServiceCollectionExtensions
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration config)
     {
         var connectionString = config.GetConnectionString("Default");
-        services.AddIdentity<User, IdentityRole>(options =>
+        services.AddIdentity<User, IdentityRole<int>>(options =>
                 {
                     options.User.RequireUniqueEmail = true;
                     options.SignIn.RequireConfirmedEmail = true;

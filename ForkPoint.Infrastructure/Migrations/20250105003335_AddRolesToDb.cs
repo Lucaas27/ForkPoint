@@ -7,7 +7,7 @@
 namespace ForkPoint.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateRoles : Migration
+    public partial class AddRolesToDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,8 +17,8 @@ namespace ForkPoint.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "4a4da63d-5648-457b-b390-f94075e01a54", null, "Admin", "ADMIN" },
-                    { "4dcb7166-a65b-4172-87f7-560feeade79f", null, "User", "USER" }
+                    { 1, "557c5f2d-22e7-4196-8e6b-96fd99a3f411", "Admin", "ADMIN" },
+                    { 2, "3628ea12-1a3f-4ec1-a891-fd12e9ef03fa", "User", "USER" }
                 });
         }
 
@@ -28,12 +28,12 @@ namespace ForkPoint.Infrastructure.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "4a4da63d-5648-457b-b390-f94075e01a54");
+                keyValue: 1);
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "4dcb7166-a65b-4172-87f7-560feeade79f");
+                keyValue: 2);
         }
     }
 }

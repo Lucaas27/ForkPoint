@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -34,11 +33,10 @@ public class CustomRefreshTokenProvider<TUser>(
 public class CustomRefreshTokenProviderOptions : DataProtectionTokenProviderOptions
 {
     public CustomRefreshTokenProviderOptions(
-        IConfiguration configuration
     )
     {
         Name = "CustomRefreshTokenProvider";
-        TokenLifespan = TimeSpan.FromHours(configuration.GetValue<int>("Jwt:RefreshTokenExpirationHours"));
+        TokenLifespan = TimeSpan.FromHours(12);
     }
 }
 
