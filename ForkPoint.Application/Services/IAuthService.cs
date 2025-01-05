@@ -9,4 +9,5 @@ public interface IAuthService
     Task<string> GenerateAccessToken(User user);
     Task<string> GenerateRefreshToken(User user);
     Task<bool> ValidateRefreshToken(User user, string token);
+    Task InvalidateRefreshToken(User user);
 }

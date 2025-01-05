@@ -6,6 +6,7 @@ using ForkPoint.Application.Models.Handlers.DeleteMenuItem;
 using ForkPoint.Application.Models.Handlers.GetMenuItemById;
 using ForkPoint.Application.Models.Handlers.GetMenuItems;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ForkPoint.API.Controllers;
@@ -23,6 +24,7 @@ public class MenuItemsController(IMediator mediator) : ControllerBase
     /// <response code="404">If the restaurant is not found.</response>
     /// <response code="500">If there is an internal server error.</response>
     [HttpGet]
+    [Authorize]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<CustomException>(StatusCodes.Status404NotFound)]
@@ -44,6 +46,7 @@ public class MenuItemsController(IMediator mediator) : ControllerBase
     /// <response code="404">If the menu item or restaurant is not found.</response>
     /// <response code="500">If there is an internal server error.</response>
     [HttpGet("{menuItemId:int}")]
+    [Authorize]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<CustomException>(StatusCodes.Status404NotFound)]
@@ -68,6 +71,7 @@ public class MenuItemsController(IMediator mediator) : ControllerBase
     /// <response code="400">If the request is invalid.</response>
     /// <response code="500">If there is an internal server error.</response>
     [HttpPost("create")]
+    [Authorize(Roles = "Admin")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<CustomException>(StatusCodes.Status400BadRequest)]
@@ -94,6 +98,7 @@ public class MenuItemsController(IMediator mediator) : ControllerBase
     /// <response code="404">If the menu item or restaurant is not found.</response>
     /// <response code="500">If there is an internal server error.</response>
     [HttpDelete("{menuItemId:int}")]
+    [Authorize(Roles = "Admin")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<CustomException>(StatusCodes.Status404NotFound)]
@@ -117,6 +122,7 @@ public class MenuItemsController(IMediator mediator) : ControllerBase
     /// <response code="404">If the restaurant is not found.</response>
     /// <response code="500">If there is an internal server error.</response>
     [HttpDelete]
+    [Authorize(Roles = "Admin")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<CustomException>(StatusCodes.Status404NotFound)]

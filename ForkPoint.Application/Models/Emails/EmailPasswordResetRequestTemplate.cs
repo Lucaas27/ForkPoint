@@ -3,11 +3,9 @@ namespace ForkPoint.Application.Models.Emails;
 public record EmailPasswordResetRequestTemplate : IEmailTemplate
 {
     private readonly string? _callback;
-    private readonly string? _token;
 
-    public EmailPasswordResetRequestTemplate(string token, string callback)
+    public EmailPasswordResetRequestTemplate(string callback)
     {
-        _token = token ?? throw new ArgumentNullException(nameof(token));
         _callback = callback ?? throw new ArgumentNullException(nameof(callback));
     }
 

@@ -47,7 +47,12 @@ public class RefreshTokenHandler(
             };
         }
 
-        if (!await authService.ValidateRefreshToken(user, request.RefreshToken))
+        var tokenExists =
+            await userManager.GetAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken") != null;
+
+        var isTokenValid = await authService.ValidateRefreshToken(user, request.RefreshToken);
+
+        if (!isTokenValid || !tokenExists)
         {
             return new RefreshTokenResponse
             {
@@ -58,9 +63,9 @@ public class RefreshTokenHandler(
 
         var token = await authService.GenerateAccessToken(user);
         var expiry = new JwtSecurityTokenHandler().ReadJwtToken(token).ValidTo;
+
         // Get new refresh token
         var refreshToken = await authService.GenerateRefreshToken(user);
-
 
         return new RefreshTokenResponse(token, refreshToken, expiry) { IsSuccess = true, Message = "Token refreshed" };
     }

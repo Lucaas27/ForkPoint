@@ -83,7 +83,7 @@ public class AuthService(
 
     public async Task<string> GenerateRefreshToken(User user)
     {
-        await userManager.RemoveAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken");
+        await InvalidateRefreshToken(user);
         var refreshToken = await userManager.GenerateUserTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken");
         await userManager.SetAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken", refreshToken);
 
@@ -93,5 +93,10 @@ public class AuthService(
     public async Task<bool> ValidateRefreshToken(User user, string token)
     {
         return await userManager.VerifyUserTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken", token);
+    }
+
+    public async Task InvalidateRefreshToken(User user)
+    {
+        await userManager.RemoveAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken");
     }
 }

@@ -35,8 +35,7 @@ public static class ServiceCollectionExtensions
                 {
                     "EmailConfirmationRequest" => new EmailConfirmationRequestTemplate(templateParameters?.Callback,
                         templateParameters?.Token!),
-                    "EmailPasswordReset" => new EmailPasswordResetRequestTemplate(templateParameters?.Token!,
-                        templateParameters?.Callback!),
+                    "EmailPasswordReset" => new EmailPasswordResetRequestTemplate(templateParameters?.Callback!),
                     _ => throw new NotSupportedException($"Email template {key} is not supported")
                 };
             });

@@ -1,14 +1,17 @@
 using System.Net.Mime;
+using System.Security.Claims;
 using ForkPoint.Application.Models.Handlers.EmailConfirmation;
 using ForkPoint.Application.Models.Handlers.ExternalProviderCallback;
 using ForkPoint.Application.Models.Handlers.ForgotPassword;
 using ForkPoint.Application.Models.Handlers.LoginUser;
+using ForkPoint.Application.Models.Handlers.Logout;
 using ForkPoint.Application.Models.Handlers.RefreshToken;
 using ForkPoint.Application.Models.Handlers.RegisterUser;
 using ForkPoint.Application.Models.Handlers.ResetPassword;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ForkPoint.API.Controllers;
@@ -37,6 +40,29 @@ public class AuthController(IMediator mediator) : ControllerBase
         return response.IsSuccess
             ? Ok(response)
             : Unauthorized(response);
+    }
+
+    [HttpPost("logout")]
+    [Authorize]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<LogoutResponse>> Logout()
+    {
+        // Get the user's email from the claims
+        var email = User.FindFirstValue(ClaimTypes.Email);
+
+        if (string.IsNullOrEmpty(email))
+        {
+            return Unauthorized();
+        }
+
+        var response = await mediator.Send(new LogoutRequest(email));
+
+        return response.IsSuccess
+            ? Ok(response)
+            : StatusCode(StatusCodes.Status500InternalServerError, response);
     }
 
 
