@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using ForkPoint.Application.Contexts;
 using ForkPoint.Application.Models.Emails;
 using ForkPoint.Application.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -25,6 +26,10 @@ public static class ServiceCollectionExtensions
             .AddFluentValidationAutoValidation();
 
         services.AddScoped<IAuthService, AuthService>();
+
+        services.AddScoped<IUserContext, UserContext>();
+
+        services.AddHttpContextAccessor();
 
         services.AddScoped<IEmailService, EmailService>();
 

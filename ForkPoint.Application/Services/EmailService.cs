@@ -7,7 +7,7 @@ using MimeKit.Text;
 
 namespace ForkPoint.Application.Services;
 
-public class EmailService(
+internal class EmailService(
     ILogger<EmailService> logger,
     IConfiguration configuration,
     Func<string, EmailTemplateParameters?, IEmailTemplate> emailTemplateFactory

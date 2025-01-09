@@ -16,6 +16,7 @@ namespace ForkPoint.API.Controllers;
 /// </summary>
 /// <param name="mediator">The mediator instance for handling requests.</param>
 [Route("api/[controller]")]
+[Authorize]
 [ApiController]
 public class RestaurantsController(IMediator mediator) : ControllerBase
 {
@@ -27,7 +28,7 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     /// <response code="200">Returns the list of restaurants.</response>
     /// <response code="500">If there is an internal server error.</response>
     [HttpGet]
-    [Authorize]
+    [AllowAnonymous]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -49,7 +50,6 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     /// <response code="404">If the restaurant is not found.</response>
     /// <response code="500">If there is an internal server error.</response>
     [HttpGet("{restaurantId:int}")]
-    [Authorize]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<CustomException>(StatusCodes.Status404NotFound)]

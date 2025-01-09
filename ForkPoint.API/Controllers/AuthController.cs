@@ -1,5 +1,4 @@
 using System.Net.Mime;
-using System.Security.Claims;
 using ForkPoint.Application.Models.Handlers.EmailConfirmation;
 using ForkPoint.Application.Models.Handlers.ExternalProviderCallback;
 using ForkPoint.Application.Models.Handlers.ForgotPassword;
@@ -8,6 +7,7 @@ using ForkPoint.Application.Models.Handlers.Logout;
 using ForkPoint.Application.Models.Handlers.RefreshToken;
 using ForkPoint.Application.Models.Handlers.RegisterUser;
 using ForkPoint.Application.Models.Handlers.ResetPassword;
+using ForkPoint.Application.Models.Handlers.UpdateUser;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -34,6 +34,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     [HttpPost("login")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<LoginResponse>> LoginUser([FromBody] LoginRequest request)
     {
         var response = await mediator.Send(request);
@@ -50,15 +51,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<LogoutResponse>> Logout()
     {
-        // Get the user's email from the claims
-        var email = User.FindFirstValue(ClaimTypes.Email);
-
-        if (string.IsNullOrEmpty(email))
-        {
-            return Unauthorized();
-        }
-
-        var response = await mediator.Send(new LogoutRequest(email));
+        var response = await mediator.Send(new LogoutRequest());
 
         return response.IsSuccess
             ? Ok(response)
@@ -69,6 +62,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     [HttpGet("confirmEmail")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<ConfirmEmailResponse>> ConfirmEmail([FromQuery] ConfirmEmailRequest request)
     {
         var response = await mediator.Send(request);
@@ -139,6 +133,21 @@ public class AuthController(IMediator mediator) : ControllerBase
         var response = await mediator.Send(request);
         return response.IsSuccess
             ? Ok(response)
+            : BadRequest(response);
+    }
+
+    [HttpPatch("updateUserDetails")]
+    [Authorize]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<UpdateUserDetailsResponse>> UpdateUserDetails(
+        [FromBody] UpdateUserDetailsRequest detailsRequest
+    )
+    {
+        var response = await mediator.Send(detailsRequest);
+        return response.IsSuccess
+            ? NoContent()
             : BadRequest(response);
     }
 }

@@ -9,7 +9,7 @@ using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredCla
 
 namespace ForkPoint.Application.Services;
 
-public class AuthService(
+internal class AuthService(
     IConfiguration config,
     UserManager<User> userManager
 ) : IAuthService
