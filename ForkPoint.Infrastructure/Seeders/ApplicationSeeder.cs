@@ -1,11 +1,15 @@
 ﻿using System.Text.Json;
+using ForkPoint.Domain.Constants;
 using ForkPoint.Domain.Entities;
 using ForkPoint.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 
 namespace ForkPoint.Infrastructure.Seeders;
 
-internal class ApplicationSeeder(ApplicationDbContext dbContext, UserManager<User> userManager) : ISeeder
+internal class ApplicationSeeder(
+    ApplicationDbContext dbContext,
+    UserManager<User> userManager
+) : ISeeder
 {
     private static readonly string JsonFilePath = Path.Combine(AppContext.BaseDirectory, "Seeders", "restaurants.json");
 
@@ -15,25 +19,74 @@ internal class ApplicationSeeder(ApplicationDbContext dbContext, UserManager<Use
 
         if (await dbContext.Database.CanConnectAsync())
         {
+            // Seed default restaurants
             if (!dbContext.Restaurants.Any())
             {
                 var restaurantList = await GetRestaurantListAsync();
                 dbContext.Restaurants.AddRange(restaurantList);
                 await dbContext.SaveChangesAsync();
             }
-        }
 
-        // Default users
-        var administrator = new User
+            // Seed default roles
+            if (!dbContext.Roles.Any())
+            {
+                var roles = GetRoles();
+                dbContext.Roles.AddRange(roles);
+                await dbContext.SaveChangesAsync();
+            }
+
+            // Seed Default admins
+            var admins = GetAdmins();
+            if (userManager.Users.All(u => !admins.Select(a => a.Email).Contains(u.Email)))
+            {
+                foreach (var user in admins)
+                {
+                    await userManager.CreateAsync(user, "AdminPassword1!");
+                    await userManager.AddToRoleAsync(user, "Admin");
+                }
+            }
+        }
+    }
+
+    private static List<User> GetAdmins()
+    {
+        var admins = new List<User>
         {
-            Email = "admin@forkpoint.com", EmailConfirmed = true, UserName = "admin@forkpoint.com", FullName = "Admin"
+            new()
+            {
+                Email = "admin@forkpoint.com", EmailConfirmed = true, UserName = "admin@forkpoint.com",
+                FullName = "Admin"
+            }
         };
 
-        if (userManager.Users.All(u => u.UserName != administrator.UserName))
+        return admins;
+    }
+
+    private static List<IdentityRole<int>> GetRoles()
+    {
+        var roles = new List<IdentityRole<int>>
         {
-            await userManager.CreateAsync(administrator, "AdminPassword1!");
-            await userManager.AddToRolesAsync(administrator, ["Admin"]);
-        }
+            new()
+            {
+                Name = AppUserRoles.Admin,
+                NormalizedName = AppUserRoles.Admin.ToUpperInvariant(),
+                ConcurrencyStamp = Guid.NewGuid().ToString()
+            },
+            new()
+            {
+                Name = AppUserRoles.Owner,
+                NormalizedName = AppUserRoles.Owner.ToUpperInvariant(),
+                ConcurrencyStamp = Guid.NewGuid().ToString()
+            },
+            new()
+            {
+                Name = AppUserRoles.User,
+                NormalizedName = AppUserRoles.User.ToUpperInvariant(),
+                ConcurrencyStamp = Guid.NewGuid().ToString()
+            }
+        };
+
+        return roles;
     }
 
     private static async Task<IEnumerable<Restaurant>> GetRestaurantListAsync()

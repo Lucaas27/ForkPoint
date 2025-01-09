@@ -17,13 +17,5 @@ internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> optio
         // This applies all configurations specified in types implementing IEntityTypeConfiguration from the assembly
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
-
-        List<IdentityRole<int>> roles =
-        [
-            new() { Id = 1, Name = "Admin", NormalizedName = "ADMIN", ConcurrencyStamp = Guid.NewGuid().ToString() },
-            new() { Id = 2, Name = "User", NormalizedName = "USER", ConcurrencyStamp = Guid.NewGuid().ToString() }
-        ];
-
-        modelBuilder.Entity<IdentityRole<int>>().HasData(roles);
     }
 }

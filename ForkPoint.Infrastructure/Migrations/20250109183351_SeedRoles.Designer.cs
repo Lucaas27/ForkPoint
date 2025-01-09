@@ -4,6 +4,7 @@ using ForkPoint.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ForkPoint.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250109183351_SeedRoles")]
+    partial class SeedRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -244,24 +247,18 @@ namespace ForkPoint.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "66af68cb-b112-4273-aa18-cc8d570bfdf4",
-                            ConcurrencyStamp = "2da1eacb-4ad4-48ab-bf35-340f8c3cf3ee",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
+                            Id = "f635f30c-527a-491b-8bc8-71ac707db9b6",
+                            Name = "User"
                         },
                         new
                         {
-                            Id = "a09e2d9a-b0c4-4816-9be7-fda087ebf1df",
-                            ConcurrencyStamp = "e7df053f-192e-4549-b188-81a61f05d5f9",
-                            Name = "Owner",
-                            NormalizedName = "OWNER"
+                            Id = "bac10e6e-0a31-4415-b572-e4600cf76ffd",
+                            Name = "Owner"
                         },
                         new
                         {
-                            Id = "6203cfad-3e1b-4dee-b83c-c7929ce2e82d",
-                            ConcurrencyStamp = "487e9a16-1f6a-456d-b16d-f3898f89475d",
-                            Name = "User",
-                            NormalizedName = "USER"
+                            Id = "b615914e-01be-4a3e-be67-bfb16f4e456b",
+                            Name = "Admin"
                         });
                 });
 
