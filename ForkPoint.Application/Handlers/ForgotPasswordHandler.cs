@@ -31,7 +31,7 @@ public class ForgotPasswordHandler(
 
         var passwordToken = await userManager.GeneratePasswordResetTokenAsync(user);
 
-        var uri = $"{configuration["ClientURI"]}/auth/resetPassword";
+        var uri = $"{configuration["ClientURI"]}/account/resetPassword";
 
         var callback = QueryHelpers.AddQueryString(uri, new Dictionary<string, string>
         {

@@ -38,7 +38,7 @@ public class RegisterHandler(
         logger.LogInformation("Email confirmation token generated");
 
         var uri =
-            $"{configuration["ClientURI"]}/auth/confirmEmail";
+            $"{configuration["ClientURI"]}/account/confirmEmail";
 
         var callback = QueryHelpers.AddQueryString(uri, new Dictionary<string, string>
         {
