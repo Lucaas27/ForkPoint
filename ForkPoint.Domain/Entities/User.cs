@@ -11,4 +11,6 @@ public class User : IdentityUser<int>
         get => base.UserName ?? Email;
         set => base.UserName = value ?? Email;
     }
+
+    public ICollection<Restaurant> OwnedRestaurants { get; set; } = [];
 }

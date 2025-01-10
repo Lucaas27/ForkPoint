@@ -45,24 +45,50 @@ internal class ApplicationSeeder(
                     await userManager.AddToRoleAsync(user, "Admin");
                 }
             }
+
+
+            // Seed Default users
+            var users = GetUsers();
+            if (userManager.Users.All(u => !users.Select(a => a.Email).Contains(u.Email)))
+            {
+                foreach (var user in users)
+                {
+                    await userManager.CreateAsync(user, "UserPassword1!");
+                    await userManager.AddToRoleAsync(user, "User");
+                }
+            }
         }
     }
 
-    private static List<User> GetAdmins()
+    private static IEnumerable<User> GetUsers()
+    {
+        var users = new List<User>
+        {
+            new()
+            {
+                Email = "forkpointuser@gmail.com", EmailConfirmed = true, UserName = "forkpointuser@gmail.com",
+                FullName = "ForkPoint User"
+            }
+        };
+
+        return users;
+    }
+
+    private static IEnumerable<User> GetAdmins()
     {
         var admins = new List<User>
         {
             new()
             {
-                Email = "admin@forkpoint.com", EmailConfirmed = true, UserName = "admin@forkpoint.com",
-                FullName = "Admin"
+                Email = "forkpointadmin@gmail.com", EmailConfirmed = true, UserName = "forkpointadmin@gmail.com",
+                FullName = "ForkPoint Admin"
             }
         };
 
         return admins;
     }
 
-    private static List<IdentityRole<int>> GetRoles()
+    private static IEnumerable<IdentityRole<int>> GetRoles()
     {
         var roles = new List<IdentityRole<int>>
         {

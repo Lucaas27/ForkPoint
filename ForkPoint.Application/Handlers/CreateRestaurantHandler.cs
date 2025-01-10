@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ForkPoint.Application.Contexts;
 using ForkPoint.Application.Models.Handlers.CreateRestaurant;
 using ForkPoint.Domain.Entities;
 using ForkPoint.Domain.Repositories;
@@ -15,7 +16,8 @@ namespace ForkPoint.Application.Handlers;
 public class CreateRestaurantHandler(
     ILogger<CreateRestaurantHandler> logger,
     IMapper mapper,
-    IRestaurantRepository restaurantsRepository
+    IRestaurantRepository restaurantsRepository,
+    IUserContext userContext
 )
     : BaseHandler<CreateRestaurantRequest, CreateRestaurantResponse>
 {
@@ -30,12 +32,20 @@ public class CreateRestaurantHandler(
         CancellationToken cancellationToken
     )
     {
-        logger.LogInformation("Creating new restaurant...");
+        var user = userContext.GetCurrentUser();
+        var userId = user?.Id ?? throw new InvalidOperationException("User not found");
+
+        logger.LogInformation("User {User} - {UserId} is creating a new restaurant...", user.Email, userId);
 
         var restaurant = mapper.Map<Restaurant>(request);
-        var id = await restaurantsRepository.CreateRestaurantAsync(restaurant);
 
-        return new CreateRestaurantResponse(id)
+        restaurant.OwnerId = int.TryParse(user.Id, out var id)
+            ? id
+            : throw new InvalidOperationException("Invalid user ID");
+
+        var restaurantId = await restaurantsRepository.CreateRestaurantAsync(restaurant);
+
+        return new CreateRestaurantResponse(restaurantId)
         {
             IsSuccess = true
         };
