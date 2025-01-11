@@ -19,14 +19,6 @@ internal class ApplicationSeeder(
 
         if (await dbContext.Database.CanConnectAsync())
         {
-            // Seed default restaurants
-            if (!dbContext.Restaurants.Any())
-            {
-                var restaurantList = await GetRestaurantListAsync();
-                dbContext.Restaurants.AddRange(restaurantList);
-                await dbContext.SaveChangesAsync();
-            }
-
             // Seed default roles
             if (!dbContext.Roles.Any())
             {
@@ -56,6 +48,14 @@ internal class ApplicationSeeder(
                     await userManager.CreateAsync(user, "UserPassword1!");
                     await userManager.AddToRoleAsync(user, "User");
                 }
+            }
+
+            // Seed default restaurants
+            if (!dbContext.Restaurants.Any())
+            {
+                var restaurantList = await GetRestaurantListAsync();
+                dbContext.Restaurants.AddRange(restaurantList);
+                await dbContext.SaveChangesAsync();
             }
         }
     }
