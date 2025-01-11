@@ -2,6 +2,7 @@
 
 using System.Net.Mime;
 using ForkPoint.Application.Models.Exceptions;
+using ForkPoint.Application.Models.Handlers.AdminUpdateUserDetails;
 using ForkPoint.Application.Models.Handlers.AssignUserRole;
 using ForkPoint.Application.Models.Handlers.RemoveUserRole;
 using ForkPoint.Domain.Constants;
@@ -15,8 +16,8 @@ namespace ForkPoint.API.Controllers;
 ///     Controller for admin-related actions.
 /// </summary>
 [Route("api/[controller]")]
-[ApiController]
 [Authorize(Policy = AppPolicies.AdminPolicy)]
+[ApiController]
 public class AdminController(IMediator mediator) : ControllerBase
 {
     /// <summary>
@@ -52,6 +53,27 @@ public class AdminController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<RemoveUserRoleResponse>> RemoveUserRole([FromBody] RemoveUserRoleRequest request)
     {
         var response = await mediator.Send(request);
+        return response.IsSuccess
+            ? NoContent()
+            : BadRequest(response);
+    }
+
+    /// <summary>
+    ///     Allow Admins to update user details.
+    /// </summary>
+    /// <param name="detailsRequest">The request containing the new user details.</param>
+    /// <returns>A response indicating the result of the update operation.</returns>
+    [HttpPatch("updateAccount/{userId:int}")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<CustomException>(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType<CustomException>(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType<CustomException>(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<AdminUpdateUserDetailsResponse>> AdminUpdateUserDetails(
+        [FromBody] AdminUpdateUserDetailsRequest detailsRequest
+    )
+    {
+        var response = await mediator.Send(detailsRequest);
         return response.IsSuccess
             ? NoContent()
             : BadRequest(response);

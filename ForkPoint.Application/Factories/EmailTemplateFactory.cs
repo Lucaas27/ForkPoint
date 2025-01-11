@@ -1,4 +1,3 @@
-// EmailTemplateFactory.cs
 
 using ForkPoint.Application.Models.Emails;
 using Microsoft.AspNetCore.WebUtilities;

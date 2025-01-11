@@ -1,7 +1,6 @@
 using System.Net.Mime;
 using ForkPoint.Application.Models.Exceptions;
 using ForkPoint.Application.Models.Handlers.UpdateUser;
-using ForkPoint.Domain.Constants;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +13,7 @@ namespace ForkPoint.API.Controllers;
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class AccountController(IMediator mediator) : ControllerBase
 {
     /// <summary>
@@ -22,7 +22,6 @@ public class AccountController(IMediator mediator) : ControllerBase
     /// <param name="detailsRequest">The request containing the new user details.</param>
     /// <returns>A response indicating the result of the update operation.</returns>
     [HttpPatch("update")]
-    [Authorize(Policy = AppPolicies.OwnsResourceOrAdminPolicy)]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<CustomException>(StatusCodes.Status401Unauthorized)]

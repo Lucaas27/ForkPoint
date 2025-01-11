@@ -1,3 +1,4 @@
+using AutoMapper;
 using ForkPoint.Application.Contexts;
 using ForkPoint.Application.Models.Handlers.UpdateUser;
 using ForkPoint.Domain.Entities;
@@ -11,7 +12,8 @@ namespace ForkPoint.Application.Handlers;
 public class UpdateUserDetailsHandler(
     ILogger<UpdateUserDetailsHandler> logger,
     IUserContext userContext,
-    UserManager<User> userManager
+    UserManager<User> userManager,
+    IMapper mapper
 )
     : IRequestHandler<UpdateUserDetailsRequest, UpdateUserDetailsResponse>
 {
@@ -27,7 +29,8 @@ public class UpdateUserDetailsHandler(
         var dbUser = await userManager.FindByIdAsync(user.Id.ToString()) ??
                      throw new NotFoundException(nameof(User), user.Id.ToString());
 
-        dbUser.FullName = request.FullName;
+        // Map the request data to the domain model
+        mapper.Map(request, dbUser);
 
         var result = await userManager.UpdateAsync(dbUser);
 

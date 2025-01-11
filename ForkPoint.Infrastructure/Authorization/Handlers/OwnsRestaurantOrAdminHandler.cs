@@ -22,7 +22,7 @@ public class OwnsRestaurantOrAdminHandler(
         logger.LogInformation("Checking if user owns the restaurant or is an admin...");
 
         var user = userContext.GetCurrentUser();
-        var restaurantId = restaurantContext.GetCurrentRestaurantId();
+        var restaurantId = restaurantContext.GetTargetedRestaurantId();
 
         if (user is null)
         {
@@ -35,7 +35,6 @@ public class OwnsRestaurantOrAdminHandler(
             context.Succeed(ownsRestaurantOrAdminOrAdminRequirement);
             return;
         }
-
 
         var restaurant = await restaurantRepository.GetRestaurantByIdAsync(restaurantId);
 

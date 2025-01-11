@@ -26,4 +26,21 @@ public class UserContext(IHttpContextAccessor httpContextAccessor) : IUserContex
 
         return new CurrentUserModel(int.Parse(id), email, roles);
     }
+
+    public int GetTargetUserId()
+    {
+        var userId = httpContextAccessor.HttpContext?.Request.RouteValues["userId"]?.ToString();
+
+        if (userId is null)
+        {
+            throw new InvalidOperationException("User ID not found in the current context");
+        }
+
+        if (!int.TryParse(userId, out var id))
+        {
+            throw new InvalidCastException("User ID is not an INT");
+        }
+
+        return id;
+    }
 }

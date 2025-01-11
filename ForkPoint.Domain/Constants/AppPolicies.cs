@@ -11,8 +11,5 @@ public static class AppPolicies
         OwnsRestaurantOrAdminPolicy =
             "OwnsRestaurantOrAdmin"; // This will prevent users from updating/deleting restaurants they don't own.
 
-    public const string
-        OwnsResourceOrAdminPolicy =
-            "OwnsResourceOrAdmin"; // This will prevent users from updating records they don't own.
     // A user policy is not needed as this will the default access a user will have which can then be upgrade to either owner or admin.
 }

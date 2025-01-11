@@ -38,7 +38,7 @@ public class LoginHandler(
             return new LoginResponse
             {
                 IsSuccess = false,
-                Message = "That email and password combination is not correct. Try again."
+                Message = "The email and password combination provided is not correct. Try again."
             };
         }
 

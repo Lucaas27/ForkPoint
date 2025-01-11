@@ -4,7 +4,7 @@ namespace ForkPoint.Application.Contexts;
 
 public class RestaurantContext(IHttpContextAccessor httpContextAccessor) : IRestaurantContext
 {
-    public int GetCurrentRestaurantId()
+    public int GetTargetedRestaurantId()
     {
         var restaurantId = httpContextAccessor.HttpContext?.Request.RouteValues["restaurantId"]?.ToString();
 
