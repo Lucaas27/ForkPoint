@@ -14,10 +14,10 @@ public class AssignUserRoleValidator : AbstractValidator<AssignUserRoleRequest>
 
         RuleFor(x => x.Role)
             .NotEmpty()
-            .Must(x => x.Equals(AppPolicies.AdminPolicy, StringComparison.OrdinalIgnoreCase)
-                       || x.Equals(AppPolicies.OwnerPolicy, StringComparison.OrdinalIgnoreCase)
-                       || x.Equals(AppPolicies.UserPolicy, StringComparison.OrdinalIgnoreCase))
+            .Must(x => x.Equals(AppUserRoles.Admin, StringComparison.OrdinalIgnoreCase)
+                       || x.Equals(AppUserRoles.Owner, StringComparison.OrdinalIgnoreCase)
+                       || x.Equals(AppUserRoles.User, StringComparison.OrdinalIgnoreCase))
             .WithMessage(
-                $"Role must be one of {AppPolicies.AdminPolicy}, {AppPolicies.OwnerPolicy}, {AppPolicies.UserPolicy}");
+                $"Role must be one of {AppUserRoles.Admin}, {AppUserRoles.Owner} or {AppUserRoles.User}");
     }
 }

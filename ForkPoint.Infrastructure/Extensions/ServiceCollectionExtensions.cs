@@ -45,11 +45,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IMenuRepository, MenuRepository>();
         services.AddScoped<IAuthorizationHandler, OwnsRestaurantOrAdminHandler>();
         services.AddAuthorizationBuilder()
-            .AddPolicy(AppPolicies.OwnerPolicy, policy => policy.RequireRole(AppPolicies.OwnerPolicy))
-            .AddPolicy(AppPolicies.AdminPolicy, policy => policy.RequireRole(AppPolicies.AdminPolicy))
-            .AddPolicy(AppPolicies.UserPolicy, policy => policy.RequireRole(AppPolicies.UserPolicy))
+            .AddPolicy(AppPolicies.AdminPolicy, policy => policy.RequireRole(AppUserRoles.Admin))
             .AddPolicy(AppPolicies.AdminOrOwnerPolicy,
-                policy => policy.RequireRole(AppPolicies.AdminPolicy, AppPolicies.OwnerPolicy))
+                policy => policy.RequireRole(AppUserRoles.Admin, AppUserRoles.Owner))
             .AddPolicy(AppPolicies.OwnsRestaurantOrAdminPolicy,
                 policy => policy.AddRequirements(new OwnsRestaurantOrAdminRequirement()));
     }
