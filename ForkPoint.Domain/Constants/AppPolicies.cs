@@ -11,5 +11,7 @@ public static class AppPolicies
         OwnsRestaurantOrAdminPolicy =
             "OwnsRestaurantOrAdmin"; // This will prevent users from updating/deleting restaurants they don't own.
 
-    // A user policy is not needed as this will the default access a user will have which can then be upgrade to either owner or admin.
+    // A user policy is not needed.
+    // This will be the default access a user will have after registering.
+    // The account can then be upgraded to be part of other policies.
 }
