@@ -1,26 +1,29 @@
+using System.Net.Mime;
 using ForkPoint.Application.Models.Exceptions;
+using ForkPoint.Application.Models.Handlers.EmailConfirmation;
 using ForkPoint.Application.Models.Handlers.ExternalProviderCallback;
+using ForkPoint.Application.Models.Handlers.ForgotPassword;
 using ForkPoint.Application.Models.Handlers.LoginUser;
 using ForkPoint.Application.Models.Handlers.Logout;
 using ForkPoint.Application.Models.Handlers.RefreshToken;
 using ForkPoint.Application.Models.Handlers.RegisterUser;
+using ForkPoint.Application.Models.Handlers.ResetPassword;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Mime;
 
 namespace ForkPoint.API.Controllers;
 
 /// <summary>
-/// Controller for handling authentication-related actions.
+///     Controller for handling authentication-related actions.
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController(IMediator mediator) : ControllerBase
 {
     /// <summary>
-    /// Registers a new user.
+    ///     Registers a new user.
     /// </summary>
     /// <param name="request">The registration request containing user details.</param>
     /// <returns>A response indicating the result of the registration.</returns>
@@ -37,7 +40,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Logs in a user.
+    ///     Logs in a user.
     /// </summary>
     /// <param name="request">The login request containing user credentials.</param>
     /// <returns>A response indicating the result of the login attempt.</returns>
@@ -54,7 +57,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Logs out the current user.
+    ///     Logs out the current user.
     /// </summary>
     /// <returns>A response indicating the result of the logout attempt.</returns>
     [HttpPost("logout")]
@@ -72,7 +75,59 @@ public class AuthController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Initiates the Google login process.
+    ///     Confirms the user's email address.
+    /// </summary>
+    /// <param name="request">The email confirmation request.</param>
+    /// <returns>A response indicating the result of the email confirmation.</returns>
+    [HttpGet("confirmEmail")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<CustomException>(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<ConfirmEmailResponse>> ConfirmEmail([FromQuery] ConfirmEmailRequest request)
+    {
+        var response = await mediator.Send(request);
+        return response.IsSuccess
+            ? Ok(response)
+            : BadRequest(response);
+    }
+
+    /// <summary>
+    ///     Initiates the forgot password process.
+    /// </summary>
+    /// <param name="request">The forgot password request.</param>
+    /// <returns>A response indicating the result of the forgot password process.</returns>
+    [HttpPost("forgotPassword")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<CustomException>(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<ForgotPasswordResponse>> ForgotPassword([FromBody] ForgotPasswordRequest request)
+    {
+        var response = await mediator.Send(request);
+        return response.IsSuccess
+            ? Ok(response)
+            : BadRequest(response);
+    }
+
+    /// <summary>
+    ///     Resets the user's password.
+    /// </summary>
+    /// <param name="request">The reset password request.</param>
+    /// <returns>A response indicating the result of the password reset.</returns>
+    [HttpPost("resetPassword")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<CustomException>(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<ResetPasswordResponse>> ResetPassword([FromBody] ResetPasswordRequest request)
+    {
+        var response = await mediator.Send(request);
+        return response.IsSuccess
+            ? Ok(response)
+            : BadRequest(response);
+    }
+
+
+    /// <summary>
+    ///     Initiates the Google login process.
     /// </summary>
     /// <returns>A challenge result to initiate Google authentication.</returns>
     [HttpGet("googleLogin")]
@@ -94,7 +149,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Handles the callback from an external authentication provider.
+    ///     Handles the callback from an external authentication provider.
     /// </summary>
     /// <returns>A response indicating the result of the external provider callback.</returns>
     [HttpGet("callback")]
@@ -108,7 +163,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Refreshes the authentication token.
+    ///     Refreshes the authentication token.
     /// </summary>
     /// <param name="request">The refresh token request containing the current token.</param>
     /// <returns>A response indicating the result of the token refresh attempt.</returns>

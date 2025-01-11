@@ -19,7 +19,7 @@ public class OwnsRestaurantOrAdminHandler(
         OwnsRestaurantOrAdminRequirement ownsRestaurantOrAdminOrAdminRequirement
     )
     {
-        logger.LogInformation("Checking if user owns the restaurant or is an admin.");
+        logger.LogInformation("Checking if user owns the restaurant or is an admin...");
 
         var user = userContext.GetCurrentUser();
         var restaurantId = restaurantContext.GetCurrentRestaurantId();

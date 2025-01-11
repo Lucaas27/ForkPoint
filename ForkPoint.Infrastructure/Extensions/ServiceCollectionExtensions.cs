@@ -44,11 +44,14 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IRestaurantRepository, RestaurantRepository>();
         services.AddScoped<IMenuRepository, MenuRepository>();
         services.AddScoped<IAuthorizationHandler, OwnsRestaurantOrAdminHandler>();
+        services.AddScoped<IAuthorizationHandler, OwnsResourceOrAdminHandler>();
         services.AddAuthorizationBuilder()
             .AddPolicy(AppPolicies.AdminPolicy, policy => policy.RequireRole(AppUserRoles.Admin))
             .AddPolicy(AppPolicies.AdminOrOwnerPolicy,
                 policy => policy.RequireRole(AppUserRoles.Admin, AppUserRoles.Owner))
             .AddPolicy(AppPolicies.OwnsRestaurantOrAdminPolicy,
-                policy => policy.AddRequirements(new OwnsRestaurantOrAdminRequirement()));
+                policy => policy.AddRequirements(new OwnsRestaurantOrAdminRequirement()))
+            .AddPolicy(AppPolicies.OwnsResourceOrAdminPolicy,
+                policy => policy.AddRequirements(new OwnsResourceOrAdminRequirement()));
     }
 }

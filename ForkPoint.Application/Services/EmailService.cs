@@ -9,8 +9,7 @@ namespace ForkPoint.Application.Services;
 
 internal class EmailService(
     ILogger<EmailService> logger,
-    IConfiguration configuration,
-    Func<string, EmailTemplateParameters?, IEmailTemplate> emailTemplateFactory
+    IConfiguration configuration
 ) : IEmailService
 {
     private readonly string _from = configuration["EmailConfig:From"] ??
@@ -26,23 +25,20 @@ internal class EmailService(
     private readonly string _smtpServer = configuration["EmailConfig:Server"] ??
                                           throw new ArgumentNullException(nameof(configuration), "EmailConfig:Server");
 
-
-    public async Task SendEmailAsync(string to, string templateKey, EmailTemplateParameters? parameters = null)
+    public async Task SendEmailAsync(IEmailTemplate emailTemplate)
     {
-        ArgumentException.ThrowIfNullOrEmpty(to, nameof(to));
-        ArgumentException.ThrowIfNullOrEmpty(templateKey, nameof(templateKey));
+        logger.LogInformation("Sending {EmailType} to {Receptor}...", emailTemplate.GetType(),
+            emailTemplate.Destination);
 
-        logger.LogInformation("Sending {EmailType} to {Receptor}...", templateKey, to);
 
-        var template = emailTemplateFactory(templateKey, parameters);
-
-        var email = CreateEmail(to, template.Subject, template.Content);
+        var email = CreateEmail(emailTemplate.Destination, emailTemplate.Subject, emailTemplate.Html);
 
         using var client = new SmtpClient();
         await client.ConnectAsync(_smtpServer, _port, true);
         await client.AuthenticateAsync(_from, _password);
         await client.SendAsync(email);
     }
+
 
     private MimeMessage CreateEmail(string to, string subject, string content)
     {
