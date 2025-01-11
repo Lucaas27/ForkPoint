@@ -24,8 +24,8 @@ public class UpdateUserDetailsHandler(
 
         logger.LogInformation("Updating user details with {Request} for user {Email}", request, user.Email);
 
-        var dbUser = await userManager.FindByIdAsync(user.Id) ??
-                     throw new NotFoundException(nameof(User), user.Id);
+        var dbUser = await userManager.FindByIdAsync(user.Id.ToString()) ??
+                     throw new NotFoundException(nameof(User), user.Id.ToString());
 
         dbUser.FullName = request.FullName;
 

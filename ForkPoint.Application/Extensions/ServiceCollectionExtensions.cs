@@ -28,6 +28,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAuthService, AuthService>();
 
         services.AddScoped<IUserContext, UserContext>();
+        services.AddScoped<IRestaurantContext, RestaurantContext>();
 
         services.AddHttpContextAccessor();
 

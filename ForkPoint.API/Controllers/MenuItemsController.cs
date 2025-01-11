@@ -71,7 +71,7 @@ public class MenuItemsController(IMediator mediator) : ControllerBase
     /// <response code="400">If the request is invalid.</response>
     /// <response code="500">If there is an internal server error.</response>
     [HttpPost("create")]
-    [Authorize(Roles = $"{AppUserRoles.Admin},{AppUserRoles.Owner}")]
+    [Authorize(Policy = AppPolicies.OwnsRestaurantOrAdminPolicy)]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<CustomException>(StatusCodes.Status400BadRequest)]
@@ -98,7 +98,7 @@ public class MenuItemsController(IMediator mediator) : ControllerBase
     /// <response code="404">If the menu item or restaurant is not found.</response>
     /// <response code="500">If there is an internal server error.</response>
     [HttpDelete("{menuItemId:int}")]
-    [Authorize(Roles = $"{AppUserRoles.Admin},{AppUserRoles.Owner}")]
+    [Authorize(Policy = AppPolicies.OwnsRestaurantOrAdminPolicy)]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<CustomException>(StatusCodes.Status404NotFound)]
@@ -122,7 +122,7 @@ public class MenuItemsController(IMediator mediator) : ControllerBase
     /// <response code="404">If the restaurant is not found.</response>
     /// <response code="500">If there is an internal server error.</response>
     [HttpDelete]
-    [Authorize(Roles = $"{AppUserRoles.Admin},{AppUserRoles.Owner}")]
+    [Authorize(Policy = AppPolicies.OwnsRestaurantOrAdminPolicy)]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<CustomException>(StatusCodes.Status404NotFound)]

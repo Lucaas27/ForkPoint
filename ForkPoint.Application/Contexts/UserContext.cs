@@ -24,6 +24,6 @@ public class UserContext(IHttpContextAccessor httpContextAccessor) : IUserContex
         var email = user.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
         var roles = user.FindAll(ClaimTypes.Role).Select(claim => claim.Value);
 
-        return new CurrentUserModel(id, email, roles);
+        return new CurrentUserModel(int.Parse(id), email, roles);
     }
 }

@@ -39,9 +39,7 @@ public class CreateRestaurantHandler(
 
         var restaurant = mapper.Map<Restaurant>(request);
 
-        restaurant.OwnerId = int.TryParse(user.Id, out var id)
-            ? id
-            : throw new InvalidOperationException("Invalid user ID");
+        restaurant.OwnerId = userId;
 
         var restaurantId = await restaurantsRepository.CreateRestaurantAsync(restaurant);
 

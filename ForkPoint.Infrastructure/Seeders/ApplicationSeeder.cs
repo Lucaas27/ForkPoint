@@ -94,20 +94,20 @@ internal class ApplicationSeeder(
         {
             new()
             {
-                Name = AppUserRoles.Admin,
-                NormalizedName = AppUserRoles.Admin.ToUpperInvariant(),
+                Name = AppPolicies.AdminPolicy,
+                NormalizedName = AppPolicies.AdminPolicy.ToUpperInvariant(),
                 ConcurrencyStamp = Guid.NewGuid().ToString()
             },
             new()
             {
-                Name = AppUserRoles.Owner,
-                NormalizedName = AppUserRoles.Owner.ToUpperInvariant(),
+                Name = AppPolicies.OwnerPolicy,
+                NormalizedName = AppPolicies.OwnerPolicy.ToUpperInvariant(),
                 ConcurrencyStamp = Guid.NewGuid().ToString()
             },
             new()
             {
-                Name = AppUserRoles.User,
-                NormalizedName = AppUserRoles.User.ToUpperInvariant(),
+                Name = AppPolicies.UserPolicy,
+                NormalizedName = AppPolicies.UserPolicy.ToUpperInvariant(),
                 ConcurrencyStamp = Guid.NewGuid().ToString()
             }
         };

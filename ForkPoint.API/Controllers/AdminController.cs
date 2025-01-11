@@ -1,5 +1,6 @@
 // Ignore Spelling: Admin
 
+using System.Net.Mime;
 using ForkPoint.Application.Models.Exceptions;
 using ForkPoint.Application.Models.Handlers.AssignUserRole;
 using ForkPoint.Application.Models.Handlers.RemoveUserRole;
@@ -7,20 +8,19 @@ using ForkPoint.Domain.Constants;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Mime;
 
 namespace ForkPoint.API.Controllers;
 
 /// <summary>
-/// Controller for admin-related actions.
+///     Controller for admin-related actions.
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = AppUserRoles.Admin)]
+[Authorize(Policy = AppPolicies.AdminPolicy)]
 public class AdminController(IMediator mediator) : ControllerBase
 {
     /// <summary>
-    /// Assigns a role to a user.
+    ///     Assigns a role to a user.
     /// </summary>
     /// <param name="request">The request containing user and role information.</param>
     /// <returns>The response indicating the result of the operation.</returns>
@@ -39,7 +39,7 @@ public class AdminController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Removes a role from a user.
+    ///     Removes a role from a user.
     /// </summary>
     /// <param name="request">The request containing user and role information.</param>
     /// <returns>The response indicating the result of the operation.</returns>
