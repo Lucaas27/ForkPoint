@@ -18,8 +18,8 @@ public class CreateMenuItemValidator : AbstractValidator<CreateMenuItemRequest>
             .WithMessage("Description must be between 3 and 50 characters");
 
         RuleFor(x => x.Price)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("Price cannot be a negative number.");
+            .GreaterThan(0)
+            .WithMessage("Price cannot be zero or a negative number.");
 
         RuleFor(x => x.ImageUrl)
             .Length(5, 100)
