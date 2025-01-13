@@ -4,8 +4,7 @@ using ForkPoint.Application.Models.Handlers;
 using ForkPoint.Application.Models.Handlers.AdminUpdateUserDetails;
 using ForkPoint.Application.Models.Handlers.EmailConfirmation;
 using ForkPoint.Application.Models.Handlers.ForgotPassword;
-using ForkPoint.Application.Models.Handlers.LoginUser;
-using ForkPoint.Application.Models.Handlers.RefreshToken;
+using ForkPoint.Application.Models.Handlers.ResendEmailConfirmation;
 using ForkPoint.Application.Models.Handlers.ResetPassword;
 using ForkPoint.Application.Models.Handlers.UpdateUser;
 using ForkPoint.Domain.Constants;
@@ -133,7 +132,9 @@ public class AccountController(IMediator mediator) : ControllerBase
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<CustomException>(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<LoginResponse>> ResendEmailConfirmation([FromBody] RefreshTokenRequest request)
+    public async Task<ActionResult<ResendEmailConfirmationResponse>> ResendEmailConfirmation(
+        [FromBody] ResendEmailConfirmationRequest request
+    )
     {
         var response = await mediator.Send(request);
         return response.IsSuccess

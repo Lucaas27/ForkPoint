@@ -27,6 +27,15 @@ public class
         var user = await userManager.FindByEmailAsync(request.Email) ??
                    throw new NotFoundException(nameof(User), request.Email);
 
+        if (user.EmailConfirmed)
+        {
+            return new ResendEmailConfirmationResponse
+            {
+                IsSuccess = false,
+                Message = "Account has already been verified for this user."
+            };
+        }
+
         var emailToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
         logger.LogInformation("Account confirmation token generated");
 
