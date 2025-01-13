@@ -1,13 +1,10 @@
 using System.Net.Mime;
 using ForkPoint.Application.Models.Exceptions;
-using ForkPoint.Application.Models.Handlers.EmailConfirmation;
 using ForkPoint.Application.Models.Handlers.ExternalProviderCallback;
-using ForkPoint.Application.Models.Handlers.ForgotPassword;
 using ForkPoint.Application.Models.Handlers.LoginUser;
 using ForkPoint.Application.Models.Handlers.Logout;
 using ForkPoint.Application.Models.Handlers.RefreshToken;
 using ForkPoint.Application.Models.Handlers.RegisterUser;
-using ForkPoint.Application.Models.Handlers.ResetPassword;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -19,7 +16,7 @@ namespace ForkPoint.API.Controllers;
 ///     Controller for handling authentication-related actions.
 /// </summary>
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/auth")]
 public class AuthController(IMediator mediator) : ControllerBase
 {
     /// <summary>
@@ -75,62 +72,10 @@ public class AuthController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    ///     Confirms the user's email address.
-    /// </summary>
-    /// <param name="request">The email confirmation request.</param>
-    /// <returns>A response indicating the result of the email confirmation.</returns>
-    [HttpGet("confirmEmail")]
-    [Produces(MediaTypeNames.Application.Json)]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType<CustomException>(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ConfirmEmailResponse>> ConfirmEmail([FromQuery] ConfirmEmailRequest request)
-    {
-        var response = await mediator.Send(request);
-        return response.IsSuccess
-            ? Ok(response)
-            : BadRequest(response);
-    }
-
-    /// <summary>
-    ///     Initiates the forgot password process.
-    /// </summary>
-    /// <param name="request">The forgot password request.</param>
-    /// <returns>A response indicating the result of the forgot password process.</returns>
-    [HttpPost("forgotPassword")]
-    [Produces(MediaTypeNames.Application.Json)]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType<CustomException>(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ForgotPasswordResponse>> ForgotPassword([FromBody] ForgotPasswordRequest request)
-    {
-        var response = await mediator.Send(request);
-        return response.IsSuccess
-            ? Ok(response)
-            : BadRequest(response);
-    }
-
-    /// <summary>
-    ///     Resets the user's password.
-    /// </summary>
-    /// <param name="request">The reset password request.</param>
-    /// <returns>A response indicating the result of the password reset.</returns>
-    [HttpPost("resetPassword")]
-    [Produces(MediaTypeNames.Application.Json)]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType<CustomException>(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResetPasswordResponse>> ResetPassword([FromBody] ResetPasswordRequest request)
-    {
-        var response = await mediator.Send(request);
-        return response.IsSuccess
-            ? Ok(response)
-            : BadRequest(response);
-    }
-
-
-    /// <summary>
     ///     Initiates the Google login process.
     /// </summary>
     /// <returns>A challenge result to initiate Google authentication.</returns>
-    [HttpGet("googleLogin")]
+    [HttpGet("google-login")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<CustomException>(StatusCodes.Status500InternalServerError)]
@@ -167,7 +112,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     /// </summary>
     /// <param name="request">The refresh token request containing the current token.</param>
     /// <returns>A response indicating the result of the token refresh attempt.</returns>
-    [HttpPost("refreshToken")]
+    [HttpPost("refresh-token")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<CustomException>(StatusCodes.Status500InternalServerError)]

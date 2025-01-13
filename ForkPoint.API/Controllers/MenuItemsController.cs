@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ForkPoint.API.Controllers;
 
-[Route("api/restaurant/{restaurantId:int}/[controller]")]
+[Route("api/restaurant/{restaurantId:int}/menu-items")]
 [ApiController]
 [Authorize]
 public class MenuItemsController(IMediator mediator) : ControllerBase

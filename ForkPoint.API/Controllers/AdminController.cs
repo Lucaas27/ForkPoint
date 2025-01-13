@@ -2,7 +2,6 @@
 
 using System.Net.Mime;
 using ForkPoint.Application.Models.Exceptions;
-using ForkPoint.Application.Models.Handlers.AdminUpdateUserDetails;
 using ForkPoint.Application.Models.Handlers.AssignUserRole;
 using ForkPoint.Application.Models.Handlers.RemoveUserRole;
 using ForkPoint.Domain.Constants;
@@ -15,7 +14,7 @@ namespace ForkPoint.API.Controllers;
 /// <summary>
 ///     Controller for admin-related actions.
 /// </summary>
-[Route("api/[controller]")]
+[Route("api/admin")]
 [Authorize(Policy = AppPolicies.AdminPolicy)]
 [ApiController]
 public class AdminController(IMediator mediator) : ControllerBase
@@ -25,13 +24,15 @@ public class AdminController(IMediator mediator) : ControllerBase
     /// </summary>
     /// <param name="request">The request containing user and role information.</param>
     /// <returns>The response indicating the result of the operation.</returns>
-    [HttpPost("assignUserRole")]
+    [HttpPost("users/roles")]
     [Produces(MediaTypeNames.Application.Json)]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType<CustomException>(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType<CustomException>(StatusCodes.Status403Forbidden)]
     [ProducesResponseType<CustomException>(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AssignUserRoleResponse>> AssignUserRole([FromBody] AssignUserRoleRequest request)
+    public async Task<ActionResult<AssignUserRoleResponse>> AssignUserRole(
+        [FromBody] AssignUserRoleRequest request
+    )
     {
         var response = await mediator.Send(request);
         return response.IsSuccess
@@ -44,7 +45,7 @@ public class AdminController(IMediator mediator) : ControllerBase
     /// </summary>
     /// <param name="request">The request containing user and role information.</param>
     /// <returns>The response indicating the result of the operation.</returns>
-    [HttpDelete("removeUserRole")]
+    [HttpDelete("users/roles")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<CustomException>(StatusCodes.Status401Unauthorized)]
@@ -53,27 +54,6 @@ public class AdminController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<RemoveUserRoleResponse>> RemoveUserRole([FromBody] RemoveUserRoleRequest request)
     {
         var response = await mediator.Send(request);
-        return response.IsSuccess
-            ? NoContent()
-            : BadRequest(response);
-    }
-
-    /// <summary>
-    ///     Allow Admins to update user details.
-    /// </summary>
-    /// <param name="detailsRequest">The request containing the new user details.</param>
-    /// <returns>A response indicating the result of the update operation.</returns>
-    [HttpPatch("updateAccount/{userId:int}")]
-    [Produces(MediaTypeNames.Application.Json)]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType<CustomException>(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType<CustomException>(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType<CustomException>(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AdminUpdateUserDetailsResponse>> AdminUpdateUserDetails(
-        [FromBody] AdminUpdateUserDetailsRequest detailsRequest
-    )
-    {
-        var response = await mediator.Send(detailsRequest);
         return response.IsSuccess
             ? NoContent()
             : BadRequest(response);

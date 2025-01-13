@@ -1,4 +1,3 @@
-
 using ForkPoint.Application.Models.Emails;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
@@ -10,7 +9,7 @@ public class EmailTemplateFactory(IConfiguration config) : IEmailTemplateFactory
     public EmailConfirmationTemplate CreateEmailConfirmationTemplate(string destination, string token)
     {
         var clientUri = config["ClientURI"] ?? throw new ArgumentNullException(nameof(config), "ClientURI is missing.");
-        var callback = QueryHelpers.AddQueryString($"{clientUri}/auth/confirmEmail", new Dictionary<string, string>
+        var callback = QueryHelpers.AddQueryString($"{clientUri}/account/verify", new Dictionary<string, string>
         {
             { "token", token },
             { "email", destination }
@@ -22,7 +21,7 @@ public class EmailTemplateFactory(IConfiguration config) : IEmailTemplateFactory
     public PasswordResetTemplate CreatePasswordResetTemplate(string destination, string token)
     {
         var clientUri = config["ClientURI"] ?? throw new ArgumentNullException(nameof(config), "ClientURI is missing.");
-        var callback = QueryHelpers.AddQueryString($"{clientUri}/auth/resetPassword", new Dictionary<string, string>
+        var callback = QueryHelpers.AddQueryString($"{clientUri}/account/reset-password", new Dictionary<string, string>
         {
             { "token", token },
             { "email", destination }
