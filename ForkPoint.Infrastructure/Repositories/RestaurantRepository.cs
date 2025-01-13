@@ -42,4 +42,19 @@ internal class RestaurantRepository(ApplicationDbContext dbContext)
     {
         await dbContext.SaveChangesAsync();
     }
+
+    public async Task<IEnumerable<Restaurant>> GetFilteredRestaurantsAsync(string? searchTerm)
+    {
+        var lowerCaseSearchTerm = searchTerm?.ToLower();
+
+        var restaurants = await dbContext
+            .Restaurants
+            .Where(r =>
+                lowerCaseSearchTerm == null
+                || r.Name.Contains(lowerCaseSearchTerm)
+                || r.Description!.Contains(lowerCaseSearchTerm))
+            .ToListAsync();
+
+        return restaurants;
+    }
 }

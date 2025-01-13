@@ -32,9 +32,11 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<GetAllRestaurantsResponse>> GetAllRestaurants()
+    public async Task<ActionResult<GetAllRestaurantsResponse>> GetAllRestaurants(
+        [FromQuery] GetAllRestaurantsRequest request
+    )
     {
-        var response = await mediator.Send(new GetAllRestaurantsRequest());
+        var response = await mediator.Send(request);
 
         return Ok(response);
     }
