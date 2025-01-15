@@ -9,5 +9,5 @@ public interface IRestaurantRepository
     Task<int> CreateRestaurantAsync(Restaurant entity);
     Task UpdateDb();
     Task DeleteRestaurant(Restaurant restaurant);
-    Task<IEnumerable<Restaurant>> GetFilteredRestaurantsAsync(string? searchTerm);
+    Task<(IEnumerable<Restaurant>, int)> GetFilteredRestaurantsAsync(string? searchTerm, int pageNumber, int pageSize);
 }

@@ -43,18 +43,29 @@ internal class RestaurantRepository(ApplicationDbContext dbContext)
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Restaurant>> GetFilteredRestaurantsAsync(string? searchTerm)
+    public async Task<(IEnumerable<Restaurant>, int)> GetFilteredRestaurantsAsync(
+        string? searchTerm,
+        int pageNumber,
+        int pageSize
+    )
     {
+        // PageSize = 5, PageNumber = 2 : Skip => PageSize * (PageNumber - 1) => 5  
         var lowerCaseSearchTerm = searchTerm?.ToLower();
 
-        var restaurants = await dbContext
+        var baseQuery = dbContext
             .Restaurants
             .Where(r =>
                 lowerCaseSearchTerm == null
                 || r.Name.Contains(lowerCaseSearchTerm)
-                || r.Description!.Contains(lowerCaseSearchTerm))
+                || r.Description!.Contains(lowerCaseSearchTerm));
+
+        var totalCount = await baseQuery.CountAsync();
+
+        var restaurants = await baseQuery
+            .Skip(pageSize * (pageNumber - 1))
+            .Take(pageSize)
             .ToListAsync();
 
-        return restaurants;
+        return (restaurants, totalCount);
     }
 }
