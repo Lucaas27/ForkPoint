@@ -14,8 +14,8 @@ public abstract record BasePaginatedResponse<T> : BaseHandlerResponse
     }
 
     public IEnumerable<T> Items { get; init; }
-    public int TotalPages { get; init; }
-    public int TotalItemsCount { get; init; }
-    public int ItemsFrom { get; init; }
-    public int ItemsTo { get; init; }
+    public int? TotalPages { get; init; }
+    public int? TotalItemsCount { get; init; }
+    public int? ItemsFrom { get; init; }
+    public int? ItemsTo { get; init; }
 }

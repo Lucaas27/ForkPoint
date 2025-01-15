@@ -4,6 +4,7 @@ using ForkPoint.Application.Models.Handlers;
 using ForkPoint.Application.Models.Handlers.AdminUpdateUserDetails;
 using ForkPoint.Application.Models.Handlers.EmailConfirmation;
 using ForkPoint.Application.Models.Handlers.ForgotPassword;
+using ForkPoint.Application.Models.Handlers.GetCurrentUserRestaurants;
 using ForkPoint.Application.Models.Handlers.ResendEmailConfirmation;
 using ForkPoint.Application.Models.Handlers.ResetPassword;
 using ForkPoint.Application.Models.Handlers.UpdateUser;
@@ -137,6 +138,20 @@ public class AccountController(IMediator mediator) : ControllerBase
     )
     {
         var response = await mediator.Send(request);
+        return response.IsSuccess
+            ? Ok(response)
+            : BadRequest(response);
+    }
+
+
+    [HttpGet("restaurants")]
+    [Authorize]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<CustomException>(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<GetCurrentUserRestaurantsResponse>> GetCurrentUserRestaurants()
+    {
+        var response = await mediator.Send(new GetCurrentUserRestaurantsRequest());
         return response.IsSuccess
             ? Ok(response)
             : BadRequest(response);
