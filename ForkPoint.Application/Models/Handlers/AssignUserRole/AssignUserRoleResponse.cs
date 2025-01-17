@@ -1,3 +1,3 @@
 namespace ForkPoint.Application.Models.Handlers.AssignUserRole;
 
-public record AssignUserRoleResponse : BaseHandlerResponse;
+public record AssignUserRoleResponse : BaseResponse;

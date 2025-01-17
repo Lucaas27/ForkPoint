@@ -1,3 +1,3 @@
 ﻿namespace ForkPoint.Application.Models.Handlers.DeleteAllMenuItems;
 
-public record DeleteAllMenuItemsResponse : BaseHandlerResponse;
+public record DeleteAllMenuItemsResponse : BaseResponse;

@@ -1,3 +1,3 @@
 namespace ForkPoint.Application.Models.Handlers.ResendEmailConfirmation;
 
-public record ResendEmailConfirmationResponse : BaseHandlerResponse;
+public record ResendEmailConfirmationResponse : BaseResponse;

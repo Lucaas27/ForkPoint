@@ -1,3 +1,3 @@
 namespace ForkPoint.Application.Models.Handlers.ResetPassword;
 
-public record ResetPasswordResponse : BaseHandlerResponse;
+public record ResetPasswordResponse : BaseResponse;

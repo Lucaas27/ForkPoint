@@ -2,4 +2,4 @@
 
 namespace ForkPoint.Application.Models.Handlers.GetRestaurantById;
 
-public record GetRestaurantByIdResponse(RestaurantDetailsModel Restaurant) : BaseHandlerResponse;
+public record GetRestaurantByIdResponse(RestaurantDetailsModel Restaurant) : BaseResponse;

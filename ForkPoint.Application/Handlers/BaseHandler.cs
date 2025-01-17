@@ -11,7 +11,7 @@ namespace ForkPoint.Application.Handlers;
 /// <typeparam name="TResponse">The type of the response.</typeparam>
 public abstract class BaseHandler<TRequest, TResponse> : IRequestHandler<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
-    where TResponse : BaseHandlerResponse
+    where TResponse : BaseResponse
 {
     public abstract Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken);
 }

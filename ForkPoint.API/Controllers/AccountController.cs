@@ -25,7 +25,7 @@ public class AccountController(IMediator mediator) : ControllerBase
 {
     private async Task<ActionResult<TResponse>> HandleUpdateRequest<TRequest, TResponse>(TRequest request)
         where TRequest : IRequest<TResponse>
-        where TResponse : BaseHandlerResponse
+        where TResponse : BaseResponse
     {
         var response = await mediator.Send(request);
         return response.IsSuccess

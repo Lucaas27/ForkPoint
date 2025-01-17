@@ -1,3 +1,3 @@
 ﻿namespace ForkPoint.Application.Models.Handlers.UpdateRestaurant;
 
-public record UpdateRestaurantResponse : BaseHandlerResponse;
+public record UpdateRestaurantResponse : BaseResponse;

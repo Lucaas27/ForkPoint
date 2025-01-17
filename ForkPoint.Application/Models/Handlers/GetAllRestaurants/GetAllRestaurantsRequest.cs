@@ -2,5 +2,5 @@
 
 namespace ForkPoint.Application.Models.Handlers.GetAllRestaurants;
 
-public record GetAllRestaurantsRequest(string? SearchTerm, int PageNumber, int PageSize)
+public record GetAllRestaurantsRequest(string? SearchTerm, Pagination Pagination)
     : IRequest<GetAllRestaurantsResponse>;

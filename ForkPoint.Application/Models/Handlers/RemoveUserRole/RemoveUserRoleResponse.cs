@@ -1,3 +1,3 @@
 namespace ForkPoint.Application.Models.Handlers.RemoveUserRole;
 
-public record RemoveUserRoleResponse : BaseHandlerResponse;
+public record RemoveUserRoleResponse : BaseResponse;

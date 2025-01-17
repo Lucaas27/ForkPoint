@@ -2,7 +2,7 @@
 
 namespace ForkPoint.Application.Models.Handlers;
 
-public abstract record BasePaginatedResponse<T> : BaseHandlerResponse
+public abstract record BasePaginatedResponse<T> : BaseResponse
 {
     protected BasePaginatedResponse(IEnumerable<T> items, int totalCount, int pageNumber, int pageSize)
     {

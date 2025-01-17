@@ -1,3 +1,3 @@
 namespace ForkPoint.Application.Models.Handlers.UpdateUser;
 
-public record UpdateUserDetailsResponse : BaseHandlerResponse;
+public record UpdateUserDetailsResponse : BaseResponse;

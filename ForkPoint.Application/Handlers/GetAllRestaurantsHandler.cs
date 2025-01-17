@@ -34,13 +34,14 @@ public class GetAllRestaurantsHandler(
 
         var (restaurants, totalCount) = await restaurantsRepository.GetFilteredRestaurantsAsync(
             request.SearchTerm,
-            request.PageNumber,
-            request.PageSize);
+            request.Pagination.PageNumber,
+            request.Pagination.PageSize);
 
         var restaurantsDto = mapper.Map<IEnumerable<RestaurantModel>>(restaurants);
 
         var response =
-            new GetAllRestaurantsResponse(restaurantsDto, totalCount, request.PageNumber, request.PageSize)
+            new GetAllRestaurantsResponse(restaurantsDto, totalCount, request.Pagination.PageNumber,
+                request.Pagination.PageSize)
             {
                 IsSuccess = true
             };
