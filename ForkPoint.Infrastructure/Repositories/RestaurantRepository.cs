@@ -1,4 +1,7 @@
-﻿using ForkPoint.Domain.Entities;
+﻿using System.Linq.Expressions;
+using ForkPoint.Domain.Entities;
+using ForkPoint.Domain.Enums;
+using ForkPoint.Domain.Models;
 using ForkPoint.Domain.Repositories;
 using ForkPoint.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -43,27 +46,48 @@ internal class RestaurantRepository(ApplicationDbContext dbContext)
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task<(IEnumerable<Restaurant>, int)> GetFilteredRestaurantsAsync(
-        string? searchTerm,
-        int pageNumber,
-        int pageSize
-    )
+    public async Task<(IEnumerable<Restaurant>, int)> GetFilteredRestaurantsAsync(RestaurantFilterOptions filterOptions)
     {
-        // PageSize = 5, PageNumber = 2 : Skip => PageSize * (PageNumber - 1) => 5  
-        var lowerCaseSearchTerm = searchTerm?.ToLower();
+        var lowerCaseSearchTerm = filterOptions.SearchTerm?.ToLower();
+        var query = dbContext.Restaurants.AsQueryable();
 
-        var baseQuery = dbContext
-            .Restaurants
-            .Where(r =>
-                lowerCaseSearchTerm == null
-                || r.Name.Contains(lowerCaseSearchTerm)
-                || r.Description!.Contains(lowerCaseSearchTerm));
 
-        var totalCount = await baseQuery.CountAsync();
+        if (filterOptions.SearchBy != null && !string.IsNullOrEmpty(lowerCaseSearchTerm))
+        {
+            var searchColumns = new Dictionary<SearchOptions, Expression<Func<Restaurant, bool>>>
+            {
+                { SearchOptions.Name, r => r.Name.Contains(lowerCaseSearchTerm) },
+                { SearchOptions.Category, r => r.Category.Contains(lowerCaseSearchTerm) },
+                { SearchOptions.Description, r => r.Description != null && r.Description.Contains(lowerCaseSearchTerm) }
+            };
 
-        var restaurants = await baseQuery
-            .Skip(pageSize * (pageNumber - 1))
-            .Take(pageSize)
+            var selectedColumn = searchColumns[filterOptions.SearchBy.Value];
+
+            query = query.Where(selectedColumn);
+        }
+        if (filterOptions.SortBy != null)
+        {
+            var sortColumns = new Dictionary<SortByOptions, Expression<Func<Restaurant, string>>>
+            {
+                { SortByOptions.Name, r => r.Name },
+                { SortByOptions.Category, r => r.Category },
+                { SortByOptions.Description, r => r.Description ?? string.Empty }
+            };
+
+            var selectedColumn = sortColumns[filterOptions.SortBy.Value];
+
+            query = filterOptions.SortDirection == SortDirection.Descending
+                ? query.OrderByDescending(selectedColumn)
+                : query.OrderBy(selectedColumn);
+        }
+
+        var totalCount = await query.CountAsync();
+
+        // For pagination: PageSize = 5, PageNumber = 2
+        // Skip = PageSize * (PageNumber - 1) = 5
+        var restaurants = await query
+            .Skip(filterOptions.PageSize * (filterOptions.PageNumber - 1))
+            .Take(filterOptions.PageSize)
             .ToListAsync();
 
         return (restaurants, totalCount);

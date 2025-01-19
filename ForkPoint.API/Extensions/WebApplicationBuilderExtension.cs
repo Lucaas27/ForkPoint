@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Text.Json.Serialization;
 using ForkPoint.API.Middlewares;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.OpenApi.Models;
@@ -16,7 +17,10 @@ public static class WebApplicationBuilderExtension
                 .ReadFrom.Configuration(context.Configuration);
         });
 
-        builder.Services.AddControllers();
+        builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
 
         builder.Services.AddHttpLogging(logging =>
         {
@@ -69,6 +73,8 @@ public static class WebApplicationBuilderExtension
                     []
                 }
             });
+
+            options.DescribeAllParametersInCamelCase();
 
             options.SwaggerDoc("v1", new OpenApiInfo
             {

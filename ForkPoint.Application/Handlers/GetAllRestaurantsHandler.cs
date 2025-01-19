@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ForkPoint.Application.Models.Dtos;
 using ForkPoint.Application.Models.Handlers.GetAllRestaurants;
+using ForkPoint.Domain.Models;
 using ForkPoint.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 
@@ -32,16 +33,23 @@ public class GetAllRestaurantsHandler(
     {
         logger.LogInformation("Getting all restaurants...");
 
-        var (restaurants, totalCount) = await restaurantsRepository.GetFilteredRestaurantsAsync(
-            request.SearchTerm,
-            request.Pagination.PageNumber,
-            request.Pagination.PageSize);
+        var filterOptions = new RestaurantFilterOptions
+        {
+            SearchBy = request.SearchBy,
+            SearchTerm = request.SearchTerm,
+            PageNumber = request.PageNumber,
+            PageSize = request.PageSize,
+            SortBy = request.SortBy,
+            SortDirection = request.SortDirection
+        };
+
+        var (restaurants, totalCount) = await restaurantsRepository.GetFilteredRestaurantsAsync(filterOptions);
 
         var restaurantsDto = mapper.Map<IEnumerable<RestaurantModel>>(restaurants);
 
         var response =
-            new GetAllRestaurantsResponse(restaurantsDto, totalCount, request.Pagination.PageNumber,
-                request.Pagination.PageSize)
+            new GetAllRestaurantsResponse(restaurantsDto, totalCount, request.PageNumber,
+                request.PageSize)
             {
                 IsSuccess = true
             };

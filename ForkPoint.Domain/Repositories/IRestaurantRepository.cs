@@ -1,4 +1,5 @@
 ﻿using ForkPoint.Domain.Entities;
+using ForkPoint.Domain.Models;
 
 namespace ForkPoint.Domain.Repositories;
 
@@ -9,5 +10,5 @@ public interface IRestaurantRepository
     Task<int> CreateRestaurantAsync(Restaurant entity);
     Task UpdateDb();
     Task DeleteRestaurant(Restaurant restaurant);
-    Task<(IEnumerable<Restaurant>, int)> GetFilteredRestaurantsAsync(string? searchTerm, int pageNumber, int pageSize);
+    Task<(IEnumerable<Restaurant>, int)> GetFilteredRestaurantsAsync(RestaurantFilterOptions filterOptions);
 }
