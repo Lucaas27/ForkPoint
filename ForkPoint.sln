@@ -11,6 +11,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForkPoint.Application", "Fo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForkPoint.Infrastructure", "ForkPoint.Infrastructure\ForkPoint.Infrastructure.csproj", "{A42BB6B9-3773-44EE-B43B-17BB968B56DF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D17C30D7-58B0-4F10-A053-16514612E528}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "unit", "unit", "{4BE9A265-B1F2-4906-810F-13F68359C607}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForkPoint.Application.Tests", "tests\unit\ForkPoint.Application.Tests\ForkPoint.Application.Tests.csproj", "{B23D5F8D-ACF5-4FED-9632-6BB1C7EFFE85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,11 +39,20 @@ Global
 		{A42BB6B9-3773-44EE-B43B-17BB968B56DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A42BB6B9-3773-44EE-B43B-17BB968B56DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A42BB6B9-3773-44EE-B43B-17BB968B56DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B23D5F8D-ACF5-4FED-9632-6BB1C7EFFE85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B23D5F8D-ACF5-4FED-9632-6BB1C7EFFE85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B23D5F8D-ACF5-4FED-9632-6BB1C7EFFE85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B23D5F8D-ACF5-4FED-9632-6BB1C7EFFE85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D1D71E28-D2C7-41B8-8AA5-24F87E2393D2}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9A195B01-DE2A-4635-BEA5-0922AF6A7B91} = {795654E7-2598-4F14-A276-C863670AAB7F}
+		{4BE9A265-B1F2-4906-810F-13F68359C607} = {D17C30D7-58B0-4F10-A053-16514612E528}
+		{B23D5F8D-ACF5-4FED-9632-6BB1C7EFFE85} = {4BE9A265-B1F2-4906-810F-13F68359C607}
 	EndGlobalSection
 EndGlobal

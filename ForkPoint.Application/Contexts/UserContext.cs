@@ -8,12 +8,8 @@ public record UserContext(IHttpContextAccessor HttpContextAccessor) : IUserConte
 {
     public CurrentUserModel? GetCurrentUser()
     {
-        var user = HttpContextAccessor.HttpContext?.User;
-
-        if (user is null)
-        {
-            throw new InvalidOperationException("User not found in the current context");
-        }
+        var user = HttpContextAccessor.HttpContext?.User ??
+                   throw new InvalidOperationException("User not found in the current context");
 
         if (user.Identity is not { IsAuthenticated: true })
         {
@@ -29,12 +25,8 @@ public record UserContext(IHttpContextAccessor HttpContextAccessor) : IUserConte
 
     public int GetTargetUserId()
     {
-        var userId = HttpContextAccessor.HttpContext?.Request.RouteValues["userId"]?.ToString();
-
-        if (userId is null)
-        {
-            throw new InvalidOperationException("User ID not found in the current context");
-        }
+        var userId = HttpContextAccessor.HttpContext?.Request.RouteValues["userId"]?.ToString()
+                     ?? throw new InvalidOperationException("User ID not found in the current context");
 
         if (!int.TryParse(userId, out var id))
         {
@@ -46,12 +38,7 @@ public record UserContext(IHttpContextAccessor HttpContextAccessor) : IUserConte
 
     public bool IsInRole(string role)
     {
-        var user = GetCurrentUser();
-
-        if (user is null)
-        {
-            throw new InvalidOperationException("User not found in the current context");
-        }
+        var user = GetCurrentUser() ?? throw new InvalidOperationException("User not found in the current context");
 
         return user.Roles.Contains(role);
     }

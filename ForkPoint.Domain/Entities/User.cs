@@ -4,7 +4,7 @@ namespace ForkPoint.Domain.Entities;
 
 public class User : IdentityUser<int>
 {
-    public string? FullName { get; set; }
+    public string? FullName { get; init; }
 
     public override string? UserName
     {
@@ -12,5 +12,5 @@ public class User : IdentityUser<int>
         set => base.UserName = value ?? Email;
     }
 
-    public ICollection<Restaurant> OwnedRestaurants { get; set; } = [];
+    public ICollection<Restaurant> OwnedRestaurants { get; init; } = [];
 }
