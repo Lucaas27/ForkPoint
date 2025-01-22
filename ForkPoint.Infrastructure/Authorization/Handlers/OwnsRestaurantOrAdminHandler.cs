@@ -21,22 +21,22 @@ public class OwnsRestaurantOrAdminHandler(
     {
         logger.LogInformation("Checking if user owns the restaurant or is an admin...");
 
-        var user = userContext.GetCurrentUser();
         var restaurantId = restaurantContext.GetTargetedRestaurantId();
 
-        if (user is null)
-        {
-            context.Fail();
-            return;
-        }
-
-        if (user.IsInRole("Admin"))
+        if (userContext.IsInRole("Admin"))
         {
             context.Succeed(ownsRestaurantOrAdminOrAdminRequirement);
             return;
         }
 
         var restaurant = await restaurantRepository.GetRestaurantByIdAsync(restaurantId);
+        var user = userContext.GetCurrentUser();
+
+        if (user is null)
+        {
+            context.Fail();
+            return;
+        }
 
         if (restaurant is not null && restaurant.OwnerId == user.Id)
         {

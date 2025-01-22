@@ -4,6 +4,7 @@ namespace ForkPoint.Application.Contexts;
 
 public interface IUserContext
 {
+    bool IsInRole(string role);
     CurrentUserModel? GetCurrentUser();
     int GetTargetUserId();
 }

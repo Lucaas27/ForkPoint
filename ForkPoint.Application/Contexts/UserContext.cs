@@ -43,4 +43,16 @@ public record UserContext(IHttpContextAccessor HttpContextAccessor) : IUserConte
 
         return id;
     }
+
+    public bool IsInRole(string role)
+    {
+        var user = GetCurrentUser();
+
+        if (user is null)
+        {
+            throw new InvalidOperationException("User not found in the current context");
+        }
+
+        return user.Roles.Contains(role);
+    }
 }
