@@ -1,5 +1,4 @@
 using FluentValidation;
-using ForkPoint.Application.Enums;
 using ForkPoint.Application.Models.Handlers.GetAllRestaurants;
 using ForkPoint.Domain.Enums;
 
@@ -21,7 +20,7 @@ public class GetAllRestaurantsRequestValidator : AbstractValidator<GetAllRestaur
 
         // Must be one of the allowed page sizes.
         RuleFor(x => x.PageSize)
-            .Must(value => _allowedPageSizes.Contains(value))
+            .IsInEnum()
             .WithMessage($"Page size must be one of [{string.Join(", ", _allowedPageSizes)}]");
 
 

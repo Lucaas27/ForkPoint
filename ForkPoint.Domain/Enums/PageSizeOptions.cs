@@ -1,4 +1,4 @@
-namespace ForkPoint.Application.Enums;
+namespace ForkPoint.Domain.Enums;
 
 public enum PageSizeOptions
 {

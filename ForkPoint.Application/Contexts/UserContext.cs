@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace ForkPoint.Application.Contexts;
 
-public class UserContext(IHttpContextAccessor httpContextAccessor) : IUserContext
+public record UserContext(IHttpContextAccessor HttpContextAccessor) : IUserContext
 {
     public CurrentUserModel? GetCurrentUser()
     {
-        var user = httpContextAccessor.HttpContext?.User;
+        var user = HttpContextAccessor.HttpContext?.User;
 
         if (user is null)
         {
@@ -29,7 +29,7 @@ public class UserContext(IHttpContextAccessor httpContextAccessor) : IUserContex
 
     public int GetTargetUserId()
     {
-        var userId = httpContextAccessor.HttpContext?.Request.RouteValues["userId"]?.ToString();
+        var userId = HttpContextAccessor.HttpContext?.Request.RouteValues["userId"]?.ToString();
 
         if (userId is null)
         {

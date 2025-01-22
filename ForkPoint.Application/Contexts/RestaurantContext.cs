@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace ForkPoint.Application.Contexts;
 
-public class RestaurantContext(IHttpContextAccessor httpContextAccessor) : IRestaurantContext
+public record RestaurantContext(IHttpContextAccessor HttpContextAccessor) : IRestaurantContext
 {
     public int GetTargetedRestaurantId()
     {
-        var restaurantId = httpContextAccessor.HttpContext?.Request.RouteValues["restaurantId"]?.ToString();
+        var restaurantId = HttpContextAccessor.HttpContext?.Request.RouteValues["restaurantId"]?.ToString();
 
         if (restaurantId is null)
         {

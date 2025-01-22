@@ -38,7 +38,7 @@ public class GetAllRestaurantsHandler(
             SearchBy = request.SearchBy,
             SearchTerm = request.SearchTerm,
             PageNumber = request.PageNumber,
-            PageSize = request.PageSize,
+            PageSize = (int)request.PageSize,
             SortBy = request.SortBy,
             SortDirection = request.SortDirection
         };
@@ -49,7 +49,7 @@ public class GetAllRestaurantsHandler(
 
         var response =
             new GetAllRestaurantsResponse(restaurantsDto, totalCount, request.PageNumber,
-                request.PageSize)
+                (int)request.PageSize)
             {
                 IsSuccess = true
             };
