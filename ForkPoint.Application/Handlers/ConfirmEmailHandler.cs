@@ -1,5 +1,6 @@
 using ForkPoint.Application.Models.Handlers.EmailConfirmation;
 using ForkPoint.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -8,9 +9,9 @@ namespace ForkPoint.Application.Handlers;
 public class ConfirmEmailHandler(
     ILogger<ConfirmEmailHandler> logger,
     UserManager<User> userManager
-) : BaseHandler<ConfirmEmailRequest, ConfirmEmailResponse>
+) : IRequestHandler<ConfirmEmailRequest, ConfirmEmailResponse>
 {
-    public override async Task<ConfirmEmailResponse> Handle(
+    public async Task<ConfirmEmailResponse> Handle(
         ConfirmEmailRequest request,
         CancellationToken cancellationToken
     )

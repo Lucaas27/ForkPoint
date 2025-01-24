@@ -4,6 +4,7 @@ using ForkPoint.Application.Models.Handlers.GetRestaurantById;
 using ForkPoint.Domain.Entities;
 using ForkPoint.Domain.Exceptions;
 using ForkPoint.Domain.Repositories;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace ForkPoint.Application.Handlers;
@@ -19,7 +20,7 @@ public class GetRestaurantByIdHandler(
     IMapper mapper,
     IRestaurantRepository restaurantsRepository
 )
-    : BaseHandler<GetRestaurantByIdRequest, GetRestaurantByIdResponse>
+    : IRequestHandler<GetRestaurantByIdRequest, GetRestaurantByIdResponse>
 {
     /// <summary>
     ///     Handles the request to get a restaurant by its ID.
@@ -28,7 +29,7 @@ public class GetRestaurantByIdHandler(
     /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
     /// <returns>A response containing the restaurant details if found.</returns>
     /// <exception cref="NotFoundException">Thrown when the restaurant with the specified ID is not found.</exception>
-    public override async Task<GetRestaurantByIdResponse> Handle(
+    public async Task<GetRestaurantByIdResponse> Handle(
         GetRestaurantByIdRequest request,
         CancellationToken cancellationToken
     )

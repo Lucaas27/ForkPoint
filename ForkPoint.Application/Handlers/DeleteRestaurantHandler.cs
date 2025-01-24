@@ -2,6 +2,7 @@
 using ForkPoint.Domain.Entities;
 using ForkPoint.Domain.Exceptions;
 using ForkPoint.Domain.Repositories;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace ForkPoint.Application.Handlers;
@@ -15,7 +16,7 @@ public class DeleteRestaurantHandler(
     ILogger<DeleteRestaurantHandler> logger,
     IRestaurantRepository restaurantsRepository
 )
-    : BaseHandler<DeleteRestaurantRequest, DeleteRestaurantResponse>
+    : IRequestHandler<DeleteRestaurantRequest, DeleteRestaurantResponse>
 {
     /// <summary>
     ///     Handles the request to delete a restaurant by its ID.
@@ -24,7 +25,7 @@ public class DeleteRestaurantHandler(
     /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
     /// <returns>A response indicating the success of the deletion operation.</returns>
     /// <exception cref="NotFoundException">Thrown when the restaurant with the specified ID is not found.</exception>
-    public override async Task<DeleteRestaurantResponse> Handle(
+    public async Task<DeleteRestaurantResponse> Handle(
         DeleteRestaurantRequest request,
         CancellationToken cancellationToken
     )
@@ -36,7 +37,7 @@ public class DeleteRestaurantHandler(
 
         await restaurantsRepository.DeleteRestaurant(restaurant);
 
-        logger.LogInformation($"Restaurant with id {request.Id} deleted.");
+        logger.LogInformation("Restaurant with id {Id} deleted.", request.Id);
 
         return new DeleteRestaurantResponse
         {

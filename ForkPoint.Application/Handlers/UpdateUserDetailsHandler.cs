@@ -36,7 +36,12 @@ public class UpdateUserDetailsHandler(
 
         if (!result.Succeeded)
         {
-            throw new Exception("Failed to update user");
+            return new UpdateUserDetailsResponse
+            {
+                IsSuccess = false,
+                Message = $"Failed to update user details: {string.Join(", ", result.Errors.Select(e => e.Description))}"
+            };
+
         }
 
         return new UpdateUserDetailsResponse

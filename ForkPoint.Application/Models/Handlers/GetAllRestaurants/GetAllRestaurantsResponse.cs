@@ -5,11 +5,11 @@ namespace ForkPoint.Application.Models.Handlers.GetAllRestaurants;
 public record GetAllRestaurantsResponse : BasePaginatedResponse<RestaurantModel>
 {
     public GetAllRestaurantsResponse(
-        IEnumerable<RestaurantModel> restaurants,
-        int totalCount,
+        IEnumerable<RestaurantModel> items,
+        int totalItemsCount,
         int pageSize,
         int pageNumber
-    ) : base(restaurants, totalCount, pageSize, pageNumber)
+    ) : base(items, totalItemsCount, pageNumber, pageSize)
     {
     }
 }

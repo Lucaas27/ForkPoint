@@ -42,4 +42,4 @@ if (app.Environment.IsDevelopment())
 app.MapControllers();
 
 // Run the app
-app.Run();
+await app.RunAsync();

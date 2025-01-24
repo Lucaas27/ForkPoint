@@ -2,6 +2,7 @@ using ForkPoint.Application.Factories;
 using ForkPoint.Application.Models.Handlers.RegisterUser;
 using ForkPoint.Application.Services;
 using ForkPoint.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -12,9 +13,9 @@ public class RegisterHandler(
     UserManager<User> userManager,
     IEmailService emailService,
     IEmailTemplateFactory emailTemplateFactory
-) : BaseHandler<RegisterRequest, RegisterResponse>
+) : IRequestHandler<RegisterRequest, RegisterResponse>
 {
-    public override async Task<RegisterResponse> Handle(RegisterRequest request, CancellationToken cancellationToken)
+    public async Task<RegisterResponse> Handle(RegisterRequest request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Registering user with email {Email}...", request.Email);
 

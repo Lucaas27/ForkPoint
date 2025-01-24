@@ -33,7 +33,7 @@ public class RefreshTokenHandler(
 
         var userEmail = principal.FindFirst(ClaimTypes.Email)?.Value ??
                         throw new ArgumentNullException(
-                            nameof(principal),
+                            nameof(request),
                             "Email claim not found");
 
         var user = await userManager.FindByEmailAsync(userEmail);

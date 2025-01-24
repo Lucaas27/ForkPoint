@@ -3,6 +3,7 @@ using System.Security.Claims;
 using ForkPoint.Application.Models.Handlers.ExternalProviderCallback;
 using ForkPoint.Application.Services;
 using ForkPoint.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -13,9 +14,9 @@ public class ExternalProviderHandler(
     IAuthService authService,
     UserManager<User> userManager,
     SignInManager<User> signInManager
-) : BaseHandler<ExternalProviderRequest, ExternalProviderResponse>
+) : IRequestHandler<ExternalProviderRequest, ExternalProviderResponse>
 {
-    public override async Task<ExternalProviderResponse> Handle(
+    public async Task<ExternalProviderResponse> Handle(
         ExternalProviderRequest request,
         CancellationToken cancellationToken
     )
@@ -40,12 +41,7 @@ public class ExternalProviderHandler(
     private async Task<User> ExternalProviderLogin()
     {
         // Get external login information
-        var externalLoginInfo = await signInManager.GetExternalLoginInfoAsync();
-        if (externalLoginInfo == null)
-        {
-            throw new Exception("Error loading external login information.");
-        }
-
+        var externalLoginInfo = await signInManager.GetExternalLoginInfoAsync() ?? throw new InvalidOperationException("Error loading external login information.");
         var claims = externalLoginInfo.Principal.Claims.ToList();
         var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
         var provider = externalLoginInfo.LoginProvider;
@@ -66,12 +62,9 @@ public class ExternalProviderHandler(
                 case null:
                     externalUser = new User
                     {
-                        FullName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value
-                                   ?? throw new ArgumentNullException(nameof(claims), "Name claim is missing."),
-                        UserName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value
-                                   ?? throw new ArgumentNullException(nameof(claims), "Email claim is missing."),
-                        Email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value
-                                ?? throw new ArgumentNullException(nameof(claims), "Email claim is missing."),
+                        FullName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value,
+                        UserName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value,
+                        Email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value,
                         EmailConfirmed = true
                     };
 
@@ -98,7 +91,7 @@ public class ExternalProviderHandler(
         var createResult = await userManager.CreateAsync(user);
         if (!createResult.Succeeded)
         {
-            throw new Exception(
+            throw new InvalidOperationException(
                 $"Failed to create user: {string.Join(", ", createResult.Errors.Select(e => e.Description))}");
         }
 
@@ -106,7 +99,7 @@ public class ExternalProviderHandler(
 
         if (!roleResult.Succeeded)
         {
-            throw new Exception(
+            throw new InvalidOperationException(
                 $"Failed to assign role to user: {string.Join(", ", roleResult.Errors.Select(e => e.Description))}");
         }
     }
@@ -120,7 +113,7 @@ public class ExternalProviderHandler(
 
         if (!addLoginResult.Succeeded)
         {
-            throw new Exception("Failed to add external login.");
+            throw new InvalidOperationException("Failed to add external login.");
         }
     }
 }

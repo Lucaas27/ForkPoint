@@ -3,6 +3,7 @@ using ForkPoint.Application.Models.Handlers.UpdateRestaurant;
 using ForkPoint.Domain.Entities;
 using ForkPoint.Domain.Exceptions;
 using ForkPoint.Domain.Repositories;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace ForkPoint.Application.Handlers;
@@ -18,7 +19,7 @@ public class UpdateRestaurantHandler(
     IMapper mapper,
     IRestaurantRepository restaurantRepository
 )
-    : BaseHandler<UpdateRestaurantRequest, UpdateRestaurantResponse>
+    : IRequestHandler<UpdateRestaurantRequest, UpdateRestaurantResponse>
 {
     /// <summary>
     ///     Handles the update restaurant request.
@@ -27,7 +28,7 @@ public class UpdateRestaurantHandler(
     /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
     /// <returns>Response indicating the success or failure of the update operation.</returns>
     /// <exception cref="NotFoundException">Thrown when the restaurant with the specified ID is not found.</exception>
-    public override async Task<UpdateRestaurantResponse> Handle(
+    public async Task<UpdateRestaurantResponse> Handle(
         UpdateRestaurantRequest request,
         CancellationToken cancellationToken
     )

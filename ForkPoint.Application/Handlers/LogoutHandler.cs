@@ -2,6 +2,7 @@ using ForkPoint.Application.Contexts;
 using ForkPoint.Application.Models.Handlers.Logout;
 using ForkPoint.Application.Services;
 using ForkPoint.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -12,9 +13,9 @@ public class LogoutHandler(
     UserManager<User> userManager,
     IAuthService authService,
     IUserContext userContext
-) : BaseHandler<LogoutRequest, LogoutResponse>
+) : IRequestHandler<LogoutRequest, LogoutResponse>
 {
-    public override async Task<LogoutResponse> Handle(LogoutRequest request, CancellationToken cancellationToken)
+    public async Task<LogoutResponse> Handle(LogoutRequest request, CancellationToken cancellationToken)
     {
         var user = userContext.GetCurrentUser();
 

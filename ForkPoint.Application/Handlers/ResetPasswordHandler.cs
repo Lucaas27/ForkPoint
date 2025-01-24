@@ -1,5 +1,6 @@
 using ForkPoint.Application.Models.Handlers.ResetPassword;
 using ForkPoint.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -8,14 +9,14 @@ namespace ForkPoint.Application.Handlers;
 public class ResetPasswordHandler(
     ILogger<ResetPasswordHandler> logger,
     UserManager<User> userManager
-) : BaseHandler<ResetPasswordRequest, ResetPasswordResponse>
+) : IRequestHandler<ResetPasswordRequest, ResetPasswordResponse>
 {
-    public override async Task<ResetPasswordResponse> Handle(
+    public async Task<ResetPasswordResponse> Handle(
         ResetPasswordRequest request,
         CancellationToken cancellationToken
     )
     {
-        logger.LogInformation("Changing password for user {email}", request.Email);
+        logger.LogInformation("Changing password for user {Email}", request.Email);
 
         var user = await userManager.FindByEmailAsync(request.Email);
         if (user is null)

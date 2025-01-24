@@ -3,6 +3,7 @@ using ForkPoint.Application.Models.Dtos;
 using ForkPoint.Application.Models.Handlers.GetAllRestaurants;
 using ForkPoint.Domain.Models;
 using ForkPoint.Domain.Repositories;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace ForkPoint.Application.Handlers;
@@ -18,7 +19,7 @@ public class GetAllRestaurantsHandler(
     IMapper mapper,
     IRestaurantRepository restaurantsRepository
 )
-    : BaseHandler<GetAllRestaurantsRequest, GetAllRestaurantsResponse>
+    : IRequestHandler<GetAllRestaurantsRequest, GetAllRestaurantsResponse>
 {
     /// <summary>
     ///     Handles the request to get all restaurants.
@@ -26,7 +27,7 @@ public class GetAllRestaurantsHandler(
     /// <param name="request">The request to get all restaurants.</param>
     /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
     /// <returns>A response containing all restaurants.</returns>
-    public override async Task<GetAllRestaurantsResponse> Handle(
+    public async Task<GetAllRestaurantsResponse> Handle(
         GetAllRestaurantsRequest request,
         CancellationToken cancellationToken
     )

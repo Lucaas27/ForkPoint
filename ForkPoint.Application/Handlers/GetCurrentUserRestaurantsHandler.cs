@@ -3,6 +3,7 @@ using ForkPoint.Application.Contexts;
 using ForkPoint.Application.Models.Dtos;
 using ForkPoint.Application.Models.Handlers.GetCurrentUserRestaurants;
 using ForkPoint.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -16,9 +17,9 @@ public class
         IUserContext userContext,
         IMapper mapper
     )
-    : BaseHandler<GetCurrentUserRestaurantsRequest, GetCurrentUserRestaurantsResponse>
+    : IRequestHandler<GetCurrentUserRestaurantsRequest, GetCurrentUserRestaurantsResponse>
 {
-    public override async Task<GetCurrentUserRestaurantsResponse> Handle(
+    public async Task<GetCurrentUserRestaurantsResponse> Handle(
         GetCurrentUserRestaurantsRequest request,
         CancellationToken cancellationToken
     )

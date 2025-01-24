@@ -2,6 +2,7 @@
 using ForkPoint.Domain.Entities;
 using ForkPoint.Domain.Exceptions;
 using ForkPoint.Domain.Repositories;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace ForkPoint.Application.Handlers;
@@ -17,9 +18,9 @@ public class DeleteAllMenuItemsHandler(
     IRestaurantRepository restaurantRepository,
     IMenuRepository menuRepository
 )
-    : BaseHandler<DeleteAllMenuItemsRequest, DeleteAllMenuItemsResponse>
+    : IRequestHandler<DeleteAllMenuItemsRequest, DeleteAllMenuItemsResponse>
 {
-    public override async Task<DeleteAllMenuItemsResponse> Handle(
+    public async Task<DeleteAllMenuItemsResponse> Handle(
         DeleteAllMenuItemsRequest request,
         CancellationToken cancellationToken
     )

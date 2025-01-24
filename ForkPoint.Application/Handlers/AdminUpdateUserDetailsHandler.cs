@@ -3,6 +3,7 @@ using ForkPoint.Application.Contexts;
 using ForkPoint.Application.Models.Handlers.AdminUpdateUserDetails;
 using ForkPoint.Domain.Entities;
 using ForkPoint.Domain.Exceptions;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -13,9 +14,9 @@ public class AdminUpdateUserDetailsHandler(
     IMapper mapper,
     IUserContext userContext,
     UserManager<User> userManager
-) : BaseHandler<AdminUpdateUserDetailsRequest, AdminUpdateUserDetailsResponse>
+) : IRequestHandler<AdminUpdateUserDetailsRequest, AdminUpdateUserDetailsResponse>
 {
-    public override async Task<AdminUpdateUserDetailsResponse> Handle(
+    public async Task<AdminUpdateUserDetailsResponse> Handle(
         AdminUpdateUserDetailsRequest request,
         CancellationToken cancellationToken
     )
@@ -45,7 +46,10 @@ public class AdminUpdateUserDetailsHandler(
 
         if (!result.Succeeded)
         {
-            throw new Exception("Failed to update user details");
+
+            var errorMessage = string.Join(", ", result.Errors.Select(e => e.Description));
+            throw new InvalidOperationException($"Failed to update user details: {errorMessage}");
+
         }
 
         return new AdminUpdateUserDetailsResponse

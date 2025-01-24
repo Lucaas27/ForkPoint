@@ -12,10 +12,10 @@ internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> optio
     internal DbSet<MenuItem> MenuItems { get; set; } = null!;
     internal DbSet<Address> Addresses { get; set; } = null!;
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
         // This applies all configurations specified in types implementing IEntityTypeConfiguration from the assembly
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-        base.OnModelCreating(modelBuilder);
+        builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+        base.OnModelCreating(builder);
     }
 }

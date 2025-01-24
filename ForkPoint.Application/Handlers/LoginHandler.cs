@@ -3,6 +3,7 @@ using ForkPoint.Application.Models.Handlers.LoginUser;
 using ForkPoint.Application.Services;
 using ForkPoint.Domain.Entities;
 using ForkPoint.Domain.Exceptions;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -13,9 +14,9 @@ public class LoginHandler(
     IAuthService authService,
     UserManager<User> userManager,
     SignInManager<User> signInManager
-) : BaseHandler<LoginRequest, LoginResponse>
+) : IRequestHandler<LoginRequest, LoginResponse>
 {
-    public override async Task<LoginResponse> Handle(LoginRequest request, CancellationToken cancellationToken)
+    public async Task<LoginResponse> Handle(LoginRequest request, CancellationToken cancellationToken)
     {
         var user = await userManager.FindByEmailAsync(request.Email) ??
                    throw new NotFoundException(nameof(User), request.Email);

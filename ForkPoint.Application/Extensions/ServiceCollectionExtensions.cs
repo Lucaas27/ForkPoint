@@ -55,14 +55,12 @@ public static class ServiceCollectionExtensions
                     ValidateIssuerSigningKey = true,
 
                     ValidIssuer = config["Jwt:Issuer"]
-                                  ?? throw new ArgumentNullException(nameof(config), "Jwt:Issuer is null"),
+                                  ?? throw new ArgumentNullException(nameof(options), "Jwt:Issuer is null"),
                     ValidAudience = config["Jwt:Audience"]
-                                    ?? throw new ArgumentNullException(nameof(config),
-                                        "Jwt:Audience is null"),
+                                    ?? throw new ArgumentNullException(nameof(options), "Jwt:Audience is null"),
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(config["Jwt:Key"]
-                                               ?? throw new ArgumentNullException(nameof(config),
-                                                   "Jwt:Key is null"))
+                                               ?? throw new ArgumentNullException(nameof(options), "Jwt:Key is null"))
                     )
                 };
             })
@@ -70,11 +68,9 @@ public static class ServiceCollectionExtensions
             .AddGoogle(options =>
             {
                 options.ClientId = config["Authentication:Google:ClientId"]
-                                   ?? throw new ArgumentNullException(nameof(config),
-                                       "Authentication:Google:ClientId is null");
+                                   ?? throw new ArgumentNullException(nameof(options), "Authentication:Google:ClientId is null");
                 options.ClientSecret = config["Authentication:Google:ClientSecret"]
-                                       ?? throw new ArgumentNullException(nameof(config),
-                                           "Authentication:Google:ClientSecret is null");
+                                       ?? throw new ArgumentNullException(nameof(options), "Authentication:Google:ClientSecret is null");
 
                 // Use cookies for Google sign-in
                 options.SignInScheme = IdentityConstants.ExternalScheme;

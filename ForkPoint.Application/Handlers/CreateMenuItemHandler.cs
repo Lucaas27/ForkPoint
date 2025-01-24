@@ -3,6 +3,7 @@ using ForkPoint.Application.Models.Handlers.CreateMenuItem;
 using ForkPoint.Domain.Entities;
 using ForkPoint.Domain.Exceptions;
 using ForkPoint.Domain.Repositories;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace ForkPoint.Application.Handlers;
@@ -13,14 +14,14 @@ public class CreateMenuItemHandler(
     IRestaurantRepository restaurantsRepository,
     IMenuRepository menuRepository
 )
-    : BaseHandler<CreateMenuItemRequest, CreateMenuItemResponse>
+    : IRequestHandler<CreateMenuItemRequest, CreateMenuItemResponse>
 {
-    public override async Task<CreateMenuItemResponse> Handle(
+    public async Task<CreateMenuItemResponse> Handle(
         CreateMenuItemRequest request,
         CancellationToken cancellationToken
     )
     {
-        logger.LogInformation("Creating new menu item for restaurant id {restaurantId}...", request.RestaurantId);
+        logger.LogInformation("Creating new menu item for restaurant id {RestaurantId}...", request.RestaurantId);
 
         // Check if restaurant exists
         _ = await restaurantsRepository.GetRestaurantByIdAsync(request.RestaurantId)

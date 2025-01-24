@@ -3,6 +3,7 @@ using ForkPoint.Application.Contexts;
 using ForkPoint.Application.Models.Handlers.CreateRestaurant;
 using ForkPoint.Domain.Entities;
 using ForkPoint.Domain.Repositories;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace ForkPoint.Application.Handlers;
@@ -19,7 +20,7 @@ public class CreateRestaurantHandler(
     IRestaurantRepository restaurantsRepository,
     IUserContext userContext
 )
-    : BaseHandler<CreateRestaurantRequest, CreateRestaurantResponse>
+    : IRequestHandler<CreateRestaurantRequest, CreateRestaurantResponse>
 {
     /// <summary>
     ///     Handles the creation of a new restaurant.
@@ -27,7 +28,7 @@ public class CreateRestaurantHandler(
     /// <param name="request">The request containing restaurant details.</param>
     /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
     /// <returns>A response indicating the success of the operation and the new record ID.</returns>
-    public override async Task<CreateRestaurantResponse> Handle(
+    public async Task<CreateRestaurantResponse> Handle(
         CreateRestaurantRequest request,
         CancellationToken cancellationToken
     )

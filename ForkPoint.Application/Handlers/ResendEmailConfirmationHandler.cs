@@ -3,6 +3,7 @@ using ForkPoint.Application.Models.Handlers.ResendEmailConfirmation;
 using ForkPoint.Application.Services;
 using ForkPoint.Domain.Entities;
 using ForkPoint.Domain.Exceptions;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -15,9 +16,9 @@ public class
         IEmailService emailService,
         IEmailTemplateFactory emailTemplateFactory
     )
-    : BaseHandler<ResendEmailConfirmationRequest, ResendEmailConfirmationResponse>
+    : IRequestHandler<ResendEmailConfirmationRequest, ResendEmailConfirmationResponse>
 {
-    public override async Task<ResendEmailConfirmationResponse> Handle(
+    public async Task<ResendEmailConfirmationResponse> Handle(
         ResendEmailConfirmationRequest request,
         CancellationToken cancellationToken
     )

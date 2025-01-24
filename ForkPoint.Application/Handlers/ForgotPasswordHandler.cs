@@ -2,6 +2,7 @@ using ForkPoint.Application.Factories;
 using ForkPoint.Application.Models.Handlers.ForgotPassword;
 using ForkPoint.Application.Services;
 using ForkPoint.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -12,9 +13,9 @@ public class ForgotPasswordHandler(
     UserManager<User> userManager,
     IEmailService emailService,
     IEmailTemplateFactory emailTemplateFactory
-) : BaseHandler<ForgotPasswordRequest, ForgotPasswordResponse>
+) : IRequestHandler<ForgotPasswordRequest, ForgotPasswordResponse>
 {
-    public override async Task<ForgotPasswordResponse> Handle(
+    public async Task<ForgotPasswordResponse> Handle(
         ForgotPasswordRequest request,
         CancellationToken cancellationToken
     )
@@ -29,7 +30,7 @@ public class ForgotPasswordHandler(
 
         var passwordToken = await userManager.GeneratePasswordResetTokenAsync(user);
 
-        logger.LogInformation("Token: {token}", passwordToken);
+        logger.LogInformation("Token: {Token}", passwordToken);
 
         var emailTemplate = emailTemplateFactory.CreatePasswordResetTemplate(request.Email, passwordToken);
 

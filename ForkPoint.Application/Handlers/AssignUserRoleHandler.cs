@@ -1,6 +1,7 @@
 using ForkPoint.Application.Models.Handlers.AssignUserRole;
 using ForkPoint.Domain.Entities;
 using ForkPoint.Domain.Exceptions;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -10,9 +11,9 @@ public class AssignUserRoleHandler(
     ILogger<AssignUserRoleHandler> logger,
     UserManager<User> userManager,
     RoleManager<IdentityRole<int>> roleManager
-) : BaseHandler<AssignUserRoleRequest, AssignUserRoleResponse>
+) : IRequestHandler<AssignUserRoleRequest, AssignUserRoleResponse>
 {
-    public override async Task<AssignUserRoleResponse> Handle(
+    public async Task<AssignUserRoleResponse> Handle(
         AssignUserRoleRequest request,
         CancellationToken cancellationToken
     )

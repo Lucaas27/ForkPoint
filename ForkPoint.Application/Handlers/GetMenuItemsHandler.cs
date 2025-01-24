@@ -4,6 +4,7 @@ using ForkPoint.Application.Models.Handlers.GetMenuItems;
 using ForkPoint.Domain.Entities;
 using ForkPoint.Domain.Exceptions;
 using ForkPoint.Domain.Repositories;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace ForkPoint.Application.Handlers;
@@ -13,9 +14,9 @@ public class GetMenuItemsHandler(
     IMapper mapper,
     IRestaurantRepository restaurantRepository
 )
-    : BaseHandler<GetMenuItemsRequest, GetMenuItemsResponse>
+    : IRequestHandler<GetMenuItemsRequest, GetMenuItemsResponse>
 {
-    public override async Task<GetMenuItemsResponse> Handle(
+    public async Task<GetMenuItemsResponse> Handle(
         GetMenuItemsRequest request,
         CancellationToken cancellationToken
     )
