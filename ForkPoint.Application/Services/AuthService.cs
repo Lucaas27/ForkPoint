@@ -1,12 +1,14 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using ForkPoint.Domain.Entities;
+﻿using ForkPoint.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.CompilerServices;
+using System.Security.Claims;
+using System.Text;
 using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames;
 
+[assembly: InternalsVisibleTo("ForkPoint.Application.Tests")]
 namespace ForkPoint.Application.Services;
 
 internal class AuthService(
