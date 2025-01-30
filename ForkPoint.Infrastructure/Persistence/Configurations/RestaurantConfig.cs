@@ -16,7 +16,7 @@ internal class RestaurantsConfig : IEntityTypeConfiguration<Restaurant>
         // Max length for Description is 500
         builder.Property(r => r.Description)
             .HasMaxLength(500)
-            .IsRequired(false);
+            .IsRequired();
 
         // Max length for Category is 50
         builder.Property(r => r.Category)
@@ -26,7 +26,7 @@ internal class RestaurantsConfig : IEntityTypeConfiguration<Restaurant>
         // Max length for Email is 50
         builder.Property(r => r.Email)
             .HasMaxLength(50)
-            .IsRequired(false);
+            .IsRequired();
 
         // Max length for ContactNumber is 20
         builder.Property(r => r.ContactNumber)

@@ -6,12 +6,8 @@ public record RestaurantContext(IHttpContextAccessor HttpContextAccessor) : IRes
 {
     public int GetTargetedRestaurantId()
     {
-        var restaurantId = HttpContextAccessor.HttpContext?.Request.RouteValues["restaurantId"]?.ToString();
-
-        if (restaurantId is null)
-        {
-            throw new InvalidOperationException("Restaurant ID not found in the current context");
-        }
+        var restaurantId = (HttpContextAccessor.HttpContext?.Request.RouteValues["restaurantId"]?.ToString())
+            ?? throw new InvalidOperationException("Restaurant ID not found in the current context");
 
         if (!int.TryParse(restaurantId, out var id))
         {

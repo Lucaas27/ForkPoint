@@ -58,20 +58,21 @@ internal class RestaurantRepository(ApplicationDbContext dbContext)
             {
                 { SearchOptions.Name, r => r.Name.Contains(lowerCaseSearchTerm) },
                 { SearchOptions.Category, r => r.Category.Contains(lowerCaseSearchTerm) },
-                { SearchOptions.Description, r => r.Description != null && r.Description.Contains(lowerCaseSearchTerm) }
+                { SearchOptions.Description, r => r.Description.Contains(lowerCaseSearchTerm) }
             };
 
             var selectedColumn = searchColumns[filterOptions.SearchBy.Value];
 
             query = query.Where(selectedColumn);
         }
+
         if (filterOptions.SortBy != null)
         {
             var sortColumns = new Dictionary<SortByOptions, Expression<Func<Restaurant, string>>>
             {
                 { SortByOptions.Name, r => r.Name },
                 { SortByOptions.Category, r => r.Category },
-                { SortByOptions.Description, r => r.Description ?? string.Empty }
+                { SortByOptions.Description, r => r.Description }
             };
 
             var selectedColumn = sortColumns[filterOptions.SortBy.Value];

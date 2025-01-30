@@ -20,13 +20,13 @@ public class RestaurantsProfile : Profile
 
         CreateMap<CreateRestaurantRequest, Restaurant>()
             .ForMember(d => d.Address, opt => opt.MapFrom(src => new Address
-                {
-                    Street = src.Address!.Street,
-                    City = src.Address!.City,
-                    County = src.Address!.County,
-                    PostCode = src.Address!.PostCode,
-                    Country = src.Address!.Country
-                })
+            {
+                Street = src.Address.Street,
+                City = src.Address.City,
+                County = src.Address.County,
+                PostCode = src.Address.PostCode,
+                Country = src.Address.Country
+            })
             );
 
         CreateMap<UpdateRestaurantRequest, Restaurant>()

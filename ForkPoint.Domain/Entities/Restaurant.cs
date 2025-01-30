@@ -8,7 +8,7 @@ public class Restaurant
     public string Description { get; init; } = null!;
     public string Category { get; init; } = null!;
     public bool HasDelivery { get; init; }
-    public string? Email { get; init; }
+    public string Email { get; init; } = null!;
     public string? ContactNumber { get; init; }
 
     // Navigation properties
