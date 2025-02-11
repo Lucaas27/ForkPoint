@@ -217,3 +217,5 @@ $RECYCLE.BIN/
 
 **/.vs/**
 tests/unit/ForkPoint.Application.Tests/TestResults/**
+
+tests/unit/ForkPoint.Application.Tests/CoverageReport/**

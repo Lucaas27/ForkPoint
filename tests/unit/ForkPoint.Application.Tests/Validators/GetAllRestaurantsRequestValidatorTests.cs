@@ -90,6 +90,27 @@ public class GetAllRestaurantsRequestValidatorTests
         result.ShouldHaveValidationErrorFor(x => x.SortBy);
     }
 
+
+    [Fact]
+    public void GetAllRestaurantsRequest_FailsValidation_WhenSortByIsNull()
+    {
+        // Arrange
+        var request = new GetAllRestaurantsRequest(
+            SearchOptions.Name,
+            "Pizza",
+            1,
+            PageSizeOptions.Ten,
+            null,
+            SortDirection.Ascending);
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.IsValid.Should().BeFalse();
+        result.ShouldHaveValidationErrorFor(x => x.SortBy);
+    }
+
     [Fact]
     public void GetAllRestaurantsRequest_FailsValidation_WhenSearchByIsInvalid()
     {

@@ -35,15 +35,16 @@ public class RestaurantsProfile : Profile
             .ForMember(d => d.HasDelivery, opt => opt.MapFrom(src => src.HasDelivery))
             .ForMember(d => d.Email, opt => opt.MapFrom((src, dest) => src.Email ?? dest.Email))
             .ForMember(d => d.ContactNumber, opt => opt.MapFrom((src, dest) => src.ContactNumber ?? dest.ContactNumber))
-            .ForMember(d => d.Address, opt => opt.MapFrom((src, dest) => src.Address != null
-                ? new Address
-                {
-                    Street = src.Address.Street ?? dest.Address.Street,
-                    City = src.Address.City ?? dest.Address.City,
-                    County = src.Address.County ?? dest.Address.County,
-                    PostCode = src.Address.PostCode ?? dest.Address.PostCode,
-                    Country = src.Address.Country ?? dest.Address.Country
-                }
-                : dest.Address));
+            .ForMember(d => d.Address, opt => opt.MapFrom((src, dest) =>
+            {
+                if (src.Address == null) return dest.Address;
+                var address = dest.Address ?? new Address();
+                address.Street = src.Address.Street ?? address.Street;
+                address.City = src.Address.City ?? address.City;
+                address.County = src.Address.County ?? address.County;
+                address.PostCode = src.Address.PostCode ?? address.PostCode;
+                address.Country = src.Address.Country ?? address.Country;
+                return address;
+            }));
     }
 }
