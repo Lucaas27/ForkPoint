@@ -10,8 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ForkPoint.Application.Handlers;
 
-public class
-    GetCurrentUserRestaurantsHandler(
+public class GetCurrentUserRestaurantsHandler(
         ILogger<GetCurrentUserRestaurantsHandler> logger,
         UserManager<User> userManager,
         IUserContext userContext,
