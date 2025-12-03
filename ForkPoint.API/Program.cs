@@ -20,8 +20,11 @@ var scope = app.Services.CreateScope(); // Create a scope to resolve services fr
 await scope.ServiceProvider.GetRequiredService<ISeeder>().Seed(); // Seed the database
 
 // Add Middleware
-app.UseHttpsRedirection()
-    .UseSwagger()
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+app.UseSwagger()
     .UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "ForkPoint API");

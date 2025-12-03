@@ -33,9 +33,9 @@ public static class ServiceCollectionExtensions
             .AddCustomPasswordTokenProvider()
             .AddCustomRefreshTokenProvider();
 
-        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString, sqlOptions =>
+        services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString, npgsqlOptions =>
         {
-            sqlOptions.EnableRetryOnFailure(
+            npgsqlOptions.EnableRetryOnFailure(
                 5,
                 TimeSpan.FromSeconds(30),
                 null);
