@@ -8,7 +8,8 @@ import * as TanStackQueryProvider from './integrations/tanstack-query/root-provi
 import { routeTree } from './routeTree.gen'
 
 import './styles.css'
-import reportWebVitals from './reportWebVitals.ts'
+import { env } from './env'
+import { Toaster } from './components/ui/sonner'
 
 // Create a new router instance
 
@@ -31,6 +32,11 @@ declare module '@tanstack/react-router' {
   }
 }
 
+// Set document title from env (optional)
+if (env.VITE_APP_TITLE) {
+  document.title = env.VITE_APP_TITLE
+}
+
 // Render the app
 const rootElement = document.getElementById('app')
 if (rootElement && !rootElement.innerHTML) {
@@ -39,12 +45,9 @@ if (rootElement && !rootElement.innerHTML) {
     <StrictMode>
       <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
         <RouterProvider router={router} />
+        <Toaster richColors position="top-right" />
       </TanStackQueryProvider.Provider>
     </StrictMode>,
   )
 }
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals()
