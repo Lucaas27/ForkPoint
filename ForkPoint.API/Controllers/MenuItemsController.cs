@@ -14,7 +14,7 @@ namespace ForkPoint.API.Controllers;
 
 [Route("api/restaurant/{restaurantId:int}/menu-items")]
 [ApiController]
-[Authorize]
+// [Authorize]
 public class MenuItemsController(IMediator mediator) : ControllerBase
 {
     /// <summary>

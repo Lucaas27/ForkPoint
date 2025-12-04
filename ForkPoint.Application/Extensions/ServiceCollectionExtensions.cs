@@ -66,13 +66,13 @@ public static class ServiceCollectionExtensions
             })
             .AddCookie(); // For temporary state during External provider authentication
 
-        if (!string.IsNullOrWhiteSpace(config["Authentication:Google:ClientId"]))
+        if (!string.IsNullOrWhiteSpace(config["Authentication:Google:ClientId"]) && !string.IsNullOrWhiteSpace(config["Authentication:Google:ClientSecret"]))
         {
             services.AddAuthentication()
                 .AddGoogle(options =>
                 {
-                    options.ClientId = config["Authentication:Google:ClientId"];
-                    options.ClientSecret = config["Authentication:Google:ClientSecret"];
+                    options.ClientId = config["Authentication:Google:ClientId"]!;
+                    options.ClientSecret = config["Authentication:Google:ClientSecret"]!;
 
                     // Use cookies for Google sign-in
                     options.SignInScheme = IdentityConstants.ExternalScheme;

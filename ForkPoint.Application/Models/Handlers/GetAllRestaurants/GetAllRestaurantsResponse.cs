@@ -7,8 +7,8 @@ public record GetAllRestaurantsResponse : BasePaginatedResponse<RestaurantModel>
     public GetAllRestaurantsResponse(
         IEnumerable<RestaurantModel> items,
         int totalItemsCount,
-        int pageSize,
-        int pageNumber
+        int pageNumber,
+        int pageSize
     ) : base(items, totalItemsCount, pageNumber, pageSize)
     {
     }

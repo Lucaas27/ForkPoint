@@ -11,4 +11,5 @@ public record RestaurantDetailsModel
     public string? ContactNumber { get; init; }
     public AddressModel Address { get; init; } = null!;
     public ICollection<MenuItemModel> MenuItems { get; init; } = new List<MenuItemModel>();
+    public bool OwnedByCurrentUser { get; init; }
 }

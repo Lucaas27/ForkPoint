@@ -17,7 +17,7 @@ namespace ForkPoint.API.Controllers;
 /// </summary>
 /// <param name="mediator">The mediator instance for handling requests.</param>
 [Route("api/restaurants")]
-[Authorize]
+// [Authorize]
 [ApiController]
 public class RestaurantsController(IMediator mediator) : ControllerBase
 {

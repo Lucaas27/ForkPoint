@@ -61,7 +61,10 @@ internal class AuthService(
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new(JwtRegisteredClaimNames.Email, user.Email!),
-            new("email_verified", user.EmailConfirmed.ToString())
+            new("email_verified", user.EmailConfirmed.ToString()),
+            new(ClaimTypes.Name, string.IsNullOrWhiteSpace(user.FullName)
+                ? (user.UserName ?? user.Email ?? string.Empty)
+                : user.FullName)
         };
 
         claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));

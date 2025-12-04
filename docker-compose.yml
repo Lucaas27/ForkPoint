@@ -20,7 +20,7 @@ services:
     container_name: forkpoint-api
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__Default: "Host=postgres;Database=ForkPoint;Username=postgres;Password=password"
+      ConnectionStrings__Default: "Server=postgres;Database=ForkPoint;User Id=postgres;Password=password"
       ASPNETCORE_URLS: "http://+:80"
     ports:
       - "8080:80"
