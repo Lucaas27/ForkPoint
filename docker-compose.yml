@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: forkpoint-postgres
+    environment:
+      POSTGRES_DB: ForkPoint
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - forkpoint-network
+
+  forkpoint-api:
+    build:
+      context: .
+      dockerfile: ForkPoint.API/Dockerfile
+    container_name: forkpoint-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Default: "Server=postgres;Database=ForkPoint;User Id=postgres;Password=password"
+      ASPNETCORE_URLS: "http://+:80"
+    ports:
+      - "8080:80"
+    depends_on:
+      - postgres
+    networks:
+      - forkpoint-network
+    volumes:
+      - ./ForkPoint.API/Logs:/app/Logs
+
+volumes:
+  postgres_data:
+
+networks:
+  forkpoint-network:
+    driver: bridge

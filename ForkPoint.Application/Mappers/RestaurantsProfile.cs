@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ForkPoint.Application.Models.Dtos;
+using ForkPoint.Application.Contexts;
 using ForkPoint.Application.Models.Handlers.CreateRestaurant;
 using ForkPoint.Application.Models.Handlers.UpdateRestaurant;
 using ForkPoint.Domain.Entities;
@@ -16,7 +17,8 @@ public class RestaurantsProfile : Profile
 
         CreateMap<Restaurant, RestaurantDetailsModel>()
             .ForMember(d => d.Address, opt => opt.MapFrom(src => src.Address))
-            .ForMember(d => d.MenuItems, opt => opt.MapFrom(src => src.MenuItems));
+            .ForMember(d => d.MenuItems, opt => opt.MapFrom(src => src.MenuItems))
+            .ForMember(d => d.OwnedByCurrentUser, opt => opt.MapFrom<OwnedByCurrentUserResolver>());
 
         CreateMap<CreateRestaurantRequest, Restaurant>()
             .ForMember(d => d.Address, opt => opt.MapFrom(src => new Address
@@ -46,5 +48,21 @@ public class RestaurantsProfile : Profile
                 address.Country = src.Address.Country ?? address.Country;
                 return address;
             }));
+    }
+}
+
+public class OwnedByCurrentUserResolver : IValueResolver<Restaurant, RestaurantDetailsModel, bool>
+{
+    private readonly IUserContext _userContext;
+
+    public OwnedByCurrentUserResolver(IUserContext userContext)
+    {
+        _userContext = userContext;
+    }
+
+    public bool Resolve(Restaurant source, RestaurantDetailsModel destination, bool destMember, ResolutionContext context)
+    {
+        var current = _userContext.GetCurrentUser();
+        return current is not null && current.Id == source.OwnerId;
     }
 }

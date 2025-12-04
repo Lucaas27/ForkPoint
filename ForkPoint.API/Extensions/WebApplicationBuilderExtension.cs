@@ -23,6 +23,27 @@ public static class WebApplicationBuilderExtension
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
+        var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("CorsPolicy", policy =>
+            {
+                if (allowedOrigins.Length > 0)
+                {
+                    policy.WithOrigins(allowedOrigins)
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
+                }
+                else
+                {
+                    // No origins allowed unless configured
+                    policy.WithOrigins()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                }
+            });
+        });
 
         builder.Services.AddHttpLogging(logging =>
         {
