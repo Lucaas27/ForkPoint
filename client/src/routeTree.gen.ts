@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RestaurantsIndexRouteImport } from './routes/restaurants/index'
+import { Route as ResetPasswordIndexRouteImport } from './routes/reset-password/index'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
 import { Route as ConfirmIndexRouteImport } from './routes/confirm/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
@@ -26,6 +27,11 @@ const IndexRoute = IndexRouteImport.update({
 const RestaurantsIndexRoute = RestaurantsIndexRouteImport.update({
   id: '/restaurants/',
   path: '/restaurants/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordIndexRoute = ResetPasswordIndexRouteImport.update({
+  id: '/reset-password/',
+  path: '/reset-password/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginIndexRoute = LoginIndexRouteImport.update({
@@ -67,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminIndexRoute
   '/confirm': typeof ConfirmIndexRoute
   '/login': typeof LoginIndexRoute
+  '/reset-password': typeof ResetPasswordIndexRoute
   '/restaurants': typeof RestaurantsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -77,6 +84,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/confirm': typeof ConfirmIndexRoute
   '/login': typeof LoginIndexRoute
+  '/reset-password': typeof ResetPasswordIndexRoute
   '/restaurants': typeof RestaurantsIndexRoute
 }
 export interface FileRoutesById {
@@ -88,6 +96,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/confirm/': typeof ConfirmIndexRoute
   '/login/': typeof LoginIndexRoute
+  '/reset-password/': typeof ResetPasswordIndexRoute
   '/restaurants/': typeof RestaurantsIndexRoute
 }
 export interface FileRouteTypes {
@@ -100,6 +109,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/confirm'
     | '/login'
+    | '/reset-password'
     | '/restaurants'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -110,6 +120,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/confirm'
     | '/login'
+    | '/reset-password'
     | '/restaurants'
   id:
     | '__root__'
@@ -120,6 +131,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/confirm/'
     | '/login/'
+    | '/reset-password/'
     | '/restaurants/'
   fileRoutesById: FileRoutesById
 }
@@ -131,6 +143,7 @@ export interface RootRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
   ConfirmIndexRoute: typeof ConfirmIndexRoute
   LoginIndexRoute: typeof LoginIndexRoute
+  ResetPasswordIndexRoute: typeof ResetPasswordIndexRoute
   RestaurantsIndexRoute: typeof RestaurantsIndexRoute
 }
 
@@ -148,6 +161,13 @@ declare module '@tanstack/react-router' {
       path: '/restaurants'
       fullPath: '/restaurants'
       preLoaderRoute: typeof RestaurantsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password/': {
+      id: '/reset-password/'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login/': {
@@ -203,6 +223,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
   ConfirmIndexRoute: ConfirmIndexRoute,
   LoginIndexRoute: LoginIndexRoute,
+  ResetPasswordIndexRoute: ResetPasswordIndexRoute,
   RestaurantsIndexRoute: RestaurantsIndexRoute,
 }
 export const routeTree = rootRouteImport
