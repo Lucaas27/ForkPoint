@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ForkPoint.Infrastructure.Persistence;
 
-internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : IdentityDbContext<User, IdentityRole<int>, int>(options)
 {
-    internal DbSet<Restaurant> Restaurants { get; set; } = null!;
-    internal DbSet<MenuItem> MenuItems { get; set; } = null!;
-    internal DbSet<Address> Addresses { get; set; } = null!;
+    public DbSet<Restaurant> Restaurants { get; set; } = null!;
+    public DbSet<MenuItem> MenuItems { get; set; } = null!;
+    public DbSet<Address> Addresses { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
