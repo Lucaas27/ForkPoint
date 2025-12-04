@@ -64,16 +64,19 @@ public static class ServiceCollectionExtensions
                     )
                 };
             })
-            .AddCookie() // For temporary state during External provider authentication
-            .AddGoogle(options =>
-            {
-                options.ClientId = config["Authentication:Google:ClientId"]
-                                   ?? throw new ArgumentNullException(nameof(options), "Authentication:Google:ClientId is null");
-                options.ClientSecret = config["Authentication:Google:ClientSecret"]
-                                       ?? throw new ArgumentNullException(nameof(options), "Authentication:Google:ClientSecret is null");
+            .AddCookie(); // For temporary state during External provider authentication
 
-                // Use cookies for Google sign-in
-                options.SignInScheme = IdentityConstants.ExternalScheme;
-            });
+        if (!string.IsNullOrWhiteSpace(config["Authentication:Google:ClientId"]) && !string.IsNullOrWhiteSpace(config["Authentication:Google:ClientSecret"]))
+        {
+            services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    options.ClientId = config["Authentication:Google:ClientId"]!;
+                    options.ClientSecret = config["Authentication:Google:ClientSecret"]!;
+
+                    // Use cookies for Google sign-in
+                    options.SignInScheme = IdentityConstants.ExternalScheme;
+                });
+        }
     }
 }
