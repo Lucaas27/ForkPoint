@@ -29,7 +29,7 @@ export const Route = createFileRoute("/login/")({
 
 function Login() {
 	const navigate = useNavigate();
-	const { isAuthenticated, refreshAuth } = useAuthContext();
+	const { isAuthenticated } = useAuthContext();
 
 	// If already authenticated, redirect
 	useEffect(() => {
@@ -126,7 +126,6 @@ function Login() {
 										{
 											onSuccess: () => {
 												toast.success("Logged in");
-												refreshAuth();
 												navigate({ to: "/", replace: true });
 											},
 											onError: (err: unknown) => {
