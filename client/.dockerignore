@@ -1,0 +1,13 @@
+node_modules
+npm-debug.log
+.DS_Store
+.git
+.gitignore
+.eslint*
+.biome*
+.vscode
+coverage
+**/*.map
+**/*.md
+**/*.test.*
+dist
