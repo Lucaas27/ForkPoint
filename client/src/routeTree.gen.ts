@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RestaurantsIndexRouteImport } from './routes/restaurants/index'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
+import { Route as ConfirmIndexRouteImport } from './routes/confirm/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AccountIndexRouteImport } from './routes/account/index'
 import { Route as RestaurantsCreateRouteImport } from './routes/restaurants/create'
@@ -30,6 +31,11 @@ const RestaurantsIndexRoute = RestaurantsIndexRouteImport.update({
 const LoginIndexRoute = LoginIndexRouteImport.update({
   id: '/login/',
   path: '/login/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfirmIndexRoute = ConfirmIndexRouteImport.update({
+  id: '/confirm/',
+  path: '/confirm/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/restaurants/create': typeof RestaurantsCreateRoute
   '/account': typeof AccountIndexRoute
   '/admin': typeof AdminIndexRoute
+  '/confirm': typeof ConfirmIndexRoute
   '/login': typeof LoginIndexRoute
   '/restaurants': typeof RestaurantsIndexRoute
 }
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/restaurants/create': typeof RestaurantsCreateRoute
   '/account': typeof AccountIndexRoute
   '/admin': typeof AdminIndexRoute
+  '/confirm': typeof ConfirmIndexRoute
   '/login': typeof LoginIndexRoute
   '/restaurants': typeof RestaurantsIndexRoute
 }
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/restaurants/create': typeof RestaurantsCreateRoute
   '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/confirm/': typeof ConfirmIndexRoute
   '/login/': typeof LoginIndexRoute
   '/restaurants/': typeof RestaurantsIndexRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/restaurants/create'
     | '/account'
     | '/admin'
+    | '/confirm'
     | '/login'
     | '/restaurants'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/restaurants/create'
     | '/account'
     | '/admin'
+    | '/confirm'
     | '/login'
     | '/restaurants'
   id:
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/restaurants/create'
     | '/account/'
     | '/admin/'
+    | '/confirm/'
     | '/login/'
     | '/restaurants/'
   fileRoutesById: FileRoutesById
@@ -117,6 +129,7 @@ export interface RootRouteChildren {
   RestaurantsCreateRoute: typeof RestaurantsCreateRoute
   AccountIndexRoute: typeof AccountIndexRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  ConfirmIndexRoute: typeof ConfirmIndexRoute
   LoginIndexRoute: typeof LoginIndexRoute
   RestaurantsIndexRoute: typeof RestaurantsIndexRoute
 }
@@ -142,6 +155,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/confirm/': {
+      id: '/confirm/'
+      path: '/confirm'
+      fullPath: '/confirm'
+      preLoaderRoute: typeof ConfirmIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -181,6 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   RestaurantsCreateRoute: RestaurantsCreateRoute,
   AccountIndexRoute: AccountIndexRoute,
   AdminIndexRoute: AdminIndexRoute,
+  ConfirmIndexRoute: ConfirmIndexRoute,
   LoginIndexRoute: LoginIndexRoute,
   RestaurantsIndexRoute: RestaurantsIndexRoute,
 }

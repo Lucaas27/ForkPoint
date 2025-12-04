@@ -1,9 +1,14 @@
-import { useMutation } from '@tanstack/react-query'
-import { updateMe } from '../../api/account'
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { updateMe } from "../../api/account";
+import { accountKeys } from "@/features/account/keys";
 
-// Update basic account profile fields (e.g. display name).
+// Update basic account profile fields (display name).
 export function useUpdateMe() {
-  return useMutation({
-    mutationFn: (payload: { name: string }) => updateMe(payload),
-  })
+	const qc = useQueryClient();
+	return useMutation({
+		mutationFn: (payload: { fullName: string }) => updateMe(payload),
+		onSuccess: () => {
+			qc.invalidateQueries({ queryKey: accountKeys.myProfile });
+		},
+	});
 }
