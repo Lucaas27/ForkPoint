@@ -1,0 +1,136 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+env:
+  DOTNET_VERSION: "8.x"
+
+# Prevent concurrent deployments
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  check-prerequisites:
+    name: Check Prerequisites
+    runs-on: ubuntu-latest
+    outputs:
+      should_deploy: ${{ steps.check.outputs.should_deploy }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check commit message
+        id: check
+        run: |
+          # Get the latest commit message
+          COMMIT_MSG=$(git log-1 --pretty=%B || git log -1 --pretty=%B)
+          echo "Latest commit message: $COMMIT_MSG"
+
+          # Skip if commit message contains skip patterns or is from release bot
+          if echo "$COMMIT_MSG" | grep -qiE '\[skip ci\]|\[ci skip\]|chore\(release\):'; then
+            echo "Skipping deployment due to commit message"
+            echo "should_deploy=false" >> $GITHUB_OUTPUT
+          else
+            echo "should_deploy=true" >> $GITHUB_OUTPUT
+          fi
+
+  release:
+    name: Semantic Release
+    needs: check-prerequisites
+    runs-on: ubuntu-latest
+    if: needs.check-prerequisites.outputs.should_deploy == 'true'
+    outputs:
+      version: ${{ steps.get_tag.outputs.new_release_version }}
+      new_release_published: ${{ steps.semantic_release.outputs.new_release_published }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Run semantic-release
+        uses: cycjimmy/semantic-release-action@v4
+        id: semantic_release
+        with:
+          working_directory: .
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get latest tag
+        id: get_tag
+        run: |
+          VERSION=$(git describe --tags --abbrev=0 --match "v*" | sed 's/v//' || echo "1.0.0")
+          echo "new_release_version=$VERSION" >> $GITHUB_OUTPUT
+          echo "new_release_version=$VERSION"
+
+      - name: Set summary
+        if: ${{ steps.semantic_release.outputs.new_release_published == 'true' }}
+        run: |
+          echo "## Application Release" >> $GITHUB_STEP_SUMMARY
+          echo "✅ New version published: ${{ steps.semantic_release.outputs.new_release_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "Release notes: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.semantic_release.outputs.new_release_version }}" >> $GITHUB_STEP_SUMMARY
+
+  deploy-coverage:
+    name: Deploy Coverage Reports
+    needs: check-prerequisites
+    runs-on: ubuntu-latest
+    if: needs.check-prerequisites.outputs.should_deploy == 'true'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          cache: true
+          cache-dependency-path: "**/packages.lock.json"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: "npm"
+          cache-dependency-path: "client/package-lock.json"
+
+      # Backend coverage
+      - name: Restore backend dependencies
+        run: dotnet restore ForkPoint.sln --locked-mode
+
+      - name: Build backend
+        run: dotnet build ForkPoint.sln --configuration Release --no-restore
+
+      - name: Run backend tests with coverage
+        run: dotnet test ForkPoint.sln --configuration Release --no-restore --no-build --verbosity normal --logger "trx;LogFileName=results.trx" --collect:"XPlat Code Coverage" --results-directory TestResults
+
+      - name: Generate backend coverage report
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.2.4
+        with:
+          reports: "**/*.cobertura.xml"
+          targetdir: "${{ github.workspace }}/coverage-report-backend"
+          reporttypes: "Html"
+
+      # Deploy coverage reports to GitHub Pages
+      - name: Deploy backend coverage to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ github.workspace }}/coverage-report-backend
+          destination_dir: coverage/backend
+          keep_files: true
