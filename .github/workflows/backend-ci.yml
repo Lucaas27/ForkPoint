@@ -13,6 +13,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+      checks: write
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -83,13 +84,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: ${{ github.workspace }}/**/TestResults/**/*
+          path: "**/TestResults/**/*"
 
       - name: Publish test results
         uses: EnricoMi/publish-unit-test-result-action@v2.16.1
         if: always()
         with:
-          trx_files: "${{ github.workspace }}/**/*.trx"
+          trx_files: "**/TestResults/**/*.trx"
 
       - name: Upload HTML report
         if: always()
