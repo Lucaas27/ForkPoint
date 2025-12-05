@@ -32,10 +32,10 @@ public class ExternalProviderHandler(
         // Get token expiry
         var expiry = new JwtSecurityTokenHandler().ReadJwtToken(token).ValidTo;
 
-        // Get refresh token
-        var refreshToken = await authService.GenerateRefreshToken(user);
+        // Generate refresh token and set cookie
+        await authService.GenerateRefreshToken(user);
 
-        return new ExternalProviderResponse(token, refreshToken, expiry) { IsSuccess = true };
+        return new ExternalProviderResponse(token, expiry) { IsSuccess = true };
     }
 
     private async Task<User> ExternalProviderLogin()

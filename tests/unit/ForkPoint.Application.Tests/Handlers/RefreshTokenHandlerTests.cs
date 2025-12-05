@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace ForkPoint.Application.Tests.Handlers;
 
@@ -29,7 +30,7 @@ public class RefreshTokenHandlerTests
     public async Task Handle_ShouldReturnInvalidAccessToken_WhenPrincipalIsNull()
     {
         // Arrange
-        var request = new RefreshTokenRequest("invalidToken", "refreshToken");
+        var request = new RefreshTokenRequest("invalidToken");
         _authServiceMock.Setup(x => x.GetPrincipalFromToken(It.IsAny<string>())).Returns((ClaimsPrincipal)null!);
 
         // Act
@@ -37,14 +38,14 @@ public class RefreshTokenHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeFalse();
-        result.Message.Should().Be("Invalid access token");
+        result.Message.Should().Be("Invalid or expired access token");
     }
 
     [Fact]
     public async Task Handle_ShouldReturnInvalidUser_WhenUserIsNull()
     {
         // Arrange
-        var request = new RefreshTokenRequest("invalidToken", "refreshToken");
+        var request = new RefreshTokenRequest("invalidToken");
         var principal = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { new(ClaimTypes.Email, "test@example.com") }));
         _authServiceMock.Setup(x => x.GetPrincipalFromToken(It.IsAny<string>())).Returns(principal);
         _userManagerMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
@@ -61,13 +62,14 @@ public class RefreshTokenHandlerTests
     public async Task Handle_ShouldReturnInvalidRefreshToken_WhenTokenIsInvalid()
     {
         // Arrange
-        var request = new RefreshTokenRequest("validToken", "invalidRefreshToken");
+        var request = new RefreshTokenRequest("validToken");
         var principal = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { new(ClaimTypes.Email, "test@example.com") }));
         var user = new User { Email = "test@example.com" };
         _authServiceMock.Setup(x => x.GetPrincipalFromToken(It.IsAny<string>())).Returns(principal);
         _userManagerMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
         _userManagerMock.Setup(x => x.GetAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken")).ReturnsAsync("storedRefreshToken");
         _authServiceMock.Setup(x => x.ValidateRefreshToken(user, It.IsAny<string>())).ReturnsAsync(false);
+        _authServiceMock.Setup(a => a.GetRefreshTokenFromRequest()).Returns("cookieToken");
 
         // Act
         var result = await _handler.Handle(request, CancellationToken.None);
@@ -81,8 +83,8 @@ public class RefreshTokenHandlerTests
     public async Task Handle_ShouldReturnNewTokens_WhenRequestIsValid()
     {
         // Arrange
-        var request = new RefreshTokenRequest("validToken", "validRefreshToken");
-        var principal = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { new(ClaimTypes.Email, "test@example.com") }));
+        var request = new RefreshTokenRequest("validToken");
+        var principal = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { new Claim(ClaimTypes.Email, "test@example.com") }));
         var user = new User { Email = "test@example.com" };
         var newAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
                         + "eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6"
@@ -100,6 +102,9 @@ public class RefreshTokenHandlerTests
         _authServiceMock.Setup(x => x.GenerateAccessToken(user)).ReturnsAsync(newAccessToken);
         _authServiceMock.Setup(x => x.GenerateRefreshToken(user)).ReturnsAsync(newRefreshToken);
 
+        // Arrange - authService will read the refresh token from the request cookie
+        _authServiceMock.Setup(a => a.GetRefreshTokenFromRequest()).Returns("validRefreshToken");
+
         // Act
         var result = await _handler.Handle(request, CancellationToken.None);
 
@@ -107,6 +112,5 @@ public class RefreshTokenHandlerTests
         result.IsSuccess.Should().BeTrue();
         result.Message.Should().Be("Token refreshed");
         result.Token.Should().Be(newAccessToken);
-        result.RefreshToken.Should().Be(newRefreshToken);
     }
 }

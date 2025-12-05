@@ -18,6 +18,14 @@ public class RefreshTokenHandler(
     public async Task<RefreshTokenResponse> Handle(RefreshTokenRequest request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Handling refresh token request...");
+        if (string.IsNullOrWhiteSpace(request.AccessToken))
+        {
+            return new RefreshTokenResponse
+            {
+                IsSuccess = false,
+                Message = "Access token is required in the Authorization header"
+            };
+        }
 
         var principal = authService.GetPrincipalFromToken(request.AccessToken);
 
@@ -26,7 +34,7 @@ public class RefreshTokenHandler(
             return new RefreshTokenResponse
             {
                 IsSuccess = false,
-                Message = "Invalid access token"
+                Message = "Invalid or expired access token"
             };
         }
 
@@ -47,10 +55,20 @@ public class RefreshTokenHandler(
             };
         }
 
-        var tokenExists =
-            await userManager.GetAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken") != null;
+        var tokenExists = await userManager.GetAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken") != null;
 
-        var isTokenValid = await authService.ValidateRefreshToken(user, request.RefreshToken);
+        var cookieRefreshToken = authService.GetRefreshTokenFromRequest();
+
+        if (string.IsNullOrEmpty(cookieRefreshToken))
+        {
+            return new RefreshTokenResponse
+            {
+                IsSuccess = false,
+                Message = "Refresh token not provided"
+            };
+        }
+
+        var isTokenValid = await authService.ValidateRefreshToken(user, cookieRefreshToken);
 
         if (!isTokenValid || !tokenExists)
         {
@@ -64,9 +82,9 @@ public class RefreshTokenHandler(
         var token = await authService.GenerateAccessToken(user);
         var expiry = new JwtSecurityTokenHandler().ReadJwtToken(token).ValidTo;
 
-        // Get new refresh token
-        var refreshToken = await authService.GenerateRefreshToken(user);
+        // Set new refresh token
+        await authService.GenerateRefreshToken(user);
 
-        return new RefreshTokenResponse(token, refreshToken, expiry) { IsSuccess = true, Message = "Token refreshed" };
+        return new RefreshTokenResponse(token, expiry) { IsSuccess = true, Message = "Token refreshed" };
     }
 }
