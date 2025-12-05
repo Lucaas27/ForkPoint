@@ -27,7 +27,12 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
           cache: true
-          cache-dependency-path: "**/packages.lock.json"
+          cache-dependency-path: "**/*.csproj"
+
+      - name: Diagnostics - show cache dependency files
+        run: |
+          echo "Looking for cache dependency files"
+          ls -la **/*.csproj || true
       - name: Restore dotnet tools
         run: dotnet tool restore
 
@@ -46,7 +51,8 @@ jobs:
       - name: Generate coverage report
         uses: danielpalme/ReportGenerator-GitHub-Action@5.2.4
         with:
-          reports: "**/*.cobertura.xml"
+          # Look for cobertura files under TestResults first, then any cobertura files
+          reports: "**/TestResults/**/coverage.cobertura.xml;**/*.cobertura.xml"
           targetdir: "${{ github.workspace }}/coverage-report"
           reporttypes: "Cobertura;MarkdownSummaryGithub;Html"
 
