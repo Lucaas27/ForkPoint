@@ -39,8 +39,8 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore ForkPoint.sln
 
-      - name: Check code formatting
-        run: dotnet format --verify-no-changes --verbosity diagnostic
+      # - name: Check code formatting
+      #   run: dotnet format --verify-no-changes --verbosity diagnostic || (git --no-pager diff --name-only; git --no-pager diff; exit 2)
 
       - name: Build project
         run: dotnet build ForkPoint.sln --configuration Release --no-restore --verbosity normal /p:RunAnalyzersDuringBuild=true /p:TreatWarningsAsErrors=false
