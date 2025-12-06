@@ -22,6 +22,7 @@ export async function resetPassword(payload: {
 	email: string;
 	token: string;
 	password: string;
+	confirmPassword: string;
 }) {
 	const res = await api.post("/api/account/reset-password", payload);
 	return res.data;

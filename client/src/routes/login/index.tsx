@@ -21,7 +21,7 @@ import {
 import { Separator } from "../../components/ui/separator";
 import { LogIn, UserPlus } from "lucide-react";
 import { toast } from "sonner";
-import { resendEmailConfirmation } from "../../api/account";
+import { resendEmailConfirmation, forgotPassword } from "../../api/account";
 
 export const Route = createFileRoute("/login/")({
 	component: Login,
@@ -29,7 +29,7 @@ export const Route = createFileRoute("/login/")({
 
 function Login() {
 	const navigate = useNavigate();
-	const { isAuthenticated, refreshAuth } = useAuthContext();
+	const { isAuthenticated } = useAuthContext();
 
 	// If already authenticated, redirect
 	useEffect(() => {
@@ -44,6 +44,7 @@ function Login() {
 	const passwordRegisterId = useId();
 	const [email, setEmail] = useState("forkpointuser@gmail.com");
 	const [password, setPassword] = useState("UserPassword1!");
+	const [sendingReset, setSendingReset] = useState(false);
 	const mLogin = useLogin();
 	const mRegister = useRegister();
 
@@ -82,6 +83,39 @@ function Login() {
 									value={password}
 									onChange={(e) => setPassword(e.target.value)}
 								/>
+								<div className="mt-1 text-right">
+									<Button
+										variant="link"
+										className="p-0 h-auto text-sm"
+										onClick={async () => {
+											if (!email) {
+												toast.error("Please enter your email first");
+												return;
+											}
+											setSendingReset(true);
+											try {
+												const res = await forgotPassword({ email });
+												const msg =
+													(res as { message?: string })?.message ||
+													"If an account exists, we've sent a reset email.";
+												toast.success(msg);
+											} catch (err) {
+												const anyErr = err as {
+													response?: { data?: { message?: string } };
+												};
+												toast.error(
+													anyErr?.response?.data?.message ||
+														"Failed to send reset email",
+												);
+											} finally {
+												setSendingReset(false);
+											}
+										}}
+										disabled={!email || sendingReset}
+									>
+										{sendingReset ? "Sending reset email…" : "Forgot password?"}
+									</Button>
+								</div>
 							</div>
 
 							<Button
@@ -92,7 +126,6 @@ function Login() {
 										{
 											onSuccess: () => {
 												toast.success("Logged in");
-												refreshAuth();
 												navigate({ to: "/", replace: true });
 											},
 											onError: (err: unknown) => {
@@ -157,8 +190,8 @@ function Login() {
 													msg || "Account created. Please verify via email.",
 												);
 												navigate({
-													to: "/confirm" as any,
-													search: { email } as any,
+													to: "/confirm",
+													search: { email },
 													replace: true,
 												});
 											},
