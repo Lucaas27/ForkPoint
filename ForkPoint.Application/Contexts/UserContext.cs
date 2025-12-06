@@ -19,8 +19,9 @@ public record UserContext(IHttpContextAccessor HttpContextAccessor) : IUserConte
         var id = user.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
         var email = user.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
         var roles = user.FindAll(ClaimTypes.Role).Select(claim => claim.Value);
+        var name = user.FindFirstValue(ClaimTypes.Name) ?? string.Empty;
 
-        return new CurrentUserModel(int.Parse(id), email, roles);
+        return new CurrentUserModel(int.Parse(id), email, roles, name);
     }
 
     public int GetTargetUserId()

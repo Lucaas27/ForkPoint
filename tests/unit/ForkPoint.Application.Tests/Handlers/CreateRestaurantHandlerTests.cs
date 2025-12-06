@@ -34,7 +34,7 @@ public class CreateRestaurantHandlerTests
         // Arrange
         var request = new CreateRestaurantRequest();
         var restaurant = new Restaurant();
-        var currentUser = new CurrentUserModel(5, "user@example.com", []);
+        var currentUser = new CurrentUserModel(5, "user@example.com", [], "User");
 
         _userContextMock.Setup(x => x.GetCurrentUser()).Returns(currentUser);
         _mapperMock.Setup(x => x.Map<Restaurant>(request)).Returns(restaurant);
@@ -59,7 +59,7 @@ public class CreateRestaurantHandlerTests
 
         _userContextMock.Setup(x => x.GetCurrentUser()).Returns((CurrentUserModel?)null);
 
-        // Act 
+        // Act
         var action = async () => await _handler.Handle(request, CancellationToken.None);
 
         // Assert
