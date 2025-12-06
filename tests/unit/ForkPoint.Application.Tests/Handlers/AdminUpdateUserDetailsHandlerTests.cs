@@ -9,6 +9,7 @@ using ForkPoint.Domain.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Moq;
+using ForkPoint.Application.Tests.TestHelpers;
 
 namespace ForkPoint.Application.Tests.Handlers;
 
@@ -25,8 +26,7 @@ public class AdminUpdateUserDetailsHandlerTests
         _loggerMock = new Mock<ILogger<AdminUpdateUserDetailsHandler>>();
         _mapperMock = new Mock<IMapper>();
         _userContextMock = new Mock<IUserContext>();
-        _userManagerMock = new Mock<UserManager<User>>(
-            Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
+        _userManagerMock = TestUserManagerFactory.CreateMinimal();
         _handler = new AdminUpdateUserDetailsHandler(
             _loggerMock.Object, _mapperMock.Object, _userContextMock.Object, _userManagerMock.Object);
     }
