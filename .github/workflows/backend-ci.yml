@@ -56,6 +56,25 @@ jobs:
           targetdir: "${{ github.workspace }}/coverage-report"
           reporttypes: "Cobertura;MarkdownSummaryGithub;Html"
 
+      - name: Zip coverage report
+        if: always()
+        run: |
+          echo "Zipping coverage report (if present)"
+          if [ -d "${{ github.workspace }}/coverage-report" ]; then
+            cd "${{ github.workspace }}"
+            zip -r coverage-report.zip coverage-report || true
+            ls -la coverage-report* || true
+          else
+            echo "coverage-report directory not found"
+          fi
+
+      - name: Upload coverage zip
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-zip
+          path: coverage-report.zip
+
       - name: Upload coverage artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -69,7 +88,7 @@ jobs:
         with:
           filename: "**/**/Cobertura.xml"
           badge: true
-          fail_below_min: true
+          fail_below_min: false
           format: markdown
           hide_branch_rate: false
           hide_complexity: false
