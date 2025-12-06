@@ -1,0 +1,16 @@
+{
+    "name": "forkpoint-tools",
+    "version": "1.0.0",
+    "private": true,
+    "engines": {
+        "node": ">=22.x"
+    },
+    "scripts": {
+        "coverage": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/test-coverage.ps1",
+        "format": "dotnet format ForkPoint.sln",
+        "build": "dotnet build ForkPoint.sln --configuration Release",
+        "restore": "dotnet restore ForkPoint.sln",
+        "lint": "dotnet format --verify-no-changes --verbosity diagnostic",
+        "ci": "npm run restore && npm run lint && npm run build && npm run coverage"
+    }
+}
