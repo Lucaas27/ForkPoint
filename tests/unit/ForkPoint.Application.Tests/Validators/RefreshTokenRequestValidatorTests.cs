@@ -11,27 +11,16 @@ public class RefreshTokenRequestValidatorTests
     [Fact]
     public void RefreshTokenRequest_FailsValidation_WhenAccessTokenIsEmpty()
     {
-        var model = new RefreshTokenRequest(string.Empty, "validRefreshToken");
+        var model = new RefreshTokenRequest(string.Empty);
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.AccessToken)
               .WithErrorMessage("Access token is required");
     }
-
     [Fact]
-    public void RefreshTokenRequest_FailsValidation_WhenRefreshTokenIsEmpty()
+    public void RefreshTokenRequest_PassesValidation_WhenAccessTokenIsProvided()
     {
-        var model = new RefreshTokenRequest("validAccessToken", string.Empty);
-        var result = _validator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.RefreshToken)
-              .WithErrorMessage("Refresh token is required");
-    }
-
-    [Fact]
-    public void RefreshTokenRequest_PassesValidation_WhenAccessTokenAndRefreshTokenAreProvided()
-    {
-        var model = new RefreshTokenRequest("validAccessToken", "validRefreshToken");
+        var model = new RefreshTokenRequest("validAccessToken");
         var result = _validator.TestValidate(model);
         result.ShouldNotHaveValidationErrorFor(x => x.AccessToken);
-        result.ShouldNotHaveValidationErrorFor(x => x.RefreshToken);
     }
 }

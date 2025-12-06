@@ -37,7 +37,6 @@ public class LogoutHandler(
 
 
         // Invalidate the refresh token for the user to prevent further access to the API.
-        // This will force the user to log in again to get a new access token when the current short-lived one expires.
         await authService.InvalidateRefreshToken(dbUser);
 
         return new LogoutResponse

@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using FluentAssertions;
+using ForkPoint.Application.Contexts;
 using ForkPoint.Application.Mappers;
 using ForkPoint.Application.Models.Dtos;
 using ForkPoint.Application.Models.Handlers.CreateRestaurant;
 using ForkPoint.Application.Models.Handlers.UpdateRestaurant;
 using ForkPoint.Domain.Entities;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ForkPoint.Application.Tests.Mappers;
 
@@ -15,8 +17,21 @@ public class RestaurantsProfileTests
 
     public RestaurantsProfileTests()
     {
+        // Register a dummy IUserContext so AutoMapper can construct OwnedByCurrentUserResolver
+        var services = new ServiceCollection();
+        services.AddSingleton<IUserContext>(new DummyUserContext());
+        services.AddSingleton(sp => new OwnedByCurrentUserResolver(sp.GetRequiredService<IUserContext>()));
+        var provider = services.BuildServiceProvider();
+
         _mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile<RestaurantsProfile>());
-        _mapper = _mapperConfiguration.CreateMapper();
+        _mapper = _mapperConfiguration.CreateMapper(type => provider.GetService(type)!);
+    }
+
+    private class DummyUserContext : IUserContext
+    {
+        public bool IsInRole(string role) => false;
+        public CurrentUserModel? GetCurrentUser() => null;
+        public int GetTargetUserId() => 0;
     }
 
     [Fact]

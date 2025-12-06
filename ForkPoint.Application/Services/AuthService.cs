@@ -1,4 +1,5 @@
 ﻿using ForkPoint.Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -13,11 +14,17 @@ namespace ForkPoint.Application.Services;
 
 internal class AuthService(
     IConfiguration config,
-    UserManager<User> userManager
+    UserManager<User> userManager,
+    IHttpContextAccessor httpContextAccessor
 ) : IAuthService
 {
     public ClaimsPrincipal? GetPrincipalFromToken(string token)
     {
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            return null;
+        }
+
         var jwtKey = config["Jwt:Key"] ?? throw new ArgumentNullException(nameof(config), "Jwt:Key is null");
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
         var tokenValidationParameters = new TokenValidationParameters
@@ -31,22 +38,28 @@ internal class AuthService(
             IssuerSigningKey = securityKey
         };
 
-        var principal =
-            new JwtSecurityTokenHandler().ValidateToken(token, tokenValidationParameters, out var securityToken);
+        try
+        {
+            var principal = new JwtSecurityTokenHandler().ValidateToken(token, tokenValidationParameters, out var securityToken);
 
-        if (principal == null)
+            if (principal == null)
+            {
+                return null;
+            }
+
+            if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(
+                    SecurityAlgorithms.HmacSha256,
+                    StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+
+            return principal;
+        }
+        catch (Exception)
         {
             return null;
         }
-
-        if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(
-                SecurityAlgorithms.HmacSha256,
-                StringComparison.InvariantCultureIgnoreCase))
-        {
-            throw new SecurityTokenException("Invalid token");
-        }
-
-        return principal;
     }
 
     public async Task<string> GenerateAccessToken(User user)
@@ -91,6 +104,18 @@ internal class AuthService(
         var refreshToken = await userManager.GenerateUserTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken");
         await userManager.SetAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken", refreshToken);
 
+        // Set HttpOnly cookie on current response.
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.None,
+            Path = "/",
+            Expires = DateTime.UtcNow.AddDays(30)
+        };
+
+        httpContextAccessor.HttpContext?.Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+
         return refreshToken;
     }
 
@@ -102,5 +127,13 @@ internal class AuthService(
     public async Task InvalidateRefreshToken(User user)
     {
         await userManager.RemoveAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken");
+
+        httpContextAccessor.HttpContext?.Response.Cookies.Delete("refreshToken");
+
+    }
+
+    public string? GetRefreshTokenFromRequest()
+    {
+        return httpContextAccessor.HttpContext?.Request.Cookies.TryGetValue("refreshToken", out var t) == true ? t : null;
     }
 }

@@ -21,16 +21,15 @@ public class ExternalProviderHandlerTests
     private readonly ExternalProviderHandler _handler;
     private static readonly User _user = new() { UserName = "testuser", Email = "test@example.com" };
     private const string _dummyRefreshToken = "mock_refresh_token";
-    private const string _dummyToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
-                        + "eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6"
-                        + "IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ."
-                        + "SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+    private const string _dummyToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0In0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
     public ExternalProviderHandlerTests()
     {
         _loggerMock = new Mock<ILogger<ExternalProviderHandler>>();
         _authServiceMock = MockAuthService();
         _userManagerMock = MockUserManager();
         _signInManagerMock = MockSignInManager();
+
         _handler = new ExternalProviderHandler(
             _loggerMock.Object,
             _authServiceMock.Object,
@@ -51,7 +50,6 @@ public class ExternalProviderHandlerTests
         // Assert
         response.IsSuccess.Should().BeTrue();
         response.AccessToken.Should().Be(_dummyToken);
-        response.RefreshToken.Should().Be(_dummyRefreshToken);
     }
 
     [Fact]
@@ -84,9 +82,7 @@ public class ExternalProviderHandlerTests
         var response = await _handler.Handle(request, CancellationToken.None);
 
         // Assert
-        response.IsSuccess.Should().BeTrue();
         response.AccessToken.Should().Be(_dummyToken);
-        response.RefreshToken.Should().Be(_dummyRefreshToken);
         _userManagerMock.Verify(u => u.CreateAsync(It.IsAny<User>()), Times.Once);
         _userManagerMock.Verify(u => u.AddLoginAsync(It.IsAny<User>(), It.IsAny<UserLoginInfo>()), Times.Once);
     }

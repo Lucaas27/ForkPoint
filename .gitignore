@@ -172,7 +172,10 @@ dist
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
-**/.vscode
+.vscode/**
+**/.idea/**
+TestResults/**
+coverage-report/**
 
 # Local History for Visual Studio Code
 .history/
