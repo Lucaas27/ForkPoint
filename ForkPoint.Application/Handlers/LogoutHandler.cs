@@ -21,20 +21,21 @@ public class LogoutHandler(
 
         if (user is null)
         {
-            logger.LogWarning("User not authenticated - {Email}", user?.Email);
+            // User isn't authenticated - still clear any refresh cookie
+            logger.LogWarning("User not authenticated - clearing any refresh cookie if present");
+            await authService.ClearRefreshCookie();
+
             return new LogoutResponse
             {
-                IsSuccess = false,
-                Message = "User not authenticated"
+                IsSuccess = true,
+                Message = "Logged out"
             };
         }
 
         logger.LogInformation("Processing logout request for user {Email}", user.Email);
 
-
         var dbUser = await userManager.FindByEmailAsync(user.Email) ??
                      throw new InvalidOperationException("User not found in the database");
-
 
         // Invalidate the refresh token for the user to prevent further access to the API.
         await authService.InvalidateRefreshToken(dbUser);

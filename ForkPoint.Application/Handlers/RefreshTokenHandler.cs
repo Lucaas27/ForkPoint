@@ -18,6 +18,28 @@ public class RefreshTokenHandler(
     public async Task<RefreshTokenResponse> Handle(RefreshTokenRequest request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Handling refresh token request...");
+        User? user = null;
+        if (!string.IsNullOrWhiteSpace(request.AccessToken))
+        {
+            var principal = authService.GetPrincipalFromToken(request.AccessToken);
+
+            if (principal is null)
+            {
+                return new RefreshTokenResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid or expired access token"
+                };
+            }
+
+            var userEmail = principal.FindFirst(ClaimTypes.Email)?.Value ??
+                            throw new ArgumentNullException(
+                                nameof(request),
+                                "Email claim not found");
+
+        user = await userManager.FindByEmailAsync(userEmail);
+        }
+
         if (string.IsNullOrWhiteSpace(request.AccessToken))
         {
             return new RefreshTokenResponse
@@ -26,25 +48,6 @@ public class RefreshTokenHandler(
                 Message = "Access token is required in the Authorization header"
             };
         }
-
-        var principal = authService.GetPrincipalFromToken(request.AccessToken);
-
-        if (principal is null)
-        {
-            return new RefreshTokenResponse
-            {
-                IsSuccess = false,
-                Message = "Invalid or expired access token"
-            };
-        }
-
-
-        var userEmail = principal.FindFirst(ClaimTypes.Email)?.Value ??
-                        throw new ArgumentNullException(
-                            nameof(request),
-                            "Email claim not found");
-
-        var user = await userManager.FindByEmailAsync(userEmail);
 
         if (user is null)
         {
@@ -55,10 +58,8 @@ public class RefreshTokenHandler(
             };
         }
 
-        var tokenExists = await userManager.GetAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken") != null;
-
+        // Ensure there's a refresh token in the request cookie
         var cookieRefreshToken = authService.GetRefreshTokenFromRequest();
-
         if (string.IsNullOrEmpty(cookieRefreshToken))
         {
             return new RefreshTokenResponse
@@ -68,6 +69,8 @@ public class RefreshTokenHandler(
             };
         }
 
+        // Ensure refresh token exists for the user and is valid
+        var tokenExists = await userManager.GetAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken") != null;
         var isTokenValid = await authService.ValidateRefreshToken(user, cookieRefreshToken);
 
         if (!isTokenValid || !tokenExists)
