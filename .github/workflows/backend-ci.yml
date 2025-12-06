@@ -28,11 +28,6 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
           cache: true
           cache-dependency-path: "**/*.csproj"
-
-      - name: Diagnostics - show cache dependency files
-        run: |
-          echo "Looking for cache dependency files"
-          ls -la **/*.csproj || true
       - name: Restore dotnet tools
         run: dotnet tool restore
 
@@ -56,32 +51,6 @@ jobs:
           targetdir: "${{ github.workspace }}/coverage-report"
           reporttypes: "Cobertura;MarkdownSummaryGithub;Html"
 
-      - name: Zip coverage report
-        if: always()
-        run: |
-          echo "Zipping coverage report (if present)"
-          if [ -d "${{ github.workspace }}/coverage-report" ]; then
-            cd "${{ github.workspace }}"
-            zip -r coverage-report.zip coverage-report || true
-            ls -la coverage-report* || true
-          else
-            echo "coverage-report directory not found"
-          fi
-
-      - name: Upload coverage zip
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report-zip
-          path: coverage-report.zip
-
-      - name: Upload coverage artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage
-          path: "${{ github.workspace }}/coverage-report/**"
-
       - name: Create code coverage summary
         if: always()
         uses: irongut/CodeCoverageSummary@v1.3.0
@@ -103,6 +72,11 @@ jobs:
           recreate: true
           path: code-coverage-results.md
           header: code-coverage
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action@v2.16.1
+        if: always()
+        with:
+          trx_files: "**/TestResults/**/*.trx"
 
       - name: Upload test results
         if: always()
@@ -110,12 +84,6 @@ jobs:
         with:
           name: test-results
           path: "**/TestResults/**/*"
-
-      - name: Publish test results
-        uses: EnricoMi/publish-unit-test-result-action@v2.16.1
-        if: always()
-        with:
-          trx_files: "**/TestResults/**/*.trx"
 
       - name: Upload HTML report
         if: always()
