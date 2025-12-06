@@ -48,6 +48,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<LoginResponse>> LoginUser([FromBody] LoginRequest request)
     {
         var response = await mediator.Send(request);
+
         return response.IsSuccess
             ? Ok(response)
             : Unauthorized(response);
@@ -104,23 +105,33 @@ public class AuthController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<ExternalProviderResponse>> ExternalProviderCallback()
     {
         var response = await mediator.Send(new ExternalProviderRequest());
+
         return Ok(response);
     }
 
     /// <summary>
     ///     Refreshes the authentication token.
     /// </summary>
-    /// <param name="request">The refresh token request containing the current token.</param>
     /// <returns>A response indicating the result of the token refresh attempt.</returns>
     [HttpPost("refresh-token")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<CustomException>(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<LoginResponse>> RefreshToken([FromBody] RefreshTokenRequest request)
+    public async Task<ActionResult<LoginResponse>> RefreshToken()
     {
-        var response = await mediator.Send(request);
-        return response.IsSuccess
-            ? Ok(response)
-            : BadRequest(response);
+        // Refresh token is read from the HttpOnly cookie
+        // The access token should be provided in the Authorization header as a Bearer token.
+        var authHeader = Request.Headers.Authorization.FirstOrDefault();
+        string accessToken = string.Empty;
+
+        if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+        {
+            accessToken = authHeader.Substring("Bearer ".Length).Trim();
+        }
+
+        var cmd = new RefreshTokenRequest(accessToken ?? string.Empty);
+        var response = await mediator.Send(cmd);
+
+        return response.IsSuccess ? Ok(response) : BadRequest(response);
     }
 }

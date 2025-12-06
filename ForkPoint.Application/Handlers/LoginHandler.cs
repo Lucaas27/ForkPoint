@@ -47,7 +47,7 @@ public class LoginHandler(
         var expiry = new JwtSecurityTokenHandler().ReadJwtToken(token).ValidTo;
         var refreshToken = await authService.GenerateRefreshToken(user);
 
-        return new LoginResponse(token, refreshToken, expiry)
+        return new LoginResponse(token, expiry)
         {
             IsSuccess = true
         };
