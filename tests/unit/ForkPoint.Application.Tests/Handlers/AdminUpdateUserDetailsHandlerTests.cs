@@ -50,7 +50,7 @@ public class AdminUpdateUserDetailsHandlerTests
     public async Task Handle_TargetUserIdInvalid_ReturnsFailureResponse()
     {
         // Arrange
-        _userContextMock.Setup(x => x.GetCurrentUser()).Returns(new CurrentUserModel(1, "test@example.com", new List<string>()));
+        _userContextMock.Setup(x => x.GetCurrentUser()).Returns(new CurrentUserModel(1, "test@example.com", new List<string>(), "Test User"));
         _userContextMock.Setup(x => x.GetTargetUserId()).Returns(0);
 
         var request = new AdminUpdateUserDetailsRequest("New FullName");
@@ -67,7 +67,7 @@ public class AdminUpdateUserDetailsHandlerTests
     public async Task Handle_TargetUserNotFound_ThrowsNotFoundException()
     {
         // Arrange
-        _userContextMock.Setup(x => x.GetCurrentUser()).Returns(new CurrentUserModel(1, "test@example.com", new List<string>()));
+        _userContextMock.Setup(x => x.GetCurrentUser()).Returns(new CurrentUserModel(1, "test@example.com", new List<string>(), "Test User"));
         _userContextMock.Setup(x => x.GetTargetUserId()).Returns(1);
         _userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
 
@@ -85,7 +85,7 @@ public class AdminUpdateUserDetailsHandlerTests
     {
         // Arrange
         var user = new User();
-        _userContextMock.Setup(x => x.GetCurrentUser()).Returns(new CurrentUserModel(1, "test@example.com", new List<string>()));
+        _userContextMock.Setup(x => x.GetCurrentUser()).Returns(new CurrentUserModel(1, "test@example.com", new List<string>(), "Test User"));
         _userContextMock.Setup(x => x.GetTargetUserId()).Returns(1);
         _userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(user);
         _userManagerMock.Setup(x => x.UpdateAsync(It.IsAny<User>())).ReturnsAsync(IdentityResult.Failed(new IdentityError { Description = "Update failed" }));
@@ -105,7 +105,7 @@ public class AdminUpdateUserDetailsHandlerTests
     {
         // Arrange
         var user = new User();
-        _userContextMock.Setup(x => x.GetCurrentUser()).Returns(new CurrentUserModel(1, "test@example.com", new List<string>()));
+        _userContextMock.Setup(x => x.GetCurrentUser()).Returns(new CurrentUserModel(1, "test@example.com", new List<string>(), "Test User"));
         _userContextMock.Setup(x => x.GetTargetUserId()).Returns(1);
         _userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(user);
         _userManagerMock.Setup(x => x.UpdateAsync(It.IsAny<User>())).ReturnsAsync(IdentityResult.Success);
