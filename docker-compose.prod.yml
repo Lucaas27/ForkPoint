@@ -46,6 +46,7 @@ services:
       EmailConfig__Password: ${EMAIL_PASSWORD}
       Authentication__Google__ClientId: ${GOOGLE_CLIENT_ID}
       Authentication__Google__ClientSecret: ${GOOGLE_CLIENT_SECRET}
+      ClientURI: ${CLIENT_URI}
     depends_on:
       postgres:
         condition: service_healthy

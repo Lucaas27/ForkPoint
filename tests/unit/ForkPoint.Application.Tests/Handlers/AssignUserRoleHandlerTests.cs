@@ -6,6 +6,7 @@ using ForkPoint.Domain.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Moq;
+using ForkPoint.Application.Tests.TestHelpers;
 
 namespace ForkPoint.Application.Tests.Handlers;
 
@@ -19,8 +20,7 @@ public class AssignUserRoleHandlerTests
     public AssignUserRoleHandlerTests()
     {
         _loggerMock = new Mock<ILogger<AssignUserRoleHandler>>();
-        _userManagerMock = new Mock<UserManager<User>>(
-            Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
+        _userManagerMock = TestUserManagerFactory.CreateMinimal();
         _roleManagerMock = new Mock<RoleManager<IdentityRole<int>>>(
             Mock.Of<IRoleStore<IdentityRole<int>>>(), null!, null!, null!, null!);
         _handler = new AssignUserRoleHandler(_loggerMock.Object, _userManagerMock.Object, _roleManagerMock.Object);

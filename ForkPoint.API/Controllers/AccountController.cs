@@ -4,6 +4,7 @@ using ForkPoint.Application.Models.Handlers;
 using ForkPoint.Application.Models.Handlers.AdminUpdateUserDetails;
 using ForkPoint.Application.Models.Handlers.EmailConfirmation;
 using ForkPoint.Application.Models.Handlers.ForgotPassword;
+using ForkPoint.Application.Models.Handlers.GetCurrentUser;
 using ForkPoint.Application.Models.Handlers.GetCurrentUserRestaurants;
 using ForkPoint.Application.Models.Handlers.ResendEmailConfirmation;
 using ForkPoint.Application.Models.Handlers.ResetPassword;
@@ -143,7 +144,10 @@ public class AccountController(IMediator mediator) : ControllerBase
             : BadRequest(response);
     }
 
-
+    /// <summary>
+    ///     Retrieves restaurants associated with the current authenticated user.
+    /// </summary>
+    /// <returns>A response containing the user's restaurants or an error.</returns>
     [HttpGet("restaurants")]
     [Authorize]
     [Produces(MediaTypeNames.Application.Json)]
@@ -156,4 +160,23 @@ public class AccountController(IMediator mediator) : ControllerBase
             ? Ok(response)
             : BadRequest(response);
     }
+
+    /// <summary>
+    ///     Retrieves information about the current authenticated user.
+    /// </summary>
+    /// <returns>The current user's details or an unauthorized response.</returns>
+    [HttpGet("me")]
+    [Authorize]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<CustomException>(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType<CustomException>(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<GetCurrentUserResponse>> GetCurrentUser()
+    {
+        var response = await mediator.Send(new GetCurrentUserRequest());
+        return response.IsSuccess
+            ? Ok(response)
+            : Unauthorized(response);
+    }
+
 }

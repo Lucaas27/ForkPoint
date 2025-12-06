@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Moq;
 
+using ForkPoint.Application.Tests.TestHelpers;
+
 
 namespace ForkPoint.Application.Tests.Handlers;
 
@@ -23,7 +25,7 @@ public class GetCurrentUserRestaurantsHandlerTests
     public GetCurrentUserRestaurantsHandlerTests()
     {
         _loggerMock = new Mock<ILogger<GetCurrentUserRestaurantsHandler>>();
-        _userManagerMock = new Mock<UserManager<User>>(Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
+        _userManagerMock = TestUserManagerFactory.CreateMinimal();
         _userContextMock = new Mock<IUserContext>();
         _mapperMock = new Mock<IMapper>();
         _handler = new GetCurrentUserRestaurantsHandler(_loggerMock.Object, _userManagerMock.Object, _userContextMock.Object, _mapperMock.Object);

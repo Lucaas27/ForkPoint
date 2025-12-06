@@ -8,6 +8,7 @@ using ForkPoint.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Moq;
+using ForkPoint.Application.Tests.TestHelpers;
 
 namespace ForkPoint.Application.Tests.Handlers;
 
@@ -18,7 +19,7 @@ public class ForgotPasswordHandlerTests
     {
         // Arrange
         var loggerMock = new Mock<ILogger<ForgotPasswordHandler>>();
-        var userManagerMock = new Mock<UserManager<User>>(Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
+        var userManagerMock = TestUserManagerFactory.CreateMinimal();
         var emailServiceMock = new Mock<IEmailService>();
         var emailTemplateFactoryMock = new Mock<IEmailTemplateFactory>();
 
@@ -48,7 +49,7 @@ public class ForgotPasswordHandlerTests
     {
         // Arrange
         var loggerMock = new Mock<ILogger<ForgotPasswordHandler>>();
-        var userManagerMock = new Mock<UserManager<User>>(Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
+        var userManagerMock = TestUserManagerFactory.CreateMinimal();
         var emailServiceMock = new Mock<IEmailService>();
         var emailTemplateFactoryMock = new Mock<IEmailTemplateFactory>();
 

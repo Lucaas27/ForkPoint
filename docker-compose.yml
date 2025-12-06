@@ -22,6 +22,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__Default: "Server=postgres;Database=ForkPoint;User Id=postgres;Password=password"
       ASPNETCORE_URLS: "http://+:80"
+      ClientURI: ${CLIENT_URI}
     ports:
       - "8080:80"
     depends_on:
