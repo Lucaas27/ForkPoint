@@ -8,6 +8,7 @@ using ForkPoint.Domain.Constants;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ForkPoint.Application.Models.Handlers.GetUsers;
 
 namespace ForkPoint.API.Controllers;
 
@@ -57,5 +58,24 @@ public class AdminController(IMediator mediator) : ControllerBase
         return response.IsSuccess
             ? NoContent()
             : BadRequest(response);
+    }
+
+    /// <summary>
+    ///     Returns a paginated list of users.
+    /// </summary>
+    /// <param name="pageNumber">Page number </param>
+    /// <param name="pageSize">Page size </param>
+    /// <returns>Paginated list of users </returns>
+    [HttpGet("users")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<CustomException>(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType<CustomException>(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType<CustomException>(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<GetUsersResponse>> GetUsers([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    {
+        var request = new GetUsersRequest(pageNumber, pageSize);
+        var response = await mediator.Send(request);
+        return Ok(response);
     }
 }
