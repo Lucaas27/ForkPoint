@@ -1,7 +1,8 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { toast } from "sonner";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAssignRole, useRemoveRole } from "../../features/admin/mutations";
-import { useEffect, useId, useState } from "react";
+import { useId, useState } from "react";
+import { useAuthContext } from "../../providers/auth-provider";
+import { useEffect } from "react";
 import {
 	Card,
 	CardContent,
@@ -20,39 +21,28 @@ import {
 	SelectValue,
 } from "../../components/ui/select";
 import { Shield, UserPlus, UserMinus } from "lucide-react";
-import { useAuthContext } from "../../features/auth/AuthProvider";
 
-export const Route = createFileRoute("/admin/")({
-	beforeLoad: () => {
-		const token = localStorage.getItem("fp_token");
-		if (!token)
-			throw redirect({ to: "/login", search: { redirect: "/admin" } });
-	},
-	component: Admin,
-});
+export const Route = createFileRoute("/admin/")({ component: Admin });
 
 function Admin() {
-	const { requireRoleRedirect } = useAuthContext();
-	const navigate = useNavigate();
-
-	useEffect(() => {
-		const unauthorized = requireRoleRedirect("Admin", "/account", {
-			redirectTo: "/admin",
-		});
-		if (unauthorized)
-			navigate({
-				to: unauthorized.to as "/account",
-				search: unauthorized.search,
-				replace: true,
-			});
-	}, [requireRoleRedirect, navigate]);
-
 	const emailInputId = useId();
 	const roleSelectId = useId();
 	const [email, setEmail] = useState<string>("");
 	const [role, setRole] = useState("Owner");
 	const mAssign = useAssignRole();
 	const mRemove = useRemoveRole();
+	const navigate = useNavigate();
+	const { isAuthenticated, hasRole } = useAuthContext();
+
+	useEffect(() => {
+		if (!isAuthenticated) {
+			navigate({ to: "/login", search: { redirect: "/admin" } });
+		}
+
+		if (!hasRole("admin")) {
+			navigate({ to: "/account" });
+		}
+	}, [isAuthenticated, hasRole, navigate]);
 
 	return (
 		<div className="max-w-2xl mx-auto">
@@ -94,27 +84,7 @@ function Admin() {
 
 					<div className="grid grid-cols-2 gap-3">
 						<Button
-							onClick={() =>
-								mAssign.mutate(
-									{ email, role },
-									{
-										onSuccess: () => toast.success("Role assigned"),
-										onError: (err: unknown) => {
-											const anyErr = err as {
-												response?: {
-													data?: {
-														Message?: string;
-													};
-												};
-											};
-											const msg =
-												anyErr?.response?.data?.Message ||
-												"Failed to assign role";
-											toast.error(msg);
-										},
-									},
-								)
-							}
+							onClick={() => mAssign.mutate({ email, role })}
 							disabled={mAssign.isPending || !email}
 						>
 							<UserPlus className="h-4 w-4 mr-2" />
@@ -123,29 +93,7 @@ function Admin() {
 
 						<Button
 							variant="destructive"
-							onClick={() =>
-								mRemove.mutate(
-									{ email, role },
-									{
-										onSuccess: () => toast.success("Role removed"),
-										onError: (err: unknown) => {
-											const anyErr = err as {
-												response?: {
-													data?: {
-														title?: string;
-														message?: string;
-														Message?: string;
-													};
-												};
-											};
-											const msg =
-												anyErr?.response?.data?.Message ||
-												"Failed to remove role";
-											toast.error(msg);
-										},
-									},
-								)
-							}
+							onClick={() => mRemove.mutate({ email, role })}
 							disabled={mRemove.isPending || !email}
 						>
 							<UserMinus className="h-4 w-4 mr-2" />

@@ -1,7 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { useRestaurant } from "../../features/restaurants/queries";
-import { useAuthContext } from "../../features/auth/AuthProvider";
+import { useAuthContext } from "../../providers/auth-provider";
 import {
 	useDeleteAllMenuItems,
 	useDeleteRestaurant,
@@ -80,6 +80,8 @@ function RestaurantDetail() {
 
 	const menuItems: MenuItem[] = restaurant?.menuItems ?? [];
 
+	const navigate = useNavigate();
+
 	return (
 		<div className="space-y-6">
 			<Card>
@@ -149,7 +151,10 @@ function RestaurantDetail() {
 										<AlertDialogFooter>
 											<AlertDialogCancel>Cancel</AlertDialogCancel>
 											<AlertDialogAction
-												onClick={() => delRestaurant.mutate()}
+												onClick={() => {
+													delRestaurant.mutate()
+													navigate({ to: "/restaurants", replace: true, search: { page: 1, size: 10 } });
+												}}
 												disabled={!id || Number.isNaN(id)}
 											>
 												Delete

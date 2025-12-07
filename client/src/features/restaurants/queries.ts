@@ -23,7 +23,7 @@ export function useRestaurant(id: number, options?: UseQueryOptions<any>) {
 	return useQuery({
 		queryKey: restaurantsKeys.detail(id),
 		queryFn: () => getRestaurantById(id),
-		enabled: !!id,
+		enabled: Boolean(id),
 		...(options as any),
 	});
 }
@@ -34,7 +34,7 @@ export function useRestaurantMenu(id: number, options?: UseQueryOptions<any>) {
 	return useQuery({
 		queryKey: restaurantsKeys.menu(id),
 		queryFn: () => getMenuItems(id),
-		enabled: !!id,
+		enabled: Boolean(id),
 		...(options as any),
 	});
 }

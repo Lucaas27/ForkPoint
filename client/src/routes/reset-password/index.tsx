@@ -1,5 +1,4 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMutation } from "@tanstack/react-query";
 import { useId, useState } from "react";
 import {
 	Card,
@@ -10,8 +9,7 @@ import {
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Button } from "../../components/ui/button";
-import { resetPassword } from "../../api/account";
-import { toast } from "sonner";
+import { useResetPassword } from "../../features/auth/mutations";
 
 export const Route = createFileRoute("/reset-password/")({
 	component: ResetPasswordPage,
@@ -33,29 +31,7 @@ function ResetPasswordPage() {
 	const [token, setToken] = useState(qsToken ?? "");
 	const [password, setPassword] = useState("");
 	const [confirm, setConfirm] = useState("");
-	const resetMutation = useMutation({
-		mutationFn: () =>
-			resetPassword({ email, token, password, confirmPassword: confirm }),
-		onSuccess: () => {
-			toast.success("Password reset successfully. You can now sign in.");
-			navigate({ to: "/login", replace: true });
-		},
-		onError: (err: unknown) => {
-			const anyErr = err as {
-				response?: {
-					data?: { errors?: Record<string, string[]>; message?: string };
-				};
-			};
-			const errors = anyErr?.response?.data?.errors;
-			const message = anyErr?.response?.data?.message;
-			if (errors) {
-				const flat = Object.values(errors).flat();
-				toast.error(flat[0] ?? "Request failed");
-			} else {
-				toast.error(message || "Failed to reset password");
-			}
-		},
-	});
+	const resetMutation = useResetPassword();
 
 	return (
 		<div className="container mx-auto px-4 py-8 max-w-lg">
@@ -107,7 +83,14 @@ function ResetPasswordPage() {
 					<div className="flex flex-col sm:flex-row gap-2">
 						<Button
 							className="w-full sm:w-auto"
-							onClick={() => resetMutation.mutate()}
+							onClick={() =>
+								resetMutation.mutate({
+									email,
+									token,
+									password,
+									confirmPassword: confirm,
+								})
+							}
 							disabled={resetMutation.isPending}
 						>
 							{resetMutation.isPending ? "Submitting..." : "Reset Password"}

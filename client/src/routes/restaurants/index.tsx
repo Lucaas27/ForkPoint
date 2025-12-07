@@ -10,7 +10,7 @@ import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
 import { Skeleton } from "../../components/ui/skeleton";
 import { Plus, ChevronRight } from "lucide-react";
-import { useAuthContext } from "../../features/auth/AuthProvider";
+import { useAuthContext } from "../../providers/auth-provider";
 
 export const Route = createFileRoute("/restaurants/")({
 	validateSearch: (search: Record<string, unknown>) => {

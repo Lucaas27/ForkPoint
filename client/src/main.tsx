@@ -2,7 +2,7 @@ import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 
-import * as TanStackQueryProvider from "./integrations/tanstack-query/root-provider.tsx";
+import * as TanStackQueryProvider from "./providers/query-provider.tsx";
 
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
@@ -10,7 +10,7 @@ import { routeTree } from "./routeTree.gen";
 import "./styles.css";
 import { env } from "./env";
 import { Toaster } from "./components/ui/sonner";
-import { AuthProvider } from "./features/auth/AuthProvider";
+import { AuthProvider } from "./providers/auth-provider.tsx";
 
 // Create a new router instance
 
@@ -33,7 +33,7 @@ declare module "@tanstack/react-router" {
 	}
 }
 
-// Set document title from env (optional)
+// Set document title from env
 if (env.VITE_APP_TITLE) {
 	document.title = env.VITE_APP_TITLE;
 }
@@ -48,7 +48,7 @@ if (rootElement && !rootElement.innerHTML) {
 				<AuthProvider>
 					<RouterProvider router={router} />
 				</AuthProvider>
-				<Toaster richColors position="top-center" />
+				<Toaster richColors position="bottom-right" />
 			</TanStackQueryProvider.Provider>
 		</StrictMode>,
 	);

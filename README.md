@@ -139,7 +139,7 @@ The app uses JWT tokens for API authentication and also supports Google sign-in 
 
 - Users can sign up and sign in using the endpoints implemented in the `AuthController` and `AccountController`.
 - After signing in the API returns a JWT access token.
-- Roles: the app includes `Admin` and `Owner` roles. Role checks are applied to controller actions.
+- Roles: the app includes `Admin`, `User`, `Owner` roles. Role checks are applied to controller actions.
 - Policies: the project defines policies such as `AdminOrOwnerPolicy` and `OwnsRestaurantOrAdminPolicy` to control access to sensitive operations.
 - To refresh the access token, clients call the `RefreshToken` endpoint, which reads the refresh token from the HttpOnly cookie and issues a new access token if valid.
 - Refresh tokens have a longer expiry (30 days) compared to access tokens (e.g. 15 minutes).

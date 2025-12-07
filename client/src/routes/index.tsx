@@ -10,7 +10,7 @@ import {
 	ListChecks,
 } from "lucide-react";
 import { env } from "../env";
-import { useAuthContext } from "@/features/auth/AuthProvider";
+import { useAuthContext } from "@/providers/auth-provider";
 
 export const Route = createFileRoute("/")({
 	component: Landing,

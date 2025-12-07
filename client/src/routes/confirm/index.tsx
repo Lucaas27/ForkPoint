@@ -1,6 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, useId } from "react";
-import { confirmEmail, resendEmailConfirmation } from "../../api/account";
+import {
+	useConfirmEmail,
+	useResendEmailConfirmation,
+} from "../../features/auth/mutations";
 import {
 	Card,
 	CardHeader,
@@ -25,32 +28,14 @@ function ConfirmPage() {
 	const tokenId = useId();
 	const [token, setToken] = useState<string>(qsToken ?? "");
 	const [email, setEmail] = useState<string>(qsEmail ?? "");
-	const [status, setStatus] = useState<{
-		loading: boolean;
-		message?: string;
-		success?: boolean;
-	}>({ loading: !!qsToken && !!qsEmail });
+
+	const mConfirm = useConfirmEmail();
+	const mResend = useResendEmailConfirmation();
 
 	useEffect(() => {
-		const run = async () => {
-			if (!qsToken || !qsEmail) return;
-			try {
-				const res = await confirmEmail({ token: qsToken, email: qsEmail });
-				setStatus({
-					loading: false,
-					success: !!res?.isSuccess,
-					message: res?.message ?? "",
-				});
-			} catch {
-				setStatus({
-					loading: false,
-					success: false,
-					message: "Failed to verify account.",
-				});
-			}
-		};
-		run();
-	}, [qsToken, qsEmail]);
+		if (!qsToken || !qsEmail) return;
+		mConfirm.mutate({ token: qsToken, email: qsEmail });
+	}, [qsToken, qsEmail, mConfirm]);
 
 	return (
 		<div className="container mx-auto px-4 py-8 max-w-lg">
@@ -59,9 +44,9 @@ function ConfirmPage() {
 					<CardTitle>Verify Your Account</CardTitle>
 				</CardHeader>
 				<CardContent>
-					{status.loading ? (
+					{mConfirm.isPending ? (
 						<p className="text-muted-foreground">Verifying your account…</p>
-					) : status.success ? (
+					) : mConfirm.isSuccess ? (
 						<div className="space-y-4">
 							<p>Your account has been verified. You can now sign in.</p>
 							<Button onClick={() => navigate({ to: "/login" })}>
@@ -97,33 +82,10 @@ function ConfirmPage() {
 								<div className="flex flex-col sm:flex-row gap-2">
 									<Button
 										className="w-full sm:w-auto"
-										onClick={async () => {
-											if (!email || !token) {
-												setStatus({
-													loading: false,
-													success: false,
-													message: "Please enter both email and token.",
-												});
-												return;
-											}
-											setStatus((s) => ({ ...s, loading: true }));
-											try {
-												const res = await confirmEmail({ email, token });
-												setStatus({
-													loading: false,
-													success: !!res?.isSuccess,
-													message: res?.message ?? "",
-												});
-											} catch {
-												setStatus({
-													loading: false,
-													success: false,
-													message: "Verification failed.",
-												});
-											}
-										}}
+										onClick={() => mConfirm.mutate({ email, token })}
+										disabled={!email || !token || mConfirm.isPending}
 									>
-										Verify Account
+										{mConfirm.isPending ? "Verifying..." : "Verify Account"}
 									</Button>
 									<Button
 										variant="outline"
@@ -136,36 +98,15 @@ function ConfirmPage() {
 										<Button
 											variant="ghost"
 											className="w-full sm:w-auto"
-											onClick={async () => {
-												try {
-													const res = await resendEmailConfirmation({ email });
-													setStatus({
-														loading: false,
-														success: false,
-														message: res?.message ?? "Email sent.",
-													});
-												} catch {
-													setStatus({
-														loading: false,
-														success: false,
-														message: "Failed to resend confirmation email.",
-													});
-												}
-											}}
+											onClick={() => mResend.mutate({ email })}
+											disabled={mResend.isPending}
 										>
-											Resend Confirmation Email
+											{mResend.isPending
+												? "Sending…"
+												: "Resend Confirmation Email"}
 										</Button>
 									)}
 								</div>
-								{status.message && (
-									<p
-										className={
-											status.success ? "text-green-600" : "text-destructive"
-										}
-									>
-										{status.message}
-									</p>
-								)}
 							</div>
 						</div>
 					)}

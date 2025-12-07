@@ -30,12 +30,12 @@ export async function resetPassword(payload: {
 
 export async function confirmEmail(params: { token: string; email: string }) {
 	const res = await api.get("/api/account/verify", { params });
-	return res.data as { isSuccess?: boolean; message?: string };
+	return res.data;
 }
 
 export async function resendEmailConfirmation(payload: { email: string }) {
 	const res = await api.post("/api/account/resend-email-confirmation", payload);
-	return res.data as { isSuccess?: boolean; message?: string };
+	return res.data;
 }
 
 export async function myRestaurants() {
