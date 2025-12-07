@@ -1,21 +1,21 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
-import { useRestaurant } from "../../features/restaurants/queries";
-import { useAuthContext } from "../../providers/auth-provider";
+import { useRestaurant } from "@/features/restaurants/queries";
+import { useAuthContext } from "@/providers/auth-provider";
 import {
 	useDeleteAllMenuItems,
 	useDeleteRestaurant,
-} from "../../features/restaurants/mutations";
+} from "@/features/restaurants/mutations";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "../../components/ui/card";
-import { Button } from "../../components/ui/button";
-import { Badge } from "../../components/ui/badge";
-import { Separator } from "../../components/ui/separator";
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -26,7 +26,7 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 	AlertDialogTrigger,
-} from "../../components/ui/alert-dialog";
+} from "@/components/ui/alert-dialog";
 import { Trash2, UtensilsCrossed } from "lucide-react";
 
 export const Route = createFileRoute("/restaurants/$id")({

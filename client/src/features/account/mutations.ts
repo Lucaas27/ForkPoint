@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateMe } from "../../api/account";
+import { updateMe } from "@/api/account";
 import { accountKeys } from "@/features/account/keys";
 import { toast } from "sonner";
 import { getErrorMessage, getSuccessMessage } from "@/lib/utils";

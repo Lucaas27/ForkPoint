@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { assignRole, removeRole } from "../../api/admin";
+import { assignRole, removeRole } from "@/api/admin";
 import { toast } from "sonner";
 import { getErrorMessage, getSuccessMessage } from "@/lib/utils";
 

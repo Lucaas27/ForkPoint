@@ -3,8 +3,8 @@ import {
 	createRestaurant,
 	deleteRestaurant,
 	updateRestaurant,
-} from "../../api/restaurants";
-import { deleteAllMenuItems } from "../../api/menuItems";
+} from "@/api/restaurants";
+import { deleteAllMenuItems } from "@/api/menuItems";
 import { restaurantsKeys } from "./keys";
 import { toast } from "sonner";
 import { getErrorMessage, getSuccessMessage } from "@/lib/utils";

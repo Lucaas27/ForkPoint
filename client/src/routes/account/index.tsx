@@ -1,8 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useAuthContext } from "../../providers/auth-provider";
+import { useAuthContext } from "@/providers/auth-provider";
 import { useEffect } from "react";
-import { useMyRestaurants } from "../../features/account/queries";
-import { useUpdateMe } from "../../features/account/mutations";
+import { useMyRestaurants } from "@/features/account/queries";
+import { useUpdateMe } from "@/features/account/mutations";
 import { useState, useId } from "react";
 import {
 	Card,
@@ -10,12 +10,12 @@ import {
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "../../components/ui/card";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
-import { Button } from "../../components/ui/button";
-import { Separator } from "../../components/ui/separator";
-import { Badge } from "../../components/ui/badge";
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import { User, Store } from "lucide-react";
 
 export const Route = createFileRoute("/account/")({ component: Account });
@@ -159,7 +159,7 @@ function Account() {
 
 							<div className="flex items-center justify-between pt-2">
 								<div className="text-sm text-muted-foreground">
-									Page {page} of {totalPages} • Showing {start + 1}-{end} of{" "}
+									Page {page} of {totalPages} - Showing {start + 1}-{end} of{" "}
 									{totalItems}
 								</div>
 								<div className="flex items-center gap-2">

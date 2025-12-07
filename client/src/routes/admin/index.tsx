@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useAssignRole, useRemoveRole } from "../../features/admin/mutations";
+import { useAssignRole, useRemoveRole } from "@/features/admin/mutations";
 import { useId, useState } from "react";
-import { useAuthContext } from "../../providers/auth-provider";
+import { useAuthContext } from "@/providers/auth-provider";
 import { useEffect } from "react";
 import {
 	Card,
@@ -9,17 +9,17 @@ import {
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "../../components/ui/card";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
-import { Button } from "../../components/ui/button";
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "../../components/ui/select";
+} from "@/components/ui/select";
 import { Shield, UserPlus, UserMinus } from "lucide-react";
 
 export const Route = createFileRoute("/admin/")({ component: Admin });

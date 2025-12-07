@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { register } from "../../api/auth";
-import { forgotPassword, resendEmailConfirmation } from "../../api/account";
-import { resetPassword, confirmEmail } from "../../api/account";
+import { register } from "@/api/auth";
+import { forgotPassword, resendEmailConfirmation } from "@/api/account";
+import { resetPassword, confirmEmail } from "@/api/account";
 import { accountKeys } from "../account/keys";
-import { useAuthContext } from "../../providers/auth-provider";
+import { useAuthContext } from "@/providers/auth-provider";
 import { toast } from "sonner";
 import { getErrorMessage, getSuccessMessage } from "@/lib/utils";
 import { useNavigate } from "@tanstack/react-router";

@@ -3,16 +3,16 @@ import { useEffect, useState, useId } from "react";
 import {
 	useConfirmEmail,
 	useResendEmailConfirmation,
-} from "../../features/auth/mutations";
+} from "@/features/auth/mutations";
 import {
 	Card,
 	CardHeader,
 	CardTitle,
 	CardContent,
-} from "../../components/ui/card";
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/confirm/")({
 	component: ConfirmPage,

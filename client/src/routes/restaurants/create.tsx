@@ -1,10 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useAuthContext } from "../../providers/auth-provider";
+import { useAuthContext } from "@/providers/auth-provider";
 import { useEffect } from "react";
 import {
 	useCreateRestaurant,
 	type CreateRestaurantPayload,
-} from "../../features/restaurants/mutations";
+} from "@/features/restaurants/mutations";
 import { useId, useState, type FormEvent } from "react";
 import {
 	Card,
@@ -12,11 +12,11 @@ import {
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "../../components/ui/card";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
-import { Button } from "../../components/ui/button";
-import { Textarea } from "../../components/ui/textarea";
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { Plus } from "lucide-react";
 import {
 	Select,
@@ -24,8 +24,8 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "../../components/ui/select";
-import { Switch } from "../../components/ui/switch";
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 
 export const Route = createFileRoute("/restaurants/create")({ component: CreateRestaurant });
 

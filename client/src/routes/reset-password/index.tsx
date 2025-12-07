@@ -5,11 +5,11 @@ import {
 	CardHeader,
 	CardTitle,
 	CardContent,
-} from "../../components/ui/card";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
-import { Button } from "../../components/ui/button";
-import { useResetPassword } from "../../features/auth/mutations";
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { useResetPassword } from "@/features/auth/mutations";
 
 export const Route = createFileRoute("/reset-password/")({
 	component: ResetPasswordPage,

@@ -4,7 +4,7 @@ import {
 	useRegister,
 	useSendPasswordReset,
 	useResendEmailConfirmation,
-} from "../../features/auth/mutations";
+} from "@/features/auth/mutations";
 import { useId, useState, useCallback, useEffect } from "react";
 import {
 	Card,
@@ -12,19 +12,19 @@ import {
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "../../components/ui/card";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
-import { Button } from "../../components/ui/button";
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import {
 	Tabs,
 	TabsContent,
 	TabsList,
 	TabsTrigger,
-} from "../../components/ui/tabs";
-import { Separator } from "../../components/ui/separator";
+} from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
 import { LogIn, UserPlus } from "lucide-react";
-import { useAuthContext } from "../../providers/auth-provider";
+import { useAuthContext } from "@/providers/auth-provider";
 import { useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/login/")({ component: Login });

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import type { UseQueryOptions } from "@tanstack/react-query";
-import { getRestaurants, getRestaurantById } from "../../api/restaurants";
-import { getMenuItems } from "../../api/menuItems";
+import { getRestaurants, getRestaurantById } from "@/api/restaurants";
+import { getMenuItems } from "@/api/menuItems";
 import { restaurantsKeys } from "./keys";
 
 // Fetch the restaurants collection.
