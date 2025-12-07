@@ -19,10 +19,6 @@ export function getErrorMessage(err: unknown) {
 
 // Helper to extract message from API responses
 export function getSuccessMessage(data: unknown) {
-	const anyData = data as {
-		response?: { data?: { message?: string; Message?: string } };
-	};
-	return (
-		anyData?.response?.data?.message ?? anyData?.response?.data?.Message ?? null
-	);
+	const anyData = data as { message?: string; Message?: string };
+	return anyData?.message ?? anyData?.Message ?? null;
 }

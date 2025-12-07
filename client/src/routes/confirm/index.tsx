@@ -31,11 +31,13 @@ function ConfirmPage() {
 
 	const mConfirm = useConfirmEmail();
 	const mResend = useResendEmailConfirmation();
+	const mutate = mConfirm.mutate;
 
 	useEffect(() => {
 		if (!qsToken || !qsEmail) return;
-		mConfirm.mutate({ token: qsToken, email: qsEmail });
-	}, [qsToken, qsEmail, mConfirm]);
+		// Run confirmation only when query params change
+		mutate({ token: qsToken, email: qsEmail });
+	}, [qsToken, qsEmail, mutate]);
 
 	return (
 		<div className="container mx-auto px-4 py-8 max-w-lg">
