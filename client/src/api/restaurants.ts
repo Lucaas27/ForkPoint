@@ -3,10 +3,23 @@ import { api } from "./client";
 export async function getRestaurants(params?: {
 	pageNumber?: number;
 	pageSize?: number;
+	searchBy?: string;
+	searchTerm?: string;
+	categoryFilter?: string;
 }) {
-	const { pageNumber = 1, pageSize = 10 } = params || {};
+	const {
+		pageNumber = 1,
+		pageSize = 10,
+		searchBy,
+		searchTerm,
+		categoryFilter,
+	} = params || {};
+	const queryParams: Record<string, string | number> = { pageNumber, pageSize };
+	if (searchBy) queryParams.searchBy = searchBy;
+	if (searchTerm) queryParams.searchTerm = searchTerm;
+	if (categoryFilter) queryParams.categoryFilter = categoryFilter;
 	const res = await api.get("/api/restaurants", {
-		params: { pageNumber, pageSize },
+		params: queryParams,
 	});
 	return res.data;
 }

@@ -9,14 +9,34 @@ import {
 import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
 import { Skeleton } from "../../components/ui/skeleton";
-import { Plus, ChevronRight } from "lucide-react";
+import { Input } from "../../components/ui/input";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue
+} from "../../components/ui/select";
+import { Plus, ChevronRight, Search } from "lucide-react";
 import { useAuthContext } from "../../providers/auth-provider";
+import { useState } from "react";
 
 export const Route = createFileRoute("/restaurants/")({
+	// Read and validate search params for pagination and filtering at route level
 	validateSearch: (search: Record<string, unknown>) => {
 		const page = Number(search.page) || 1;
 		const size = Number(search.size) || 10;
-		return { page, size } as { page: number; size: number };
+		const searchBy = search.searchBy;
+		const searchTerm = search.searchTerm;
+		const categoryFilter = search.categoryFilter;
+
+		return { page, size, searchBy, searchTerm, categoryFilter } as {
+			page: number;
+			size: number;
+			searchBy?: string;
+			searchTerm?: string;
+			categoryFilter?: string;
+		};
 	},
 	component: Restaurants,
 });
@@ -40,10 +60,57 @@ type RestaurantsResponse = {
 };
 
 function Restaurants() {
-	const { page, size } = Route.useSearch();
-	const { data, isLoading, error } = useRestaurants(page, size);
+	const { page, size, searchBy, searchTerm, categoryFilter } = Route.useSearch();
+	const { data, isLoading, error } = useRestaurants(page, size, searchBy, searchTerm, categoryFilter);
 	const { hasRole } = useAuthContext();
 	const canCreate = hasRole("Admin") || hasRole("Owner");
+	const navigate = Route.useNavigate();
+
+	// Initialise local state for search inputs from URL search params
+	const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm || "");
+	const [localSearchBy, setLocalSearchBy] = useState(searchBy || "Name");
+	const [localCategoryFilter, setLocalCategoryFilter] = useState(categoryFilter || "all");
+
+	const handleSearch = () => {
+		const params: { page: number; size: number; searchBy?: string; searchTerm?: string; categoryFilter?: string } = { page: 1, size };
+		if (localSearchTerm.trim()) {
+			params.searchBy = localSearchBy;
+			params.searchTerm = localSearchTerm.trim();
+		}
+		if (localCategoryFilter !== "all") {
+			params.categoryFilter = localCategoryFilter;
+		}
+		navigate({
+			to: "/restaurants",
+			search: params,
+		});
+	};
+
+	const handleClearSearch = () => {
+		setLocalSearchTerm("");
+		setLocalSearchBy("Name");
+		setLocalCategoryFilter("all");
+		navigate({
+			to: "/restaurants",
+			search: { page: 1, size },
+		});
+	};
+
+	const handleCategoryFilter = (value: string) => {
+		setLocalCategoryFilter(value);
+		const params: { page: number; size: number; searchBy?: string; searchTerm?: string; categoryFilter?: string } = { page: 1, size };
+		if (localSearchTerm.trim()) {
+			params.searchBy = localSearchBy;
+			params.searchTerm = localSearchTerm.trim();
+		}
+		if (value !== "all") {
+			params.categoryFilter = value;
+		}
+		navigate({
+			to: "/restaurants",
+			search: params,
+		});
+	};
 
 	if (isLoading) {
 		return (
@@ -67,13 +134,20 @@ function Restaurants() {
 	}
 
 	const resp = (data ?? {}) as unknown as RestaurantsResponse;
-	const restaurants: RestaurantItem[] = resp.items ?? resp.restaurants ?? [];
-	const totalItems: number =
+	let restaurants: RestaurantItem[] = resp.items ?? [];
+	const unfilteredTotalItems: number =
 		resp.totalItemsCount ?? resp.total ?? restaurants.length;
 	const currentPage: number = resp.pageNumber ?? page;
 	const pageSize: number = resp.pageSize ?? size;
-	const totalPages: number =
-		resp.totalPages ?? Math.max(1, Math.ceil(totalItems / pageSize));
+
+	// Apply client side category filtering
+	if (categoryFilter && categoryFilter !== "all") {
+		restaurants = restaurants.filter(r => r.category === categoryFilter);
+	}
+
+	// Recalculate totals after filtering
+	const totalItems: number = categoryFilter && categoryFilter !== "all" ? restaurants.length : unfilteredTotalItems;
+	const totalPages: number = Math.max(1, Math.ceil(totalItems / pageSize));
 
 	return (
 		<div className="space-y-6">
@@ -96,6 +170,53 @@ function Restaurants() {
 						Only Admins and Owners can create restaurants.
 					</p>
 				)}
+			</div>
+			<div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+				<div className="flex flex-col sm:flex-row gap-2 flex-1">
+					<Select value={localCategoryFilter} onValueChange={handleCategoryFilter}>
+						<SelectTrigger className="w-full sm:w-40">
+							<SelectValue placeholder="Filter by category" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="all">All Categories</SelectItem>
+							<SelectItem value="Italian">Italian</SelectItem>
+							<SelectItem value="Chinese">Chinese</SelectItem>
+							<SelectItem value="Mexican">Mexican</SelectItem>
+							<SelectItem value="American">American</SelectItem>
+							<SelectItem value="Japanese">Japanese</SelectItem>
+							<SelectItem value="Thai">Thai</SelectItem>
+							<SelectItem value="Indian">Indian</SelectItem>
+							<SelectItem value="French">French</SelectItem>
+							<SelectItem value="Mediterranean">Mediterranean</SelectItem>
+						</SelectContent>
+					</Select>
+					<Select value={localSearchBy} onValueChange={setLocalSearchBy}>
+						<SelectTrigger className="w-full sm:w-40">
+							<SelectValue placeholder="Search by" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="Name">Name</SelectItem>
+							<SelectItem value="Description">Description</SelectItem>
+						</SelectContent>
+					</Select>
+					<div className="flex gap-2 flex-1">
+						<Input
+							placeholder={`Search restaurants by ${localSearchBy.toLowerCase()}...`}
+							value={localSearchTerm}
+							onChange={(e) => setLocalSearchTerm(e.target.value)}
+							onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+							className="flex-1"
+						/>
+						<Button onClick={handleSearch} size="sm">
+							<Search className="h-4 w-4" />
+						</Button>
+						{(searchBy || searchTerm || categoryFilter) && (
+							<Button onClick={handleClearSearch} variant="outline" size="sm">
+								Clear
+							</Button>
+						)}
+					</div>
+				</div>
 			</div>
 			<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 				{restaurants.map((r) => {
@@ -161,11 +282,20 @@ function RestaurantsPager({
 	pageSize: number;
 }) {
 	const navigate = Route.useNavigate();
+	const { searchBy, searchTerm, categoryFilter } = Route.useSearch();
 
 	const canPrev = currentPage > 1;
 	const canNext = currentPage < totalPages;
 	const start = (currentPage - 1) * pageSize + 1;
 	const end = Math.min(currentPage * pageSize, totalItems);
+
+	const searchParams = {
+		page: currentPage,
+		size: pageSize,
+		...(searchBy && { searchBy }),
+		...(searchTerm && { searchTerm }),
+		...(categoryFilter && { categoryFilter })
+	};
 
 	return (
 		<div className="flex items-center justify-between pt-2">
@@ -181,7 +311,7 @@ function RestaurantsPager({
 					onClick={() =>
 						navigate({
 							to: "/restaurants",
-							search: { page: 1, size: pageSize },
+							search: { ...searchParams, page: 1 },
 						})
 					}
 				>
@@ -194,7 +324,7 @@ function RestaurantsPager({
 					onClick={() =>
 						navigate({
 							to: "/restaurants",
-							search: { page: currentPage - 1, size: pageSize },
+							search: { ...searchParams, page: currentPage - 1 },
 						})
 					}
 				>
@@ -207,7 +337,7 @@ function RestaurantsPager({
 					onClick={() =>
 						navigate({
 							to: "/restaurants",
-							search: { page: currentPage + 1, size: pageSize },
+							search: { ...searchParams, page: currentPage + 1 },
 						})
 					}
 				>
@@ -220,7 +350,7 @@ function RestaurantsPager({
 					onClick={() =>
 						navigate({
 							to: "/restaurants",
-							search: { page: totalPages, size: pageSize },
+							search: { ...searchParams, page: totalPages },
 						})
 					}
 				>

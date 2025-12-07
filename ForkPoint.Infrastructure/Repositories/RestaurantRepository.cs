@@ -56,9 +56,9 @@ internal class RestaurantRepository(ApplicationDbContext dbContext)
         {
             var searchColumns = new Dictionary<SearchOptions, Expression<Func<Restaurant, bool>>>
             {
-                { SearchOptions.Name, r => r.Name.Contains(lowerCaseSearchTerm) },
-                { SearchOptions.Category, r => r.Category.Contains(lowerCaseSearchTerm) },
-                { SearchOptions.Description, r => r.Description.Contains(lowerCaseSearchTerm) }
+                { SearchOptions.Name, r => r.Name.ToLower().Contains(lowerCaseSearchTerm) },
+                { SearchOptions.Category, r => r.Category.ToLower().Contains(lowerCaseSearchTerm) },
+                { SearchOptions.Description, r => r.Description.ToLower().Contains(lowerCaseSearchTerm) }
             };
 
             var selectedColumn = searchColumns[filterOptions.SearchBy.Value];
@@ -70,9 +70,9 @@ internal class RestaurantRepository(ApplicationDbContext dbContext)
         {
             var sortColumns = new Dictionary<SortByOptions, Expression<Func<Restaurant, string>>>
             {
-                { SortByOptions.Name, r => r.Name },
-                { SortByOptions.Category, r => r.Category },
-                { SortByOptions.Description, r => r.Description }
+                { SortByOptions.Name, r => r.Name.ToLower() },
+                { SortByOptions.Category, r => r.Category.ToLower() },
+                { SortByOptions.Description, r => r.Description.ToLower() }
             };
 
             var selectedColumn = sortColumns[filterOptions.SortBy.Value];
