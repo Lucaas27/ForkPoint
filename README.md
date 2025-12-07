@@ -52,12 +52,26 @@ The architecture helps with:
 - **CQRS**: MediatR
 - **Validation**: FluentValidation
 - **Mapping**: AutoMapper
-- **Authentication**: JWT Bearer Tokens, Google OAuth
-- **Email**: MailKit
+- **Authentication**: JWT Bearer Tokens, Google OAuth (supported but not implemented in client)
+- **Email**: MailKit and Resend
 - **Logging**: Serilog
 - **Documentation**: Swagger/OpenAPI
 - **Testing**: xUnit and Moq
 - **Dependency Injection**: Built-in ASP.NET Core DI container
+
+### Client
+
+A frontend client lives in the `client/` folder. It provides the public UI for registration, login, restaurants browsing and account management and is built with a modern frontend toolchain:
+
+- Framework: React + TypeScript
+- Bundler and Dev server: Vite
+- Styling: Tailwind CSS
+- Routing: TanStack Router
+- Data fetching and caching: React Query (TanStack Query)
+- Testing: Vitest + react testing library
+- Linting & formatting: Biome
+
+The client talks to the API under `/api/*` (same-origin when served together).
 
 ## Installation and Setup
 
