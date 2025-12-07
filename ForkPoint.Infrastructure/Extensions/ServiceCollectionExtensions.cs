@@ -43,6 +43,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISeeder, ApplicationSeeder>();
         services.AddScoped<IRestaurantRepository, RestaurantRepository>();
         services.AddScoped<IMenuRepository, MenuRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IAuthorizationHandler, OwnsRestaurantOrAdminHandler>();
         services.AddAuthorizationBuilder()
             .AddPolicy(AppPolicies.AdminPolicy, policy => policy.RequireRole(AppUserRoles.Admin))
