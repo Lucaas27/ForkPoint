@@ -5,10 +5,9 @@ using ForkPoint.Application.Models.Emails;
 using ForkPoint.Application.Models.Handlers.ForgotPassword;
 using ForkPoint.Application.Services;
 using ForkPoint.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Moq;
-using ForkPoint.Application.Tests.TestHelpers;
+using ForkPoint.Domain.Repositories;
 
 namespace ForkPoint.Application.Tests.Handlers;
 
@@ -19,7 +18,7 @@ public class ForgotPasswordHandlerTests
     {
         // Arrange
         var loggerMock = new Mock<ILogger<ForgotPasswordHandler>>();
-        var userManagerMock = TestUserManagerFactory.CreateMinimal();
+        var userRepositoryMock = new Mock<IUserRepository>();
         var emailServiceMock = new Mock<IEmailService>();
         var emailTemplateFactoryMock = new Mock<IEmailTemplateFactory>();
 
@@ -28,12 +27,12 @@ public class ForgotPasswordHandlerTests
         var token = "reset-token";
         var emailTemplate = new PasswordResetTemplate("callback", "test@example.com");
 
-        userManagerMock.Setup(um => um.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
-        userManagerMock.Setup(um => um.GeneratePasswordResetTokenAsync(It.IsAny<User>())).ReturnsAsync(token);
+        userRepositoryMock.Setup(um => um.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
+        userRepositoryMock.Setup(um => um.GeneratePasswordResetTokenAsync(It.IsAny<User>())).ReturnsAsync(token);
         emailTemplateFactoryMock.Setup(etf => etf.CreatePasswordResetTemplate(It.IsAny<string>(), It.IsAny<string>())).Returns(emailTemplate);
         emailServiceMock.Setup(es => es.SendEmailAsync(It.IsAny<IEmailTemplate>())).Returns(Task.CompletedTask);
 
-        var handler = new ForgotPasswordHandler(loggerMock.Object, userManagerMock.Object, emailServiceMock.Object, emailTemplateFactoryMock.Object);
+        var handler = new ForgotPasswordHandler(loggerMock.Object, userRepositoryMock.Object, emailServiceMock.Object, emailTemplateFactoryMock.Object);
 
         // Act
         var response = await handler.Handle(request, CancellationToken.None);
@@ -49,15 +48,15 @@ public class ForgotPasswordHandlerTests
     {
         // Arrange
         var loggerMock = new Mock<ILogger<ForgotPasswordHandler>>();
-        var userManagerMock = TestUserManagerFactory.CreateMinimal();
+        var userRepositoryMock = new Mock<IUserRepository>();
         var emailServiceMock = new Mock<IEmailService>();
         var emailTemplateFactoryMock = new Mock<IEmailTemplateFactory>();
 
         var request = new ForgotPasswordRequest("test@example.com");
 
-        userManagerMock.Setup(um => um.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
+        userRepositoryMock.Setup(um => um.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
 
-        var handler = new ForgotPasswordHandler(loggerMock.Object, userManagerMock.Object, emailServiceMock.Object, emailTemplateFactoryMock.Object);
+        var handler = new ForgotPasswordHandler(loggerMock.Object, userRepositoryMock.Object, emailServiceMock.Object, emailTemplateFactoryMock.Object);
 
         // Act
         var response = await handler.Handle(request, CancellationToken.None);

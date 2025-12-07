@@ -3,7 +3,6 @@ using ForkPoint.Application.Handlers;
 using ForkPoint.Application.Models.Handlers.GetUsers;
 using ForkPoint.Application.Models.Dtos;
 using ForkPoint.Domain.Entities;
-using ForkPoint.Application.Tests.TestHelpers;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 using ForkPoint.Domain.Repositories;

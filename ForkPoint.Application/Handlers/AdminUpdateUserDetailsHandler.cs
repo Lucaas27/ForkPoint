@@ -6,6 +6,7 @@ using ForkPoint.Domain.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using ForkPoint.Domain.Repositories;
 
 namespace ForkPoint.Application.Handlers;
 
@@ -13,7 +14,7 @@ public class AdminUpdateUserDetailsHandler(
     ILogger<AdminUpdateUserDetailsHandler> logger,
     IMapper mapper,
     IUserContext userContext,
-    UserManager<User> userManager
+    IUserRepository userRepository
 ) : IRequestHandler<AdminUpdateUserDetailsRequest, AdminUpdateUserDetailsResponse>
 {
     public async Task<AdminUpdateUserDetailsResponse> Handle(
@@ -36,13 +37,13 @@ public class AdminUpdateUserDetailsHandler(
             };
         }
 
-        var dbUser = await userManager.FindByIdAsync(targetUserId.ToString()) ??
-                     throw new NotFoundException(nameof(User), targetUserId.ToString());
+        var dbUser = await userRepository.FindByIdAsync(targetUserId.ToString()) ??
+                 throw new NotFoundException(nameof(User), targetUserId.ToString());
 
         // Map the request data to the domain model
         mapper.Map(request, dbUser);
 
-        var result = await userManager.UpdateAsync(dbUser);
+        var result = await userRepository.UpdateAsync(dbUser);
 
         if (!result.Succeeded)
         {

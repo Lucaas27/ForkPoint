@@ -6,24 +6,24 @@ using ForkPoint.Domain.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Moq;
-using ForkPoint.Application.Tests.TestHelpers;
+using ForkPoint.Domain.Repositories;
 
 namespace ForkPoint.Application.Tests.Handlers;
 
 public class AssignUserRoleHandlerTests
 {
     private readonly Mock<ILogger<AssignUserRoleHandler>> _loggerMock;
-    private readonly Mock<UserManager<User>> _userManagerMock;
+    private readonly Mock<IUserRepository> _userRepositoryMock;
     private readonly Mock<RoleManager<IdentityRole<int>>> _roleManagerMock;
     private readonly AssignUserRoleHandler _handler;
 
     public AssignUserRoleHandlerTests()
     {
         _loggerMock = new Mock<ILogger<AssignUserRoleHandler>>();
-        _userManagerMock = TestUserManagerFactory.CreateMinimal();
+        _userRepositoryMock = new Mock<IUserRepository>();
         _roleManagerMock = new Mock<RoleManager<IdentityRole<int>>>(
             Mock.Of<IRoleStore<IdentityRole<int>>>(), null!, null!, null!, null!);
-        _handler = new AssignUserRoleHandler(_loggerMock.Object, _userManagerMock.Object, _roleManagerMock.Object);
+        _handler = new AssignUserRoleHandler(_loggerMock.Object, _userRepositoryMock.Object, _roleManagerMock.Object);
     }
 
     [Fact]
@@ -31,7 +31,7 @@ public class AssignUserRoleHandlerTests
     {
         // Arrange
         var request = new AssignUserRoleRequest("nonexistent@example.com", "Admin");
-        _userManagerMock.Setup(x => x.FindByEmailAsync(request.Email)).ReturnsAsync((User?)null);
+        _userRepositoryMock.Setup(x => x.FindByEmailAsync(request.Email)).ReturnsAsync((User?)null);
 
         // Act
         var act = async () => await _handler.Handle(request, CancellationToken.None);
@@ -46,7 +46,7 @@ public class AssignUserRoleHandlerTests
         // Arrange
         var user = new User { Email = "user@example.com" };
         var request = new AssignUserRoleRequest(user.Email, "NonexistentRole");
-        _userManagerMock.Setup(x => x.FindByEmailAsync(request.Email)).ReturnsAsync(user);
+        _userRepositoryMock.Setup(x => x.FindByEmailAsync(request.Email)).ReturnsAsync(user);
         _roleManagerMock.Setup(x => x.FindByNameAsync(request.Role)).ReturnsAsync((IdentityRole<int>?)null);
 
         // Act
@@ -63,9 +63,9 @@ public class AssignUserRoleHandlerTests
         var user = new User { Email = "user@example.com" };
         var role = new IdentityRole<int> { Name = "Admin" };
         var request = new AssignUserRoleRequest(user.Email, role.Name);
-        _userManagerMock.Setup(x => x.FindByEmailAsync(request.Email)).ReturnsAsync(user);
+        _userRepositoryMock.Setup(x => x.FindByEmailAsync(request.Email)).ReturnsAsync(user);
         _roleManagerMock.Setup(x => x.FindByNameAsync(request.Role)).ReturnsAsync(role);
-        _userManagerMock.Setup(x => x.AddToRoleAsync(user, role.Name)).ReturnsAsync(IdentityResult.Failed(new IdentityError { Description = "Error" }));
+        _userRepositoryMock.Setup(x => x.AddToRoleAsync(user, role.Name)).ReturnsAsync(IdentityResult.Failed(new IdentityError { Description = "Error" }));
 
         // Act
         var response = await _handler.Handle(request, CancellationToken.None);
@@ -82,9 +82,9 @@ public class AssignUserRoleHandlerTests
         var user = new User { Email = "user@example.com" };
         var role = new IdentityRole<int> { Name = "Admin" };
         var request = new AssignUserRoleRequest(user.Email, role.Name);
-        _userManagerMock.Setup(x => x.FindByEmailAsync(request.Email)).ReturnsAsync(user);
+        _userRepositoryMock.Setup(x => x.FindByEmailAsync(request.Email)).ReturnsAsync(user);
         _roleManagerMock.Setup(x => x.FindByNameAsync(request.Role)).ReturnsAsync(role);
-        _userManagerMock.Setup(x => x.AddToRoleAsync(user, role.Name)).ReturnsAsync(IdentityResult.Success);
+        _userRepositoryMock.Setup(x => x.AddToRoleAsync(user, role.Name)).ReturnsAsync(IdentityResult.Success);
 
         // Act
         var response = await _handler.Handle(request, CancellationToken.None);

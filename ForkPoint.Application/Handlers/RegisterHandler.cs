@@ -5,12 +5,13 @@ using ForkPoint.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using ForkPoint.Domain.Repositories;
 
 namespace ForkPoint.Application.Handlers;
 
 public class RegisterHandler(
     ILogger<RegisterHandler> logger,
-    UserManager<User> userManager,
+    IUserRepository userRepository,
     IEmailService emailService,
     IEmailTemplateFactory emailTemplateFactory
 ) : IRequestHandler<RegisterRequest, RegisterResponse>
@@ -20,20 +21,20 @@ public class RegisterHandler(
         logger.LogInformation("Registering user with email {Email}...", request.Email);
 
         var user = new User { UserName = request.Email, Email = request.Email };
-        var result = await userManager.CreateAsync(user, request.Password);
+        var result = await userRepository.CreateAsync(user, request.Password);
 
         if (!result.Succeeded)
         {
             return LogAndReturnError("Failed to register user", request.Email, result.Errors);
         }
 
-        var roleResult = await userManager.AddToRoleAsync(user, "User");
+        var roleResult = await userRepository.AddToRoleAsync(user, "User");
         if (!roleResult.Succeeded)
         {
             return LogAndReturnError("Failed to assign role to user", request.Email, roleResult.Errors);
         }
 
-        var emailToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
+        var emailToken = await userRepository.GenerateEmailConfirmationTokenAsync(user);
         logger.LogInformation("Email confirmation token generated");
 
         var emailTemplate = emailTemplateFactory.CreateEmailConfirmationTemplate(request.Email, emailToken);

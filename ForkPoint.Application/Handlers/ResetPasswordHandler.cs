@@ -3,12 +3,13 @@ using ForkPoint.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using ForkPoint.Domain.Repositories;
 
 namespace ForkPoint.Application.Handlers;
 
 public class ResetPasswordHandler(
     ILogger<ResetPasswordHandler> logger,
-    UserManager<User> userManager
+    IUserRepository userRepository
 ) : IRequestHandler<ResetPasswordRequest, ResetPasswordResponse>
 {
     public async Task<ResetPasswordResponse> Handle(
@@ -18,7 +19,7 @@ public class ResetPasswordHandler(
     {
         logger.LogInformation("Changing password for user {Email}", request.Email);
 
-        var user = await userManager.FindByEmailAsync(request.Email);
+        var user = await userRepository.FindByEmailAsync(request.Email);
         if (user is null)
         {
             return new ResetPasswordResponse
@@ -28,7 +29,7 @@ public class ResetPasswordHandler(
             };
         }
 
-        var result = await userManager.ResetPasswordAsync(user, request.Token, request.Password);
+        var result = await userRepository.ResetPasswordAsync(user, request.Token, request.Password);
         if (result.Succeeded)
         {
             logger.LogInformation("Password changed successfully");

@@ -6,13 +6,14 @@ using ForkPoint.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using ForkPoint.Domain.Repositories;
 
 namespace ForkPoint.Application.Handlers;
 
 public class RefreshTokenHandler(
     ILogger<LoginHandler> logger,
     IAuthService authService,
-    UserManager<User> userManager
+    IUserRepository userRepository
 ) : IRequestHandler<RefreshTokenRequest, RefreshTokenResponse>
 {
     public async Task<RefreshTokenResponse> Handle(RefreshTokenRequest request, CancellationToken cancellationToken)
@@ -37,7 +38,7 @@ public class RefreshTokenHandler(
                                 nameof(request),
                                 "Email claim not found");
 
-        user = await userManager.FindByEmailAsync(userEmail);
+        user = await userRepository.FindByEmailAsync(userEmail);
         }
 
         if (string.IsNullOrWhiteSpace(request.AccessToken))
@@ -70,7 +71,7 @@ public class RefreshTokenHandler(
         }
 
         // Ensure refresh token exists for the user and is valid
-        var tokenExists = await userManager.GetAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken") != null;
+        var tokenExists = await userRepository.GetAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken") != null;
         var isTokenValid = await authService.ValidateRefreshToken(user, cookieRefreshToken);
 
         if (!isTokenValid || !tokenExists)

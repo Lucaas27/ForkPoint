@@ -5,12 +5,13 @@ using ForkPoint.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using ForkPoint.Domain.Repositories;
 
 namespace ForkPoint.Application.Handlers;
 
 public class ForgotPasswordHandler(
     ILogger<ForgotPasswordHandler> logger,
-    UserManager<User> userManager,
+    IUserRepository userRepository,
     IEmailService emailService,
     IEmailTemplateFactory emailTemplateFactory
 ) : IRequestHandler<ForgotPasswordRequest, ForgotPasswordResponse>
@@ -21,14 +22,14 @@ public class ForgotPasswordHandler(
     )
     {
         logger.LogInformation("Trying to reset user password...");
-        var user = await userManager.FindByEmailAsync(request.Email);
+        var user = await userRepository.FindByEmailAsync(request.Email);
 
         if (user is null)
         {
             return CreateResponse("Please check your email and follow the instructions on how to reset your password.");
         }
 
-        var passwordToken = await userManager.GeneratePasswordResetTokenAsync(user);
+        var passwordToken = await userRepository.GeneratePasswordResetTokenAsync(user);
 
         logger.LogInformation("Token: {Token}", passwordToken);
 
