@@ -15,7 +15,10 @@ export async function getMenuItemById(
 	return res.data;
 }
 
-export async function createMenuItem(restaurantId: number, payload: any) {
+export async function createMenuItem(
+	restaurantId: number,
+	payload: Record<string, unknown>,
+) {
 	const res = await api.post(
 		`/api/restaurant/${restaurantId}/menu-items/create`,
 		payload,
