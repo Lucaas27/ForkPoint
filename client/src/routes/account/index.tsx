@@ -1,7 +1,8 @@
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-import { useAuthContext } from "../../features/auth/AuthProvider";
-import { useMyRestaurants } from "../../features/account/queries";
-import { useUpdateMe } from "../../features/account/mutations";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useAuthContext } from "@/providers/auth-provider";
+import { useEffect } from "react";
+import { useMyRestaurants } from "@/features/account/queries";
+import { useUpdateMe } from "@/features/account/mutations";
 import { useState, useId } from "react";
 import {
 	Card,
@@ -9,33 +10,38 @@ import {
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "../../components/ui/card";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
-import { Button } from "../../components/ui/button";
-import { Separator } from "../../components/ui/separator";
-import { Badge } from "../../components/ui/badge";
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import { User, Store } from "lucide-react";
-import { fullNameFromToken } from "../../features/auth/jwt";
-import { useLocalStorage } from "../../hooks/use-local-storage";
 
-export const Route = createFileRoute("/account/")({
-	beforeLoad: () => {
-		const token = localStorage.getItem("fp_token");
-		if (!token)
-			throw redirect({ to: "/login", search: { redirect: "/account" } });
-	},
-	component: Account,
-});
+export const Route = createFileRoute("/account/")({ component: Account });
 
 type RestaurantSummary = { id: string; name: string; category?: string };
 
 function Account() {
-	const { hasRole } = useAuthContext();
+	const { currentUser, isAuthenticated } = useAuthContext();
+	const navigate = useNavigate();
+	const userRoles = currentUser?.roles ?? [];
+	const hasRole = (role: string) => userRoles.some((r) => r.toLowerCase() === role.toLowerCase());
+
+	// Redirect to login if not authenticated
+	useEffect(() => {
+		if (!isAuthenticated) {
+			navigate({ to: "/login", search: { redirect: "/account" } });
+		}
+	}, [isAuthenticated, navigate]);
 	const nameInputId = useId();
-	const [token] = useLocalStorage<string | null>("fp_token", null);
-	const initialFullName = fullNameFromToken(token ?? undefined) ?? "";
-	const [name, setName] = useState(initialFullName);
+	const [name, setName] = useState("");
+
+	// keep local name in sync with provider currentUser when it becomes available
+	useEffect(() => {
+		if (currentUser?.name) setName(currentUser.name);
+	}, [currentUser]);
+
 	const mUpdate = useUpdateMe();
 	const { data } = useMyRestaurants();
 	const restaurants: RestaurantSummary[] =
@@ -73,8 +79,8 @@ function Account() {
 						<CardTitle className="text-2xl">My Account</CardTitle>
 					</div>
 					<CardDescription>
-						{initialFullName
-							? `Signed in as ${initialFullName}`
+						{(currentUser?.name ?? name)
+							? `Signed in as ${currentUser?.name ?? name}`
 							: "Manage your profile information"}
 					</CardDescription>
 				</CardHeader>
@@ -153,7 +159,7 @@ function Account() {
 
 							<div className="flex items-center justify-between pt-2">
 								<div className="text-sm text-muted-foreground">
-									Page {page} of {totalPages} • Showing {start + 1}-{end} of{" "}
+									Page {page} of {totalPages} - Showing {start + 1}-{end} of{" "}
 									{totalItems}
 								</div>
 								<div className="flex items-center gap-2">
@@ -169,6 +175,7 @@ function Account() {
 										variant="outline"
 										size="sm"
 										disabled={!canPrev}
+										// Go to previous page by decreasing page number by 1 but not less than 1
 										onClick={() => setPage((p) => Math.max(1, p - 1))}
 									>
 										Previous
@@ -177,6 +184,7 @@ function Account() {
 										variant="outline"
 										size="sm"
 										disabled={!canNext}
+										// Go to next page by increasing page number by 1 but not more than totalPages
 										onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
 									>
 										Next

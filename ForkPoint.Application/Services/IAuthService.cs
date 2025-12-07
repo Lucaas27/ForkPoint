@@ -34,6 +34,11 @@ public interface IAuthService
     Task InvalidateRefreshToken(User user);
 
     /// <summary>
+    ///     Clear any refresh cookie on the current response.
+    /// </summary>
+    Task ClearRefreshCookie();
+
+    /// <summary>
     ///     Read the refresh token from the current request's cookies (if any).
     ///     Returns null when not present.
     /// </summary>

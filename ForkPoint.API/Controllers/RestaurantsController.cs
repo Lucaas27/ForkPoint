@@ -82,7 +82,7 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     {
         var response = await mediator.Send(request);
 
-        return CreatedAtAction(nameof(GetRestaurantById), new { restaurantId = response.NewRecordId }, null);
+        return CreatedAtAction(nameof(GetRestaurantById), new { restaurantId = response.NewRecordId }, response);
     }
 
 

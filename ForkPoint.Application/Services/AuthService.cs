@@ -132,6 +132,13 @@ internal class AuthService(
 
     }
 
+    public async Task ClearRefreshCookie()
+    {
+        // Remove the refresh cookie
+        httpContextAccessor.HttpContext?.Response.Cookies.Delete("refreshToken");
+        await Task.CompletedTask;
+    }
+
     public string? GetRefreshTokenFromRequest()
     {
         return httpContextAccessor.HttpContext?.Request.Cookies.TryGetValue("refreshToken", out var t) == true ? t : null;

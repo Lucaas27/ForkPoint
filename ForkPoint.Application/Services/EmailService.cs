@@ -18,6 +18,9 @@ internal class EmailService(
     private readonly string _password = configuration["EmailConfig:Password"] ??
                                         throw new ArgumentNullException(nameof(configuration), "EmailConfig:Password");
 
+    // Optional separate username for SMTP authentication
+    private readonly string? _username = configuration["EmailConfig:Username"];
+
     private readonly int _port = int.TryParse(configuration["EmailConfig:Port"], out var p)
         ? p
         : throw new ArgumentNullException(nameof(configuration), "EmailConfig:Port");
@@ -30,13 +33,29 @@ internal class EmailService(
         logger.LogInformation("Sending {EmailType} to {Receptor}...", emailTemplate.GetType(),
             emailTemplate.Destination);
 
-
         var email = CreateEmail(emailTemplate.Destination, emailTemplate.Subject, emailTemplate.Html);
 
         using var client = new SmtpClient();
-        await client.ConnectAsync(_smtpServer, _port, true);
-        await client.AuthenticateAsync(_from, _password);
-        await client.SendAsync(email);
+        try
+        {
+            // Connect with SSL
+            await client.ConnectAsync(_smtpServer, _port, true);
+
+            // Use a dedicated username if provided. fall back to the From address
+            var userToAuth = string.IsNullOrWhiteSpace(_username) ? _from : _username;
+
+            await client.AuthenticateAsync(userToAuth, _password);
+            await client.SendAsync(email);
+        }
+        finally
+        {
+            // Ensure we disconnect if connected even after a failure.
+            // Dispose will be called automatically afterwards
+            if (client.IsConnected)
+            {
+                await client.DisconnectAsync(true);
+            }
+        }
     }
 
 

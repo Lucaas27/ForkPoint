@@ -9,12 +9,12 @@ import {
 	Menu,
 	HouseIcon,
 } from "lucide-react";
-import { useAuthContext } from "../features/auth/AuthProvider";
+import { useAuthContext } from "../providers/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export default function Header() {
-	const { isAuthenticated, hasRole, signOut } = useAuthContext();
+	const { isAuthenticated, hasRole, logOut } = useAuthContext();
 	const navigate = useNavigate();
 
 	return (
@@ -89,7 +89,7 @@ export default function Header() {
 								<Button
 									className="text-sm font-small transition-colors flex items-center gap-1"
 									onClick={() => {
-										signOut();
+										logOut();
 										navigate({ to: "/login", replace: true });
 									}}
 								>
@@ -118,10 +118,13 @@ export default function Header() {
 								<div className="flex flex-col p-4 gap-3">
 									<Link
 										to="/restaurants"
-										className="text-sm font-medium"
-										activeProps={{ className: "text-primary" }}
+										className="text-sm font-medium flex items-center gap-2"
+										activeProps={{
+											className: "text-primary flex items-center gap-2",
+										}}
 										search={{ page: 1, size: 10 }}
 									>
+										<HouseIcon className="h-4 w-4" />
 										Restaurants
 									</Link>
 									{!isAuthenticated ? (
@@ -163,8 +166,7 @@ export default function Header() {
 												variant="outline"
 												className="justify-start flex items-center gap-2"
 												onClick={() => {
-													signOut();
-													navigate({ to: "/login", replace: true });
+													logOut();
 												}}
 											>
 												<LogOut className="h-4 w-4" />

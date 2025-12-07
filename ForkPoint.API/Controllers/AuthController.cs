@@ -129,9 +129,9 @@ public class AuthController(IMediator mediator) : ControllerBase
             accessToken = authHeader.Substring("Bearer ".Length).Trim();
         }
 
-        var cmd = new RefreshTokenRequest(accessToken ?? string.Empty);
+        var cmd = new RefreshTokenRequest(accessToken);
         var response = await mediator.Send(cmd);
 
-        return response.IsSuccess ? Ok(response) : BadRequest(response);
+        return response.IsSuccess ? Ok(response) : Unauthorized(response);
     }
 }

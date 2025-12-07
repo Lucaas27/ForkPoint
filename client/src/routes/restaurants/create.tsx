@@ -1,63 +1,49 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useAuthContext } from "@/providers/auth-provider";
+import { useEffect } from "react";
 import {
 	useCreateRestaurant,
 	type CreateRestaurantPayload,
-} from "../../features/restaurants/mutations";
-import { useNavigate } from "@tanstack/react-router";
-import { toast } from "sonner";
-import { useEffect, useId, useState } from "react";
+} from "@/features/restaurants/mutations";
+import { useId, useState, type FormEvent } from "react";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "../../components/ui/card";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
-import { Button } from "../../components/ui/button";
-import { Textarea } from "../../components/ui/textarea";
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { Plus } from "lucide-react";
-import { useAuthContext } from "../../features/auth/AuthProvider";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "../../components/ui/select";
-import { Switch } from "../../components/ui/switch";
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 
-export const Route = createFileRoute("/restaurants/create")({
-	beforeLoad: () => {
-		const token = localStorage.getItem("fp_token");
-		if (!token)
-			throw redirect({
-				to: "/login",
-				search: { redirect: "/restaurants/create" },
-			});
-		// role check will be enforced inside component via hook
-	},
-	component: CreateRestaurant,
-});
+export const Route = createFileRoute("/restaurants/create")({ component: CreateRestaurant });
 
 function CreateRestaurant() {
 	const navigate = useNavigate();
-	const { requireRoleRedirect } = useAuthContext();
 
-	// Enforce Admin role via context guard
+	const { hasRole, isAuthenticated } = useAuthContext();
+
 	useEffect(() => {
-		const unauthorized = requireRoleRedirect("Admin", "/account", {
-			redirectTo: "/restaurants/create",
-		});
-		if (unauthorized) {
-			navigate({
-				to: unauthorized.to as "/account",
-				search: unauthorized.search,
-				replace: true,
-			});
+		if (!isAuthenticated) {
+			navigate({ to: "/login", search: { redirect: "/restaurants/create" } });
+			return;
 		}
-	}, [requireRoleRedirect, navigate]);
+		const isAuthorizedUser = hasRole("admin") || hasRole("owner");
+		if (!isAuthorizedUser) navigate({ to: "/account" });
+
+	}, [isAuthenticated, hasRole, navigate]);
+
 	const nameId = useId();
 	const descId = useId();
 	const categoryId = useId();
@@ -96,6 +82,28 @@ function CreateRestaurant() {
 		"Cafe",
 	] as const;
 
+	const handleSubmit = (e: FormEvent) => {
+		e.preventDefault();
+
+		const payload: CreateRestaurantPayload = {
+			name,
+			description,
+			category,
+			hasDelivery,
+			email,
+			contactNumber: contactNumber || undefined,
+			address: {
+				street,
+				city: city || undefined,
+				county: county || undefined,
+				postCode,
+				country: country || undefined,
+			},
+		};
+
+		mutation.mutate(payload);
+	};
+
 	return (
 		<div className="max-w-2xl mx-auto">
 			<Card>
@@ -104,51 +112,7 @@ function CreateRestaurant() {
 					<CardDescription>Add a new restaurant to the system</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<form
-						className="space-y-4"
-						onSubmit={(e) => {
-							e.preventDefault();
-							const payload: CreateRestaurantPayload = {
-								name,
-								description,
-								category,
-								hasDelivery,
-								email,
-								contactNumber: contactNumber || undefined,
-								address: {
-									street,
-									city: city || undefined,
-									county: county || undefined,
-									postCode,
-									country: country || undefined,
-								},
-							};
-							mutation.mutate(payload, {
-								onSuccess: () => {
-									toast.success("Restaurant created");
-									navigate({
-										to: "/restaurants",
-										search: { page: 1, size: 10 },
-									});
-								},
-								onError: (err: unknown) => {
-									const anyErr = err as {
-										response?: {
-											data?: {
-												title?: string;
-												message?: string;
-												Message?: string;
-											};
-										};
-									};
-									const msg =
-										anyErr?.response?.data?.Message ||
-										"Failed to create restaurant";
-									toast.error(msg);
-								},
-							});
-						}}
-					>
+					<form className="space-y-4" onSubmit={(e) => handleSubmit(e)}>
 						<div className="space-y-2">
 							<Label htmlFor={nameId}>Restaurant Name</Label>
 							<Input
@@ -210,7 +174,7 @@ function CreateRestaurant() {
 							</div>
 						</div>
 
-						<div className="flex items-center justify-between py-2">
+						<div className="flex items-start justify-start gap-4 py-2">
 							<Label htmlFor={hasDeliveryId}>Offers Delivery</Label>
 							<Switch
 								id={hasDeliveryId}

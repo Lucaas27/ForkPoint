@@ -221,5 +221,5 @@ $RECYCLE.BIN/
 
 **/.vs/**
 tests/unit/ForkPoint.Application.Tests/TestResults/**
-
+.vite
 tests/unit/ForkPoint.Application.Tests/CoverageReport/**
