@@ -3,12 +3,12 @@ using ForkPoint.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-
+using ForkPoint.Domain.Repositories;
 namespace ForkPoint.Application.Handlers;
 
 public class ConfirmEmailHandler(
     ILogger<ConfirmEmailHandler> logger,
-    UserManager<User> userManager
+    IUserRepository userRepository
 ) : IRequestHandler<ConfirmEmailRequest, ConfirmEmailResponse>
 {
     public async Task<ConfirmEmailResponse> Handle(
@@ -19,7 +19,7 @@ public class ConfirmEmailHandler(
         logger.LogInformation("Attempting to confirm email with token {Token} for user {Email}", request.Token,
             request.Email);
 
-        var user = await userManager.FindByEmailAsync(request.Email);
+        var user = await userRepository.FindByEmailAsync(request.Email);
 
         if (user is null)
         {
@@ -32,7 +32,7 @@ public class ConfirmEmailHandler(
         }
 
 
-        var result = await userManager.ConfirmEmailAsync(user, request.Token);
+        var result = await userRepository.ConfirmEmailAsync(user, request.Token);
 
         if (!result.Succeeded)
         {

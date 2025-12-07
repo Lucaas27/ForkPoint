@@ -4,12 +4,13 @@ using ForkPoint.Domain.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using ForkPoint.Domain.Repositories;
 
 namespace ForkPoint.Application.Handlers;
 
 public class RemoveUserRoleHandler(
     ILogger<RemoveUserRoleHandler> logger,
-    UserManager<User> userManager,
+    IUserRepository userRepository,
     RoleManager<IdentityRole<int>> roleManager
 ) : IRequestHandler<RemoveUserRoleRequest, RemoveUserRoleResponse>
 {
@@ -17,13 +18,13 @@ public class RemoveUserRoleHandler(
     {
         logger.LogInformation("Removing role {Role} from user with email {Email}", request.Role, request.Email);
 
-        var user = await userManager.FindByEmailAsync(request.Email) ??
+        var user = await userRepository.FindByEmailAsync(request.Email) ??
                    throw new NotFoundException(nameof(User), request.Email);
 
         var role = await roleManager.FindByNameAsync(request.Role) ??
                    throw new NotFoundException(nameof(IdentityRole), request.Role);
 
-        var result = await userManager.RemoveFromRoleAsync(user, role.Name!);
+        var result = await userRepository.RemoveFromRoleAsync(user, role.Name!);
 
         if (!result.Succeeded)
         {

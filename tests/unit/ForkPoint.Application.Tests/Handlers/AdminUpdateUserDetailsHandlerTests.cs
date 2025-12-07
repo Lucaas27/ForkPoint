@@ -2,6 +2,7 @@
 using FluentAssertions;
 using ForkPoint.Application.Contexts;
 using ForkPoint.Application.Handlers;
+using ForkPoint.Domain.Repositories;
 using ForkPoint.Application.Models.Dtos;
 using ForkPoint.Application.Models.Handlers.AdminUpdateUserDetails;
 using ForkPoint.Domain.Entities;
@@ -9,7 +10,6 @@ using ForkPoint.Domain.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Moq;
-using ForkPoint.Application.Tests.TestHelpers;
 
 namespace ForkPoint.Application.Tests.Handlers;
 
@@ -18,7 +18,7 @@ public class AdminUpdateUserDetailsHandlerTests
     private readonly Mock<ILogger<AdminUpdateUserDetailsHandler>> _loggerMock;
     private readonly Mock<IMapper> _mapperMock;
     private readonly Mock<IUserContext> _userContextMock;
-    private readonly Mock<UserManager<User>> _userManagerMock;
+    private readonly Mock<IUserRepository> _userRepositoryMock;
     private readonly AdminUpdateUserDetailsHandler _handler;
 
     public AdminUpdateUserDetailsHandlerTests()
@@ -26,9 +26,9 @@ public class AdminUpdateUserDetailsHandlerTests
         _loggerMock = new Mock<ILogger<AdminUpdateUserDetailsHandler>>();
         _mapperMock = new Mock<IMapper>();
         _userContextMock = new Mock<IUserContext>();
-        _userManagerMock = TestUserManagerFactory.CreateMinimal();
+        _userRepositoryMock = new Mock<IUserRepository>();
         _handler = new AdminUpdateUserDetailsHandler(
-            _loggerMock.Object, _mapperMock.Object, _userContextMock.Object, _userManagerMock.Object);
+            _loggerMock.Object, _mapperMock.Object, _userContextMock.Object, _userRepositoryMock.Object);
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class AdminUpdateUserDetailsHandlerTests
         // Arrange
         _userContextMock.Setup(x => x.GetCurrentUser()).Returns(new CurrentUserModel(1, "test@example.com", new List<string>(), "Test User"));
         _userContextMock.Setup(x => x.GetTargetUserId()).Returns(1);
-        _userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
+        _userRepositoryMock.Setup(x => x.FindByIdAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
 
         var request = new AdminUpdateUserDetailsRequest("New FullName");
 
@@ -87,8 +87,8 @@ public class AdminUpdateUserDetailsHandlerTests
         var user = new User();
         _userContextMock.Setup(x => x.GetCurrentUser()).Returns(new CurrentUserModel(1, "test@example.com", new List<string>(), "Test User"));
         _userContextMock.Setup(x => x.GetTargetUserId()).Returns(1);
-        _userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(user);
-        _userManagerMock.Setup(x => x.UpdateAsync(It.IsAny<User>())).ReturnsAsync(IdentityResult.Failed(new IdentityError { Description = "Update failed" }));
+        _userRepositoryMock.Setup(x => x.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(user);
+        _userRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<User>())).ReturnsAsync(IdentityResult.Failed(new IdentityError { Description = "Update failed" }));
 
         var request = new AdminUpdateUserDetailsRequest("New FullName");
 
@@ -107,8 +107,8 @@ public class AdminUpdateUserDetailsHandlerTests
         var user = new User();
         _userContextMock.Setup(x => x.GetCurrentUser()).Returns(new CurrentUserModel(1, "test@example.com", new List<string>(), "Test User"));
         _userContextMock.Setup(x => x.GetTargetUserId()).Returns(1);
-        _userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(user);
-        _userManagerMock.Setup(x => x.UpdateAsync(It.IsAny<User>())).ReturnsAsync(IdentityResult.Success);
+        _userRepositoryMock.Setup(x => x.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(user);
+        _userRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<User>())).ReturnsAsync(IdentityResult.Success);
 
         var request = new AdminUpdateUserDetailsRequest("New FullName");
 

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Moq;
 using ForkPoint.Application.Models.Emails;
-using ForkPoint.Application.Tests.TestHelpers;
+using ForkPoint.Domain.Repositories;
 
 namespace ForkPoint.Application.Tests.Handlers;
 
@@ -18,21 +18,21 @@ public class RegisterHandlerTests
     public async Task Handle_ShouldRegisterUser_AndSendConfirmationEmail_WhenAllSucceed()
     {
         // Arrange
-        var userManagerMock = TestUserManagerFactory.CreateMinimal();
+        var userRepositoryMock = new Mock<IUserRepository>();
         var emailServiceMock = new Mock<IEmailService>();
         var templateFactoryMock = new Mock<IEmailTemplateFactory>();
 
         var dummyToken = "email_token";
-        userManagerMock.Setup(u => u.CreateAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
-        userManagerMock.Setup(u => u.AddToRoleAsync(It.IsAny<User>(), "User")).ReturnsAsync(IdentityResult.Success);
-        userManagerMock.Setup(u => u.GenerateEmailConfirmationTokenAsync(It.IsAny<User>())).ReturnsAsync(dummyToken);
+        userRepositoryMock.Setup(u => u.CreateAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
+        userRepositoryMock.Setup(u => u.AddToRoleAsync(It.IsAny<User>(), "User")).ReturnsAsync(IdentityResult.Success);
+        userRepositoryMock.Setup(u => u.GenerateEmailConfirmationTokenAsync(It.IsAny<User>())).ReturnsAsync(dummyToken);
 
         templateFactoryMock.Setup(f => f.CreateEmailConfirmationTemplate(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(new EmailConfirmationTemplate("https://client.example/confirm?token=abc", "to@example.com", dummyToken));
 
         var handler = new RegisterHandler(
             new Mock<ILogger<RegisterHandler>>().Object,
-            userManagerMock.Object,
+            userRepositoryMock.Object,
             emailServiceMock.Object,
             templateFactoryMock.Object
         );
@@ -51,16 +51,16 @@ public class RegisterHandlerTests
     public async Task Handle_ShouldReturnError_WhenUserCreationFails()
     {
         // Arrange
-        var userManagerMock = TestUserManagerFactory.CreateMinimal();
+        var userRepositoryMock = new Mock<IUserRepository>();
         var emailServiceMock = new Mock<IEmailService>();
         var templateFactoryMock = new Mock<IEmailTemplateFactory>();
 
-        userManagerMock.Setup(u => u.CreateAsync(It.IsAny<User>(), It.IsAny<string>()))
+        userRepositoryMock.Setup(u => u.CreateAsync(It.IsAny<User>(), It.IsAny<string>()))
             .ReturnsAsync(IdentityResult.Failed(new IdentityError { Description = "User creation failed" }));
 
         var handler = new RegisterHandler(
             new Mock<ILogger<RegisterHandler>>().Object,
-            userManagerMock.Object,
+            userRepositoryMock.Object,
             emailServiceMock.Object,
             templateFactoryMock.Object
         );

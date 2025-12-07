@@ -3,6 +3,7 @@ using ForkPoint.Application.Handlers;
 using ForkPoint.Application.Models.Handlers.RefreshToken;
 using ForkPoint.Application.Services;
 using ForkPoint.Domain.Entities;
+using ForkPoint.Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -15,15 +16,15 @@ public class RefreshTokenHandlerTests
 {
     private readonly Mock<ILogger<LoginHandler>> _loggerMock;
     private readonly Mock<IAuthService> _authServiceMock;
-    private readonly Mock<UserManager<User>> _userManagerMock;
+    private readonly Mock<IUserRepository> _userRepositoryMock;
     private readonly RefreshTokenHandler _handler;
 
     public RefreshTokenHandlerTests()
     {
         _loggerMock = new Mock<ILogger<LoginHandler>>();
         _authServiceMock = new Mock<IAuthService>();
-        _userManagerMock = new Mock<UserManager<User>>(Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
-        _handler = new RefreshTokenHandler(_loggerMock.Object, _authServiceMock.Object, _userManagerMock.Object);
+        _userRepositoryMock = new Mock<IUserRepository>();
+        _handler = new RefreshTokenHandler(_loggerMock.Object, _authServiceMock.Object, _userRepositoryMock.Object);
     }
 
     [Fact]
@@ -48,7 +49,7 @@ public class RefreshTokenHandlerTests
         var request = new RefreshTokenRequest("invalidToken");
         var principal = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { new(ClaimTypes.Email, "test@example.com") }));
         _authServiceMock.Setup(x => x.GetPrincipalFromToken(It.IsAny<string>())).Returns(principal);
-        _userManagerMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
+        _userRepositoryMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
 
         // Act
         var result = await _handler.Handle(request, CancellationToken.None);
@@ -66,8 +67,8 @@ public class RefreshTokenHandlerTests
         var principal = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { new(ClaimTypes.Email, "test@example.com") }));
         var user = new User { Email = "test@example.com" };
         _authServiceMock.Setup(x => x.GetPrincipalFromToken(It.IsAny<string>())).Returns(principal);
-        _userManagerMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
-        _userManagerMock.Setup(x => x.GetAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken")).ReturnsAsync("storedRefreshToken");
+        _userRepositoryMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
+        _userRepositoryMock.Setup(x => x.GetAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken")).ReturnsAsync("storedRefreshToken");
         _authServiceMock.Setup(x => x.ValidateRefreshToken(user, It.IsAny<string>())).ReturnsAsync(false);
         _authServiceMock.Setup(a => a.GetRefreshTokenFromRequest()).Returns("cookieToken");
 
@@ -96,8 +97,8 @@ public class RefreshTokenHandlerTests
                         + "SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw7c";
 
         _authServiceMock.Setup(x => x.GetPrincipalFromToken(It.IsAny<string>())).Returns(principal);
-        _userManagerMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
-        _userManagerMock.Setup(x => x.GetAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken")).ReturnsAsync("storedRefreshToken");
+        _userRepositoryMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
+        _userRepositoryMock.Setup(x => x.GetAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken")).ReturnsAsync("storedRefreshToken");
         _authServiceMock.Setup(x => x.ValidateRefreshToken(user, It.IsAny<string>())).ReturnsAsync(true);
         _authServiceMock.Setup(x => x.GenerateAccessToken(user)).ReturnsAsync(newAccessToken);
         _authServiceMock.Setup(x => x.GenerateRefreshToken(user)).ReturnsAsync(newRefreshToken);

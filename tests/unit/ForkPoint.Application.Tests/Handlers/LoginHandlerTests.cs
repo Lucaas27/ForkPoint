@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Moq;
-using ForkPoint.Application.Tests.TestHelpers;
+using ForkPoint.Domain.Repositories;
 
 namespace ForkPoint.Application.Tests.Handlers;
 
@@ -19,15 +19,17 @@ public class LoginHandlerTests
     {
         // Arrange
         var user = new User { UserName = "user", Email = "user@example.com", EmailConfirmed = true };
-        var userManagerMock = TestUserManagerFactory.CreateWithUser(user);
-        var signInManagerMock = MockSignInManager(userManagerMock.Object);
+        var userManagerForSignIn = new Mock<UserManager<User>>(Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
+        var signInManagerMock = MockSignInManager(userManagerForSignIn.Object);
+        var userRepositoryMock = new Mock<IUserRepository>();
+        userRepositoryMock.Setup(u => u.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
         var authServiceMock = new Mock<IAuthService>();
 
         var dummyToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
         authServiceMock.Setup(a => a.GenerateAccessToken(It.IsAny<User>())).ReturnsAsync(dummyToken);
         authServiceMock.Setup(a => a.GenerateRefreshToken(It.IsAny<User>())).ReturnsAsync("refresh");
 
-        var handler = new LoginHandler(new Mock<ILogger<LoginHandler>>().Object, authServiceMock.Object, userManagerMock.Object, signInManagerMock.Object);
+        var handler = new LoginHandler(new Mock<ILogger<LoginHandler>>().Object, authServiceMock.Object, userRepositoryMock.Object, signInManagerMock.Object);
 
         var request = new LoginRequest("user@example.com", "Password123!");
 
@@ -44,11 +46,13 @@ public class LoginHandlerTests
     {
         // Arrange
         var user = new User { UserName = "user", Email = "user@example.com", EmailConfirmed = false };
-        var userManagerMock = TestUserManagerFactory.CreateWithUser(user);
-        var signInManagerMock = MockSignInManager(userManagerMock.Object);
+        var userManagerForSignIn = new Mock<UserManager<User>>(Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
+        var signInManagerMock = MockSignInManager(userManagerForSignIn.Object);
+        var userRepositoryMock = new Mock<IUserRepository>();
+        userRepositoryMock.Setup(u => u.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
         var authServiceMock = new Mock<IAuthService>();
 
-        var handler = new LoginHandler(new Mock<ILogger<LoginHandler>>().Object, authServiceMock.Object, userManagerMock.Object, signInManagerMock.Object);
+        var handler = new LoginHandler(new Mock<ILogger<LoginHandler>>().Object, authServiceMock.Object, userRepositoryMock.Object, signInManagerMock.Object);
 
         var request = new LoginRequest("user@example.com", "Password123!");
 
@@ -64,11 +68,13 @@ public class LoginHandlerTests
     public async Task Handle_ShouldThrowNotFound_WhenUserMissing()
     {
         // Arrange
-        var userManagerMock = TestUserManagerFactory.CreateWithUser(null);
-        var signInManagerMock = MockSignInManager(userManagerMock.Object);
+        var userManagerForSignIn = new Mock<UserManager<User>>(Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
+        var signInManagerMock = MockSignInManager(userManagerForSignIn.Object);
+        var userRepositoryMock = new Mock<IUserRepository>();
+        userRepositoryMock.Setup(u => u.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
         var authServiceMock = new Mock<IAuthService>();
 
-        var handler = new LoginHandler(new Mock<ILogger<LoginHandler>>().Object, authServiceMock.Object, userManagerMock.Object, signInManagerMock.Object);
+        var handler = new LoginHandler(new Mock<ILogger<LoginHandler>>().Object, authServiceMock.Object, userRepositoryMock.Object, signInManagerMock.Object);
 
         var request = new LoginRequest("missing@example.com", "Password123!");
 

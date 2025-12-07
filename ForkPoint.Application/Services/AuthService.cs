@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
+using ForkPoint.Domain.Repositories;
 using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames;
 
 [assembly: InternalsVisibleTo("ForkPoint.Application.Tests")]
@@ -14,7 +15,7 @@ namespace ForkPoint.Application.Services;
 
 internal class AuthService(
     IConfiguration config,
-    UserManager<User> userManager,
+    IUserRepository userRepository,
     IHttpContextAccessor httpContextAccessor
 ) : IAuthService
 {
@@ -67,7 +68,7 @@ internal class AuthService(
         var jwtKey = config["Jwt:Key"] ?? throw new ArgumentNullException(nameof(config), "Jwt:Key is null");
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-        var userRoles = await userManager.GetRolesAsync(user);
+        var userRoles = await userRepository.GetRolesAsync(user);
 
         var claims = new List<Claim>
         {
@@ -101,8 +102,8 @@ internal class AuthService(
     public async Task<string> GenerateRefreshToken(User user)
     {
         await InvalidateRefreshToken(user);
-        var refreshToken = await userManager.GenerateUserTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken");
-        await userManager.SetAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken", refreshToken);
+        var refreshToken = await userRepository.GenerateUserTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken");
+        await userRepository.SetAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken", refreshToken);
 
         // Set HttpOnly cookie on current response.
         var cookieOptions = new CookieOptions
@@ -121,12 +122,12 @@ internal class AuthService(
 
     public async Task<bool> ValidateRefreshToken(User user, string token)
     {
-        return await userManager.VerifyUserTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken", token);
+        return await userRepository.VerifyUserTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken", token);
     }
 
     public async Task InvalidateRefreshToken(User user)
     {
-        await userManager.RemoveAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken");
+        await userRepository.RemoveAuthenticationTokenAsync(user, "CustomRefreshTokenProvider", "RefreshToken");
 
         httpContextAccessor.HttpContext?.Response.Cookies.Delete("refreshToken");
 

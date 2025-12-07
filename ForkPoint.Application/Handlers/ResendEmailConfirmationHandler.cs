@@ -6,13 +6,14 @@ using ForkPoint.Domain.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using ForkPoint.Domain.Repositories;
 
 namespace ForkPoint.Application.Handlers;
 
 public class
     ResendEmailConfirmationHandler(
         ILogger<ResendEmailConfirmationHandler> logger,
-        UserManager<User> userManager,
+        IUserRepository userRepository,
         IEmailService emailService,
         IEmailTemplateFactory emailTemplateFactory
     )
@@ -25,7 +26,7 @@ public class
     {
         logger.LogInformation("Resending account confirmation email to {Email}...", request.Email);
 
-        var user = await userManager.FindByEmailAsync(request.Email) ??
+        var user = await userRepository.FindByEmailAsync(request.Email) ??
                    throw new NotFoundException(nameof(User), request.Email);
 
         if (user.EmailConfirmed)
@@ -37,7 +38,7 @@ public class
             };
         }
 
-        var emailToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
+        var emailToken = await userRepository.GenerateEmailConfirmationTokenAsync(user);
         logger.LogInformation("Account confirmation token generated");
 
         var emailTemplate = emailTemplateFactory.CreateEmailConfirmationTemplate(request.Email, emailToken);

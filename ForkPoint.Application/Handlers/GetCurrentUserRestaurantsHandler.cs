@@ -7,12 +7,13 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using ForkPoint.Domain.Repositories;
 
 namespace ForkPoint.Application.Handlers;
 
 public class GetCurrentUserRestaurantsHandler(
         ILogger<GetCurrentUserRestaurantsHandler> logger,
-        UserManager<User> userManager,
+        IUserRepository userRepository,
         IUserContext userContext,
         IMapper mapper
     )
@@ -27,10 +28,8 @@ public class GetCurrentUserRestaurantsHandler(
 
         logger.LogInformation("Getting restaurants owned by user {@User}...", user);
 
-        var dbUser = await userManager.Users
-                         .Include(u => u.OwnedRestaurants)
-                         .FirstOrDefaultAsync(u => u.Email == user.Email, cancellationToken) ??
-                     throw new InvalidOperationException("User not found in the database");
+        var dbUser = await userRepository.GetUserWithOwnedRestaurantsAsync(user.Email, cancellationToken)
+                     ?? throw new InvalidOperationException("User not found in the database");
 
         var restaurants = dbUser.OwnedRestaurants;
 

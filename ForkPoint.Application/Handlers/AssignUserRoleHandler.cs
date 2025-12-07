@@ -4,12 +4,13 @@ using ForkPoint.Domain.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using ForkPoint.Domain.Repositories;
 
 namespace ForkPoint.Application.Handlers;
 
 public class AssignUserRoleHandler(
     ILogger<AssignUserRoleHandler> logger,
-    UserManager<User> userManager,
+    IUserRepository userRepository,
     RoleManager<IdentityRole<int>> roleManager
 ) : IRequestHandler<AssignUserRoleRequest, AssignUserRoleResponse>
 {
@@ -20,13 +21,13 @@ public class AssignUserRoleHandler(
     {
         logger.LogInformation("Assigning role {Role} to user with email {Email}", request.Role, request.Email);
 
-        var user = await userManager.FindByEmailAsync(request.Email) ??
+        var user = await userRepository.FindByEmailAsync(request.Email) ??
                    throw new NotFoundException(nameof(User), request.Email);
 
         var role = await roleManager.FindByNameAsync(request.Role) ??
                    throw new NotFoundException(nameof(IdentityRole), request.Role);
 
-        var result = await userManager.AddToRoleAsync(user, role.Name!);
+        var result = await userRepository.AddToRoleAsync(user, role.Name!);
 
         if (!result.Succeeded)
         {

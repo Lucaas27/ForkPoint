@@ -6,13 +6,14 @@ using ForkPoint.Domain.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using ForkPoint.Domain.Repositories;
 
 namespace ForkPoint.Application.Handlers;
 
 public class UpdateUserDetailsHandler(
     ILogger<UpdateUserDetailsHandler> logger,
     IUserContext userContext,
-    UserManager<User> userManager,
+    IUserRepository userRepository,
     IMapper mapper
 )
     : IRequestHandler<UpdateUserDetailsRequest, UpdateUserDetailsResponse>
@@ -26,13 +27,13 @@ public class UpdateUserDetailsHandler(
 
         logger.LogInformation("Updating user details with {Request} for user {Email}", request, user.Email);
 
-        var dbUser = await userManager.FindByIdAsync(user.Id.ToString()) ??
+        var dbUser = await userRepository.FindByIdAsync(user.Id.ToString()) ??
                      throw new NotFoundException(nameof(User), user.Id.ToString());
 
         // Map the request data to the domain model
         mapper.Map(request, dbUser);
 
-        var result = await userManager.UpdateAsync(dbUser);
+        var result = await userRepository.UpdateAsync(dbUser);
 
         if (!result.Succeeded)
         {

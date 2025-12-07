@@ -5,12 +5,13 @@ using ForkPoint.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using ForkPoint.Domain.Repositories;
 
 namespace ForkPoint.Application.Handlers;
 
 public class LogoutHandler(
     ILogger<LogoutHandler> logger,
-    UserManager<User> userManager,
+    IUserRepository userRepository,
     IAuthService authService,
     IUserContext userContext
 ) : IRequestHandler<LogoutRequest, LogoutResponse>
@@ -34,8 +35,8 @@ public class LogoutHandler(
 
         logger.LogInformation("Processing logout request for user {Email}", user.Email);
 
-        var dbUser = await userManager.FindByEmailAsync(user.Email) ??
-                     throw new InvalidOperationException("User not found in the database");
+        var dbUser = await userRepository.FindByEmailAsync(user.Email) ??
+                 throw new InvalidOperationException("User not found in the database");
 
         // Invalidate the refresh token for the user to prevent further access to the API.
         await authService.InvalidateRefreshToken(dbUser);

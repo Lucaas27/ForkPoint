@@ -3,6 +3,7 @@ using ForkPoint.Application.Handlers;
 using ForkPoint.Application.Models.Handlers.ExternalProviderCallback;
 using ForkPoint.Application.Services;
 using ForkPoint.Domain.Entities;
+using ForkPoint.Domain.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -16,7 +17,7 @@ public class ExternalProviderHandlerTests
 {
     private readonly Mock<ILogger<ExternalProviderHandler>> _loggerMock;
     private readonly Mock<IAuthService> _authServiceMock;
-    private readonly Mock<UserManager<User>> _userManagerMock;
+    private readonly Mock<IUserRepository> _userRepositoryMock;
     private readonly Mock<SignInManager<User>> _signInManagerMock;
     private readonly ExternalProviderHandler _handler;
     private static readonly User _user = new() { UserName = "testuser", Email = "test@example.com" };
@@ -27,13 +28,13 @@ public class ExternalProviderHandlerTests
     {
         _loggerMock = new Mock<ILogger<ExternalProviderHandler>>();
         _authServiceMock = MockAuthService();
-        _userManagerMock = MockUserManager();
+        _userRepositoryMock = MockUserRepository();
         _signInManagerMock = MockSignInManager();
 
         _handler = new ExternalProviderHandler(
             _loggerMock.Object,
             _authServiceMock.Object,
-            _userManagerMock.Object,
+            _userRepositoryMock.Object,
             _signInManagerMock.Object
         );
     }
@@ -73,9 +74,9 @@ public class ExternalProviderHandlerTests
     {
         // Arrange
         var request = new ExternalProviderRequest();
-        _userManagerMock.Setup(u => u.FindByLoginAsync(It.IsAny<string>(), It.IsAny<string>()))
+        _userRepositoryMock.Setup(u => u.FindByLoginAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync((User?)null);
-        _userManagerMock.Setup(u => u.FindByEmailAsync(It.IsAny<string>()))
+        _userRepositoryMock.Setup(u => u.FindByEmailAsync(It.IsAny<string>()))
             .ReturnsAsync((User?)null);
 
         // Act
@@ -83,8 +84,8 @@ public class ExternalProviderHandlerTests
 
         // Assert
         response.AccessToken.Should().Be(_dummyToken);
-        _userManagerMock.Verify(u => u.CreateAsync(It.IsAny<User>()), Times.Once);
-        _userManagerMock.Verify(u => u.AddLoginAsync(It.IsAny<User>(), It.IsAny<UserLoginInfo>()), Times.Once);
+        _userRepositoryMock.Verify(u => u.CreateAsync(It.IsAny<User>(), It.IsAny<string>()), Times.Once);
+        _userRepositoryMock.Verify(u => u.AddLoginAsync(It.IsAny<User>(), It.IsAny<UserLoginInfo>()), Times.Once);
     }
 
     private static Mock<UserManager<User>> MockUserManager()
@@ -167,6 +168,33 @@ public class ExternalProviderHandlerTests
         return mockUserManager;
     }
 
+    private static Mock<IUserRepository> MockUserRepository()
+    {
+        var mock = new Mock<IUserRepository>();
+        var users = new List<User>();
+
+        mock.Setup(u => u.CreateAsync(It.IsAny<User>(), It.IsAny<string>()))
+            .Callback<User, string?>((user, pw) => users.Add(user))
+            .ReturnsAsync(IdentityResult.Success);
+
+        mock.Setup(u => u.FindByEmailAsync(It.IsAny<string>()))
+            .ReturnsAsync((string email) => users.FirstOrDefault(u => u.Email == email));
+
+        mock.Setup(u => u.FindByLoginAsync(It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync((User?)null);
+
+        mock.Setup(u => u.AddLoginAsync(It.IsAny<User>(), It.IsAny<UserLoginInfo>()))
+            .ReturnsAsync(IdentityResult.Success);
+
+        mock.Setup(u => u.AddToRoleAsync(It.IsAny<User>(), It.IsAny<string>()))
+            .ReturnsAsync(IdentityResult.Success);
+
+        mock.Setup(u => u.GetRolesAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<string>());
+
+        return mock;
+    }
+
 
     private static Mock<SignInManager<User>> MockSignInManager()
     {
@@ -223,11 +251,11 @@ public class ExternalProviderHandlerTests
     {
         // Arrange
         var request = new ExternalProviderRequest();
-        _userManagerMock.Setup(u => u.FindByLoginAsync(It.IsAny<string>(), It.IsAny<string>()))
+        _userRepositoryMock.Setup(u => u.FindByLoginAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync((User?)null);
-        _userManagerMock.Setup(u => u.FindByEmailAsync(It.IsAny<string>()))
+        _userRepositoryMock.Setup(u => u.FindByEmailAsync(It.IsAny<string>()))
             .ReturnsAsync((User?)null);
-        _userManagerMock.Setup(u => u.CreateAsync(It.IsAny<User>()))
+        _userRepositoryMock.Setup(u => u.CreateAsync(It.IsAny<User>(), It.IsAny<string>()))
             .ReturnsAsync(IdentityResult.Failed(new IdentityError { Description = "User creation failed" }));
 
         // Act

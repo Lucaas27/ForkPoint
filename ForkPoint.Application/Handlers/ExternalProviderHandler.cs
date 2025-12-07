@@ -6,13 +6,14 @@ using ForkPoint.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using ForkPoint.Domain.Repositories;
 
 namespace ForkPoint.Application.Handlers;
 
 public class ExternalProviderHandler(
     ILogger<ExternalProviderHandler> logger,
     IAuthService authService,
-    UserManager<User> userManager,
+    IUserRepository userRepository,
     SignInManager<User> signInManager
 ) : IRequestHandler<ExternalProviderRequest, ExternalProviderResponse>
 {
@@ -48,10 +49,10 @@ public class ExternalProviderHandler(
         var providerKey = externalLoginInfo.ProviderKey;
 
         // First try to find user by external login
-        var externalUser = await userManager.FindByLoginAsync(provider, providerKey);
+        var externalUser = await userRepository.FindByLoginAsync(provider, providerKey);
 
         // Find internal user
-        var internalUser = await userManager.FindByEmailAsync(email!);
+        var internalUser = await userRepository.FindByEmailAsync(email!);
 
         // If there is no external user, create one
         if (externalUser == null)
@@ -76,7 +77,7 @@ public class ExternalProviderHandler(
                     // This can happen if user registered with email and then logged in with external provider
                     await CreateExternalUserAssociationAsync(internalUser, provider, providerKey);
                     internalUser.EmailConfirmed = true;
-                    await userManager.UpdateAsync(internalUser);
+                    await userRepository.UpdateAsync(internalUser);
                     return internalUser;
             }
         }
@@ -88,14 +89,14 @@ public class ExternalProviderHandler(
 
     private async Task CreateInternalUserAsync(User user)
     {
-        var createResult = await userManager.CreateAsync(user);
+        var createResult = await userRepository.CreateAsync(user);
         if (!createResult.Succeeded)
         {
             throw new InvalidOperationException(
                 $"Failed to create user: {string.Join(", ", createResult.Errors.Select(e => e.Description))}");
         }
 
-        var roleResult = await userManager.AddToRoleAsync(user, "User");
+        var roleResult = await userRepository.AddToRoleAsync(user, "User");
 
         if (!roleResult.Succeeded)
         {
@@ -107,7 +108,7 @@ public class ExternalProviderHandler(
     private async Task CreateExternalUserAssociationAsync(User user, string provider, string providerKey)
     {
         // Create external login association
-        var addLoginResult = await userManager.AddLoginAsync(
+        var addLoginResult = await userRepository.AddLoginAsync(
             user,
             new UserLoginInfo(provider, providerKey, null));
 
