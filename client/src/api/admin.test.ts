@@ -17,14 +17,14 @@ beforeEach(() => {
 describe("admin API", () => {
 	it("assignRole posts to roles endpoint", async () => {
 		const { assignRole } = await import("./admin");
-		const payload = { userId: 1, role: "Owner" };
+		const payload = { email: "test@example.com", role: "Owner" };
 		await assignRole(payload);
 		expect(api.post).toHaveBeenCalledWith("/api/admin/users/roles", payload);
 	});
 
 	it("removeRole deletes with data payload", async () => {
 		const { removeRole } = await import("./admin");
-		const payload = { userId: 1, role: "Owner" };
+		const payload = { email: "test@example.com", role: "Owner" };
 		await removeRole(payload);
 		expect(api.delete).toHaveBeenCalledWith("/api/admin/users/roles", {
 			data: payload,
