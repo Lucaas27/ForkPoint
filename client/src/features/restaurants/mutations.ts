@@ -4,7 +4,7 @@ import {
 	deleteRestaurant,
 	updateRestaurant,
 } from "@/api/restaurants";
-import { deleteAllMenuItems } from "@/api/menuItems";
+import { deleteAllMenuItems, createMenuItem } from "@/api/menuItems";
 import { restaurantsKeys } from "./keys";
 import { toast } from "sonner";
 import { getErrorMessage, getSuccessMessage } from "@/lib/utils";
@@ -128,6 +128,36 @@ export function useUpdateRestaurant(id: number, showToasts: boolean = true) {
 		},
 		onError: (err) => {
 			if (showToasts) {
+				const msg = getErrorMessage(err);
+				toast.error(msg);
+			}
+		},
+	});
+}
+
+// Create a menu item for a restaurant
+export function useCreateMenuItem(restaurantId: number, showToasts: boolean = true) {
+	const qc = useQueryClient();
+	return useMutation({
+		mutationFn: (payload: Record<string, unknown>) => createMenuItem(restaurantId, payload),
+		onSuccess: (data) => {
+			// invalidate menu and detail so UI refreshes
+			qc.invalidateQueries({ queryKey: restaurantsKeys.menu(restaurantId) });
+			qc.invalidateQueries({ queryKey: restaurantsKeys.detail(restaurantId) });
+			if (showToasts) {
+				const msg = getSuccessMessage(data) ?? "Menu item created";
+				toast.success(msg);
+			}
+		},
+		onError: (err) => {
+			const errResponse = (
+				err as { response?: { data?: { errors: Record<string, string[]> } } }
+			).response?.data?.errors;
+
+			if (errResponse && typeof errResponse === "object") {
+				const message = Object.values(errResponse).flat().join(", ");
+				toast.error(message);
+			} else if (showToasts) {
 				const msg = getErrorMessage(err);
 				toast.error(msg);
 			}

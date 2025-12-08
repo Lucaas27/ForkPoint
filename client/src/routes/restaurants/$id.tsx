@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
 
 import { useRestaurant } from "@/features/restaurants/queries";
 import { useAuthContext } from "@/providers/auth-provider";
@@ -14,6 +15,20 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+	Sheet,
+	SheetTrigger,
+	SheetContent,
+	SheetHeader,
+	SheetFooter,
+	SheetTitle,
+	SheetDescription,
+	SheetClose,
+} from "@/components/ui/sheet";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -28,6 +43,7 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Trash2, UtensilsCrossed } from "lucide-react";
+import { useCreateMenuItem } from "@/features/restaurants/mutations";
 
 export const Route = createFileRoute("/restaurants/$id")({
 	component: RestaurantDetail,
@@ -61,6 +77,15 @@ function RestaurantDetail() {
 	const { id: idParam } = Route.useParams();
 	const id = Number(idParam);
 	const { isAuthenticated } = useAuthContext();
+	const [open, setOpen] = useState(false);
+	const [name, setName] = useState("");
+	const [description, setDescription] = useState("");
+	const [price, setPrice] = useState<number | undefined>(undefined);
+	const [kiloCalories, setKiloCalories] = useState<number | undefined>(undefined);
+	const [isVegetarian, setIsVegetarian] = useState(false);
+	const [isVegan, setIsVegan] = useState(false);
+	const createMenu = useCreateMenuItem(id);
+	const creating = Boolean((createMenu as unknown as { isLoading?: boolean }).isLoading);
 
 	// Fetch and cache the restaurant by a stable key.
 	// React Query handles loading/error state and caching
@@ -176,7 +201,89 @@ function RestaurantDetail() {
 							<CardTitle>Menu Items</CardTitle>
 						</div>
 						{isAuthenticated && isOwner && (
-							<Button size="sm">Create Menu Item</Button>
+							<Sheet open={open} onOpenChange={setOpen}>
+								<SheetTrigger asChild>
+									<Button size="sm">Create Menu Item</Button>
+								</SheetTrigger>
+
+								<SheetContent side="right">
+									<SheetHeader>
+										<SheetTitle>Create Menu Item</SheetTitle>
+										<SheetDescription>
+											Add a new dish to this restaurant's menu.
+										</SheetDescription>
+									</SheetHeader>
+
+									<div className="p-4 space-y-3">
+										<div className="flex flex-col gap-2">
+											<Label>Name</Label>
+											<Input value={name} onChange={(e) => setName(e.target.value)} />
+										</div>
+
+										<div className="flex flex-col gap-2">
+											<Label>Description</Label>
+											<Textarea value={description} onChange={(e) => setDescription(e.target.value)} />
+										</div>
+
+										<div className="grid grid-cols-2 gap-2">
+											<div className="flex flex-col gap-2">
+												<Label>Price (£)</Label>
+												<Input type="number" value={price ?? ""} onChange={(e) => setPrice(e.target.value === "" ? undefined : parseFloat(e.target.value))} />
+											</div>
+											<div className="flex flex-col gap-2">
+												<Label>Calories</Label>
+												<Input type="number" value={kiloCalories ?? ""} onChange={(e) => setKiloCalories(e.target.value === "" ? undefined : parseInt(e.target.value, 10))} />
+											</div>
+										</div>
+
+										<div className="flex items-center gap-4">
+											<div className="flex items-center gap-2">
+												<Switch checked={isVegetarian} onCheckedChange={(v) => setIsVegetarian(Boolean(v))} />
+												<span className="text-sm">Vegetarian</span>
+											</div>
+											<div className="flex items-center gap-2">
+												<Switch checked={isVegan} onCheckedChange={(v) => setIsVegan(Boolean(v))} />
+												<span className="text-sm">Vegan</span>
+											</div>
+										</div>
+									</div>
+
+									<SheetFooter>
+										<div className="flex items-center justify-end gap-2 w-full">
+											<SheetClose asChild>
+												<Button variant="ghost">Cancel</Button>
+											</SheetClose>
+											<Button
+												onClick={() => {
+													const payload: Record<string, unknown> = {
+														name,
+														description,
+														price,
+														kiloCalories,
+														isVegetarian,
+														isVegan,
+													};
+													createMenu.mutate(payload, {
+														onSuccess: () => {
+															// reset form and close sheet
+															setName("");
+															setDescription("");
+															setPrice(undefined);
+															setKiloCalories(undefined);
+															setIsVegetarian(false);
+															setIsVegan(false);
+															setOpen(false);
+														},
+													});
+												}}
+												disabled={creating}
+											>
+												{creating ? "Creating..." : "Create"}
+											</Button>
+										</div>
+									</SheetFooter>
+								</SheetContent>
+							</Sheet>
 						)}
 					</div>
 				</CardHeader>
