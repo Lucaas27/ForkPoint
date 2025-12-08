@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ForkPoint.API.Controllers;
 
-[Route("api/external-restaurants")]
-public class ExternalRestaurantsController(IMediator mediator) : ControllerBase
+[Route("api/external")]
+public class ExternalController(IMediator mediator) : ControllerBase
 {
-    [HttpGet]
+    [HttpGet("restaurants")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
