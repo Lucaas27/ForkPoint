@@ -1,7 +1,9 @@
 ﻿using System.Reflection;
 using System.Text.Json.Serialization;
 using ForkPoint.API.Middlewares;
+using ForkPoint.Domain.Enums;
 using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
@@ -23,7 +25,9 @@ public static class WebApplicationBuilderExtension
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
-        var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+        var allowedOrigins =
+            builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("CorsPolicy", policy =>
@@ -31,16 +35,15 @@ public static class WebApplicationBuilderExtension
                 if (allowedOrigins.Length > 0)
                 {
                     policy.WithOrigins(allowedOrigins)
-                          .AllowAnyHeader()
-                          .AllowAnyMethod()
-                          .AllowCredentials();
-                }
-                else
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                } else
                 {
                     // No origins allowed unless configured
                     policy.WithOrigins()
-                          .AllowAnyHeader()
-                          .AllowAnyMethod();
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
                 }
             });
         });
@@ -82,6 +85,7 @@ public static class WebApplicationBuilderExtension
                 In = ParameterLocation.Header,
                 Name = "Authorization"
             });
+
             options.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
@@ -99,12 +103,25 @@ public static class WebApplicationBuilderExtension
 
             options.DescribeAllParametersInCamelCase();
 
+            options.MapType<PageSizeOptions>(() =>
+            {
+                var values = Enum.GetValues(typeof(PageSizeOptions)).Cast<int>()
+                    .Select(IOpenApiAny (v) => new OpenApiInteger(v))
+                    .ToList();
+
+                return new OpenApiSchema
+                {
+                    Type = "integer",
+                    Format = "int32",
+                    Enum = values
+                };
+            });
+
             options.SwaggerDoc("v1", new OpenApiInfo
             {
                 Version = "v1",
                 Title = "ForkPoint API",
                 Description = "ASP.NET 8 Core Web API for managing restaurants and menus"
-
             });
 
             var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
