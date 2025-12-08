@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useAuthContext } from "../providers/auth-provider";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 
 export default function Header() {
 	const { isAuthenticated, hasRole, logOut } = useAuthContext();
@@ -95,7 +95,7 @@ export default function Header() {
 									}}
 								>
 									<LogOut className="h-4 w-4" />
-									Sign Out
+									Log Out
 								</Button>
 							</>
 						)}
@@ -109,72 +109,87 @@ export default function Header() {
 									<Menu className="h-5 w-5" />
 								</Button>
 							</SheetTrigger>
-							<SheetContent side="left">
+							<SheetContent side="left" className="flex flex-col h-full">
 								<div className="flex items-center gap-2 p-4 border-b">
 									<UtensilsCrossed className="h-5 w-5" />
 									<span className="font-semibold">
 										{env.VITE_APP_TITLE ?? "ForkPoint"}
 									</span>
 								</div>
-								<div className="flex flex-col p-4 gap-3">
-									<Link
-										to="/restaurants"
-										className="text-sm font-medium flex items-center gap-2"
-										activeProps={{
-											className: "text-primary flex items-center gap-2",
-										}}
-										search={{ page: 1, size: 10 }}
-									>
-										<HouseIcon className="h-4 w-4" />
-										Restaurants
-									</Link>
-									{!isAuthenticated ? (
+								<div className="flex-1 overflow-auto p-4 space-y-6">
+									<SheetClose asChild>
 										<Link
-											to="/login"
-											className="text-sm font-medium flex items-center gap-2"
+											to="/restaurants"
+											className="font-medium flex items-center gap-2"
 											activeProps={{
 												className: "text-primary flex items-center gap-2",
 											}}
+											search={{ page: 1, size: 10 }}
 										>
-											<LogIn className="h-4 w-4" />
-											Get Started
+											<HouseIcon className="h-4 w-4" />
+											Restaurants
 										</Link>
-									) : (
-										<>
+									</SheetClose>
+									{!isAuthenticated ? (
+										<SheetClose asChild>
 											<Link
-												to="/account"
-												className="text-sm font-medium flex items-center gap-2"
+												to="/login"
+												className="font-medium flex items-center gap-2"
 												activeProps={{
 													className: "text-primary flex items-center gap-2",
 												}}
 											>
-												<UserCircle className="h-4 w-4" />
-												Account
+												<LogIn className="h-4 w-4" />
+												Get Started
 											</Link>
-											{hasRole("Admin") && (
+										</SheetClose>
+									) : (
+										<>
+											<SheetClose asChild>
 												<Link
-													to="/admin"
-													search={{ page: 1, size: 10 }}
-													className="text-sm font-medium flex items-center gap-2"
+													to="/account"
+													className="font-medium flex items-center gap-2"
 													activeProps={{
 														className: "text-primary flex items-center gap-2",
 													}}
 												>
-													<Shield className="h-4 w-4" />
-													Admin
+													<UserCircle className="h-4 w-4" />
+													Account
 												</Link>
+											</SheetClose>
+											{hasRole("Admin") && (
+												<SheetClose asChild>
+													<Link
+														to="/admin"
+														search={{ page: 1, size: 10 }}
+														className="font-medium flex items-center gap-2"
+														activeProps={{
+															className: "text-primary flex items-center gap-2",
+														}}
+													>
+														<Shield className="h-4 w-4" />
+														Admin
+													</Link>
+												</SheetClose>
 											)}
+										</>
+									)}
+								</div>
+
+								<div className="p-4 border-t">
+									{isAuthenticated && (
+										<SheetClose asChild>
 											<Button
-												variant="outline"
-												className="justify-start flex items-center gap-2"
+												className="w-full justify-start flex items-center gap-2"
 												onClick={() => {
 													logOut();
+													navigate({ to: "/login", replace: true });
 												}}
 											>
 												<LogOut className="h-4 w-4" />
-												Sign Out
+												Log Out
 											</Button>
-										</>
+										</SheetClose>
 									)}
 								</div>
 							</SheetContent>

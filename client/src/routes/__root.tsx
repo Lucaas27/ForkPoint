@@ -1,7 +1,7 @@
 import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
-import Header from '../components/Header'
 
 import type { QueryClient } from '@tanstack/react-query'
+import Header from '@/components/header'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -26,18 +26,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
           </nav>
         </div>
       </footer>
-      {/* <TanStackDevtools
-        config={{
-          position: 'bottom-right',
-        }}
-        plugins={[
-          {
-            name: 'Tanstack Router',
-            render: <TanStackRouterDevtoolsPanel />,
-          },
-          TanStackQueryDevtools,
-        ]}
-      /> */}
     </div>
   ),
 })

@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { User, Store } from "lucide-react";
+import PaginationControl from "@/components/pagination-control";
 
 export const Route = createFileRoute("/account/")({ component: Account });
 
@@ -64,8 +65,7 @@ function Account() {
 	const pageSize = 10;
 	const totalItems = restaurants.length;
 	const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
-	const canPrev = page > 1;
-	const canNext = page < totalPages;
+
 	const start = (page - 1) * pageSize;
 	const end = Math.min(start + pageSize, totalItems);
 	const pagedRestaurants = restaurants.slice(start, end);
@@ -159,44 +159,15 @@ function Account() {
 
 							<div className="flex items-center justify-between pt-2">
 								<div className="text-sm text-muted-foreground">
-									Page {page} of {totalPages} - Showing {start + 1}-{end} of{" "}
+									Page {page} of {totalPages} - Showing {start + 1}-{end} of {" "}
 									{totalItems}
 								</div>
-								<div className="flex items-center gap-2">
-									<Button
-										variant="outline"
-										size="sm"
-										disabled={!canPrev}
-										onClick={() => setPage(1)}
-									>
-										First
-									</Button>
-									<Button
-										variant="outline"
-										size="sm"
-										disabled={!canPrev}
-										// Go to previous page by decreasing page number by 1 but not less than 1
-										onClick={() => setPage((p) => Math.max(1, p - 1))}
-									>
-										Previous
-									</Button>
-									<Button
-										variant="outline"
-										size="sm"
-										disabled={!canNext}
-										// Go to next page by increasing page number by 1 but not more than totalPages
-										onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-									>
-										Next
-									</Button>
-									<Button
-										variant="outline"
-										size="sm"
-										disabled={!canNext}
-										onClick={() => setPage(totalPages)}
-									>
-										Last
-									</Button>
+								<div>
+									<PaginationControl
+										currentPage={page}
+										totalPages={totalPages}
+										onPageChange={(p) => setPage(p)}
+									/>
 								</div>
 							</div>
 						</div>

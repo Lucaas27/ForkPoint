@@ -15,12 +15,12 @@ import {
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
-	SelectValue
+	SelectValue,
 } from "@/components/ui/select";
 import { Plus, ChevronRight, Search } from "lucide-react";
 import { useAuthContext } from "@/providers/auth-provider";
 import { useState } from "react";
-import { RestaurantsPager } from "@/components/restaurants-pager";
+import PaginationControl from "@/components/pagination-control";
 
 export const Route = createFileRoute("/restaurants/")({
 	// Read and validate search params for pagination and filtering at route level
@@ -73,43 +73,46 @@ function Restaurants() {
 	const [localCategoryFilter, setLocalCategoryFilter] = useState(categoryFilter || "all");
 
 	const handleSearch = () => {
-		const params: { page: number; size: number; searchBy?: string; searchTerm?: string; categoryFilter?: string } = { page: 1, size };
+		// build overrides from the users local input and navigate to page 1
+		const searchOverrides: { page: number; searchBy?: string; searchTerm?: string; categoryFilter?: string } = { page: 1 };
 		if (localSearchTerm.trim()) {
-			params.searchBy = localSearchBy;
-			params.searchTerm = localSearchTerm.trim();
+			searchOverrides.searchBy = localSearchBy;
+			searchOverrides.searchTerm = localSearchTerm.trim();
 		}
 		if (localCategoryFilter !== "all") {
-			params.categoryFilter = localCategoryFilter;
+			searchOverrides.categoryFilter = localCategoryFilter;
 		}
 		navigate({
 			to: "/restaurants",
-			search: params,
+			search: buildSearchParams(searchOverrides),
 		});
 	};
 
 	const handleClearSearch = () => {
+		// clear local inputs and navigate to the first page with no filters
 		setLocalSearchTerm("");
 		setLocalSearchBy("Name");
 		setLocalCategoryFilter("all");
 		navigate({
 			to: "/restaurants",
-			search: { page: 1, size },
+			search: buildSearchParams({ page: 1, includeFilters: false }),
 		});
 	};
 
 	const handleCategoryFilter = (value: string) => {
+		// update local filter and navigate to page 1 keeping any active search text
 		setLocalCategoryFilter(value);
-		const params: { page: number; size: number; searchBy?: string; searchTerm?: string; categoryFilter?: string } = { page: 1, size };
+		const searchOverrides: { page: number; searchBy?: string; searchTerm?: string; categoryFilter?: string } = { page: 1 };
 		if (localSearchTerm.trim()) {
-			params.searchBy = localSearchBy;
-			params.searchTerm = localSearchTerm.trim();
+			searchOverrides.searchBy = localSearchBy;
+			searchOverrides.searchTerm = localSearchTerm.trim();
 		}
 		if (value !== "all") {
-			params.categoryFilter = value;
+			searchOverrides.categoryFilter = value;
 		}
 		navigate({
 			to: "/restaurants",
-			search: params,
+			search: buildSearchParams(searchOverrides),
 		});
 	};
 
@@ -136,28 +139,53 @@ function Restaurants() {
 
 	const resp = (data ?? {}) as unknown as RestaurantsResponse;
 	let restaurants: RestaurantItem[] = resp.items ?? [];
-	const unfilteredTotalItems: number =
-		resp.totalItemsCount ?? resp.total ?? restaurants.length;
+	const unfilteredTotalItems: number = resp.totalItemsCount ?? resp.total ?? restaurants.length;
 	const currentPage: number = resp.pageNumber ?? page;
 	const pageSize: number = resp.pageSize ?? size;
 
-	// Apply client side category filtering
+	// apply client side category filtering
 	if (categoryFilter && categoryFilter !== "all") {
-		restaurants = restaurants.filter(r => r.category === categoryFilter);
+		restaurants = restaurants.filter((r) => r.category === categoryFilter);
 	}
 
-	// Recalculate totals after filtering
+	// recalculate totals after filtering
 	const totalItems: number = categoryFilter && categoryFilter !== "all" ? restaurants.length : unfilteredTotalItems;
 	const totalPages: number = Math.max(1, Math.ceil(totalItems / pageSize));
+
+	// build search params for navigation and preserves current filters by default
+	const buildSearchParams = (options?: {
+		page?: number;
+		searchBy?: string;
+		searchTerm?: string;
+		categoryFilter?: string;
+		includeFilters?: boolean;
+	}) => {
+		// prefer overrides passed in options otherwise fall back to route values
+		const { page: pageOpt, searchBy: searchByOverride, searchTerm: searchTermOverride, categoryFilter: categoryFilterOverride, includeFilters = true } = options || {};
+
+		const searchParams: { page: number; size: number; searchBy?: string; searchTerm?: string; categoryFilter?: string } = {
+			page: pageOpt ?? currentPage,
+			size: pageSize,
+		};
+
+		if (includeFilters) {
+			const finalSearchBy = searchByOverride ?? searchBy;
+			const finalSearchTerm = searchTermOverride ?? searchTerm;
+			const finalCategoryFilter = categoryFilterOverride ?? categoryFilter;
+			if (finalSearchBy) searchParams.searchBy = finalSearchBy;
+			if (finalSearchTerm) searchParams.searchTerm = finalSearchTerm;
+			if (finalCategoryFilter) searchParams.categoryFilter = finalCategoryFilter;
+		}
+
+		return searchParams;
+	};
 
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center justify-between">
 				<div>
 					<h2 className="text-3xl font-bold tracking-tight">Restaurants</h2>
-					<p className="text-muted-foreground">
-						Browse all available restaurants
-					</p>
+					<p className="text-muted-foreground">Browse all available restaurants</p>
 				</div>
 				{canCreate ? (
 					<Link to="/restaurants/create">
@@ -167,9 +195,7 @@ function Restaurants() {
 						</Button>
 					</Link>
 				) : (
-					<p className="text-sm text-muted-foreground">
-						Only Admins and Owners can create restaurants.
-					</p>
+					<p className="text-sm text-muted-foreground">Only Admins and Owners can create restaurants.</p>
 				)}
 			</div>
 			<div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
@@ -221,33 +247,18 @@ function Restaurants() {
 			</div>
 			<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 				{restaurants.map((r) => {
-					const fallback =
-						r.imageUrl ??
-						`https://picsum.photos/seed/${encodeURIComponent(String(r.id))}/1200/800`;
-
+					const fallback = r.imageUrl ?? `https://picsum.photos/seed/${encodeURIComponent(String(r.id))}/1200/800`;
 					return (
-						<Card
-							key={r.id}
-							className="hover:shadow-lg transition-all overflow-hidden"
-						>
+						<Card key={r.id} className="hover:shadow-lg transition-all overflow-hidden">
 							<div className="aspect-video w-full bg-muted">
-								<img
-									src={fallback}
-									alt={r.name}
-									className="h-full w-full object-cover"
-									loading="lazy"
-								/>
+								<img src={fallback} alt={r.name} className="h-full w-full object-cover" loading="lazy" />
 							</div>
 							<CardHeader>
 								<div className="flex items-start justify-between">
 									<div className="space-y-1">
 										<CardTitle>{r.name}</CardTitle>
-										<CardDescription className="line-clamp-2">
-											{r.description}
-										</CardDescription>
-										{r.category && (
-											<Badge variant="secondary">{r.category}</Badge>
-										)}
+										<CardDescription className="line-clamp-2">{r.description}</CardDescription>
+										{r.category && <Badge variant="secondary">{r.category}</Badge>}
 									</div>
 									<Link to="/restaurants/$id" params={{ id: String(r.id) }}>
 										<Button variant="ghost" size="sm">
@@ -261,11 +272,15 @@ function Restaurants() {
 					);
 				})}
 			</div>
-			<RestaurantsPager
+			<PaginationControl
 				currentPage={currentPage}
 				totalPages={totalPages}
-				totalItems={totalItems}
-				pageSize={pageSize}
+				onPageChange={(p) =>
+					navigate({
+						to: "/restaurants",
+						search: buildSearchParams({ page: p }),
+					})
+				}
 			/>
 		</div>
 	);
