@@ -17,7 +17,7 @@ namespace ForkPoint.API.Controllers;
 /// </summary>
 /// <param name="mediator">The mediator instance for handling requests.</param>
 [Route("api/restaurants")]
-// [Authorize]
+[Authorize]
 [ApiController]
 public class RestaurantsController(IMediator mediator) : ControllerBase
 {
@@ -55,7 +55,9 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<CustomException>(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<GetRestaurantByIdResponse>> GetRestaurantById([FromRoute] int restaurantId)
+    public async Task<ActionResult<GetRestaurantByIdResponse>> GetRestaurantById(
+        [FromRoute] int restaurantId
+    )
     {
         var response = await mediator.Send(new GetRestaurantByIdRequest(restaurantId));
 
@@ -82,7 +84,8 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     {
         var response = await mediator.Send(request);
 
-        return CreatedAtAction(nameof(GetRestaurantById), new { restaurantId = response.NewRecordId }, response);
+        return CreatedAtAction(nameof(GetRestaurantById),
+            new { restaurantId = response.NewRecordId }, response);
     }
 
 
@@ -100,7 +103,9 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<CustomException>(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<DeleteRestaurantResponse>> DeleteRestaurant([FromRoute] int restaurantId)
+    public async Task<ActionResult<DeleteRestaurantResponse>> DeleteRestaurant(
+        [FromRoute] int restaurantId
+    )
     {
         await mediator.Send(new DeleteRestaurantRequest(restaurantId));
 
