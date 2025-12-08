@@ -76,6 +76,7 @@ export default function Header() {
 								{hasRole("Admin") && (
 									<Link
 										to="/admin"
+										search={{ page: 1, size: 10 }}
 										className="text-sm font-medium transition-colors hover:text-primary flex items-center gap-1"
 										activeProps={{
 											className:
@@ -153,6 +154,7 @@ export default function Header() {
 											{hasRole("Admin") && (
 												<Link
 													to="/admin"
+													search={{ page: 1, size: 10 }}
 													className="text-sm font-medium flex items-center gap-2"
 													activeProps={{
 														className: "text-primary flex items-center gap-2",
