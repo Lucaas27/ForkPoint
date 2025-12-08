@@ -20,6 +20,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Shield } from "lucide-react";
+import PaginationControl from "@/components/pagination-control";
 
 export const Route = createFileRoute("/admin/")({
 	validateSearch: (search: Record<string, unknown>) => {
@@ -145,16 +146,12 @@ function Admin() {
 
 							<div className="flex items-center justify-between">
 								<div>Showing {users.length} users</div>
-								<div className="flex items-center gap-4">
-									<div className="text-sm">Page {pageNumber} / {totalPages}</div>
-									<div className="flex gap-2">
-										<Button disabled={pageNumber <= 1} onClick={() => navigate({ to: "/admin", search: { page: pageNumber - 1, size: pageSize } })}>
-											Prev
-										</Button>
-										<Button disabled={pageNumber >= totalPages} onClick={() => navigate({ to: "/admin", search: { page: pageNumber + 1, size: pageSize } })}>
-											Next
-										</Button>
-									</div>
+								<div>
+									<PaginationControl
+										currentPage={pageNumber}
+										totalPages={totalPages}
+										onPageChange={(p) => navigate({ to: "/admin", search: { page: p, size: pageSize } })}
+									/>
 								</div>
 							</div>
 						</div>
