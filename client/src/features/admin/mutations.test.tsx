@@ -1,5 +1,6 @@
+/* @vitest-environment jsdom */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, fireEvent, waitFor } from "@testing-library/react";
+import { render, fireEvent, waitFor, within } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 vi.mock("@/api/admin", () => ({
@@ -29,13 +30,14 @@ describe("admin mutations", () => {
             );
         }
 
-        const { getByText } = render(
+        const { container } = render(
             <QueryClientProvider client={qc}>
                 <TestComp />
             </QueryClientProvider>,
         );
 
-        fireEvent.click(getByText("go"));
+        const btn = within(container).getByText("go");
+        fireEvent.click(btn);
 
         await waitFor(() => {
             expect(spy).toHaveBeenCalled();
@@ -53,13 +55,14 @@ describe("admin mutations", () => {
             );
         }
 
-        const { getByText } = render(
+        const { container } = render(
             <QueryClientProvider client={qc}>
                 <TestComp />
             </QueryClientProvider>,
         );
 
-        fireEvent.click(getByText("go"));
+        const btn = within(container).getByText("go");
+        fireEvent.click(btn);
 
         await waitFor(() => {
             expect(spy).toHaveBeenCalled();
