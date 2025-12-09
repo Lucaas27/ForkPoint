@@ -12,7 +12,9 @@ public class FoursquareProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => new Random().Next()))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name ?? string.Empty))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => GetDescription(src)))
-            .ForMember(dest => dest.Category, opt => opt.MapFrom(src => GetCategory(src)));
+            .ForMember(dest => dest.Category, opt => opt.MapFrom(src => GetCategory(src)))
+            .ForMember(dest => dest.Website,
+                opt => opt.MapFrom(src => src.Website ?? string.Empty));
     }
 
     private static string GetDescription(Place? src)

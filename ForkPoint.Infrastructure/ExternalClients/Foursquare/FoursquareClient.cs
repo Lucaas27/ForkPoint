@@ -11,7 +11,7 @@ public class FoursquareClient(
 {
     private const string DiningAndDrinking = "63be6904847c3692a84b9bb5";
     private const string Limit = "50";
-    private const string Fields = "fsq_place_id,name,location,categories";
+    private const string Fields = "fsq_place_id,name,location,categories,website";
     private const string Near = "Manchester, UK";
     private const string Sort = "POPULARITY";
 
