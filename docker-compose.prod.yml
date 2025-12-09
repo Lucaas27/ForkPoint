@@ -51,7 +51,7 @@ services:
       Authentication__Google__ClientSecret: ${GOOGLE_CLIENT_SECRET:-none}
       Apis__Foursquare__BaseUrl: ${FOURSQUARE_BASE_URL:-https://places-api.foursquare.com/places/}
       Apis__Foursquare__ApiKey: ${FOURSQUARE_BASE_API_KEY:-none}
-      Apis__Foursquare__ApiVersion: ${FOURSQUARE_API_VERSION:-2025-06-17}
+      Apis__Foursquare__Version: ${FOURSQUARE_API_VERSION:-2025-06-17}
       ClientURI: ${CLIENT_URI:-http://localhost}
     depends_on:
       postgres:
