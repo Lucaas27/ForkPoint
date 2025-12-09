@@ -123,34 +123,6 @@ The application uses `appsettings.json` for configuration. Key settings include:
 - **Email Settings**: Configure SMTP server details for email services.
 - **Google OAuth**: Configure client ID and secret for Google authentication.
 
-### Foursquare client caching
-
-- The Foursquare Infrastructure client uses `IMemoryCache` to cache successful search responses by
-  query. The default cache lifetime is 60 minutes.
-- Ensure `IMemoryCache` is registered in DI (add to your `AddApplication` or Program.cs):
-
-```csharp
-// Register in DI (once at startup)
-services.AddMemoryCache();
-```
-
-- The cache key is derived from the request query parameters so different queries are cached
-  separately. To change the TTL or make it configurable, update the `CacheLifetimeMinutes` constant
-  in `ForkPoint.Infrastructure/ExternalClients/Foursquare/FoursquareClient.cs` or refactor to read
-  from configuration.
-
-Example `appsettings.json` note (optional):
-
-```json
-{
-  "Apis": {
-    "Foursquare": {
-      "CacheMinutes": 60
-    }
-  }
-}
-```
-
 ## Database
 
 The project uses EF Core with PostgreSQL. Migrations are in `ForkPoint.Infrastructure/Migrations/`.

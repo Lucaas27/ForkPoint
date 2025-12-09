@@ -142,6 +142,19 @@ export default function Header() {
 											Restaurants
 										</Link>
 									</SheetClose>
+									<SheetClose asChild>
+										<Link
+											to="/explore"
+											className="font-medium flex items-center gap-2"
+											activeProps={{
+												className: "text-primary flex items-center gap-2",
+											}}
+											search={{ page: 1, size: 10 }}
+										>
+											<Globe className="h-4 w-4" />
+											Explore
+										</Link>
+									</SheetClose>
 									{!isAuthenticated ? (
 										<SheetClose asChild>
 											<Link
