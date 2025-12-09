@@ -8,6 +8,7 @@ import {
 	LogOut,
 	Menu,
 	HouseIcon,
+	Globe,
 } from "lucide-react";
 import { useAuthContext } from "../providers/auth-provider";
 import { Button } from "@/components/ui/button";
@@ -41,6 +42,17 @@ export default function Header() {
 						>
 							<HouseIcon className="h-4 w-4" />
 							Restaurants
+						</Link>
+						<Link
+							to="/explore"
+							className="text-sm font-medium transition-colors hover:text-primary flex items-center gap-1"
+							activeProps={{
+								className: "text-sm font-medium text-primary",
+							}}
+							search={{ page: 1, size: 10 }}
+						>
+							<Globe className="h-4 w-4" />
+							Explore
 						</Link>
 						{!isAuthenticated ? (
 							<Button
