@@ -60,6 +60,7 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IFoursquareClient, FoursquareClient>();
 
+        services.AddMemoryCache(); // For caching Foursquare responses
         services.AddHttpClient("FoursquareClient",
             (serviceProvider, client) =>
             {
@@ -77,13 +78,9 @@ public static class ServiceCollectionExtensions
                                      "Foursquare version is not configured");
 
                 client.BaseAddress = new Uri(baseUrl);
-
                 client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
-
                 client.DefaultRequestHeaders.Add("X-Places-Api-Version", apiVersion);
-
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
-
                 client.Timeout = TimeSpan.FromSeconds(15);
             });
     }
